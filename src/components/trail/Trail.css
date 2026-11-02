@@ -66,6 +66,8 @@
 .trail__toggle:hover .trail__icon { opacity: 1; }
 .trail__sec.is-open .trail__icon { transform: rotate(45deg); opacity: 1; }
 
+.trail__hint { margin: -6px 0 0; color: var(--white-faint); cursor: default; }
+.trail__sec.is-open .trail__hint { color: rgba(255, 255, 255, 0.3); }
 .trail__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--ease); }
 .trail__panel-inner { overflow: hidden; }
 .trail__sec.is-open .trail__panel { grid-template-rows: 1fr; }

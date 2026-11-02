@@ -32,7 +32,6 @@
   z-index: 8;
   left: max(var(--gutter), env(safe-area-inset-left, 0px));
   top: 44%;
-  width: min(300px, 80vw);
 }
 
 /* Big lowercase line, bottom left */
@@ -99,7 +98,7 @@
 @media (max-width: 760px) {
   .hero { min-height: 700px; }
   .hero__word { font-size: 31vw; left: 50%; top: 27%; transform: translate(-50%, -50%); }
-  .hero__player { left: 16px; right: 16px; width: auto; top: auto; bottom: calc(30vh + env(safe-area-inset-bottom, 0px)); }
+  .hero__player { left: 16px; top: auto; bottom: calc(30vh + env(safe-area-inset-bottom, 0px)); }
   .hero__intro { left: 16px; right: 16px; bottom: calc(10vh + env(safe-area-inset-bottom, 0px)); }
   .hero__scroll { display: none; }
 }

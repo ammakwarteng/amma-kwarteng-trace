@@ -8,7 +8,7 @@ import "./ThreatHunt.css";
 */
 export default function ThreatHunt({ surfaceRef }) {
   const canvasRef = useRef(null);
-  const [status, setStatus] = useState({ text: "Hunting", alert: false });
+  const [status, setStatus] = useState({ text: "Hunting", tone: null });
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function ThreatHunt({ surfaceRef }) {
       surface,
       reducedMotion,
       getBounds: () => ({ top: 110, bottom: canvas.clientHeight - 40 }),
-      onStatus: (text, alert) => setStatus({ text, alert }),
+      onStatus: (text, tone) => setStatus({ text, tone }),
       onCount: setCount,
     });
     return destroy;
@@ -32,7 +32,7 @@ export default function ThreatHunt({ surfaceRef }) {
     <>
       <canvas ref={canvasRef} className="hunt__canvas" aria-hidden="true" />
       <div className="hunt__readout" aria-hidden="true">
-        <span className={`hunt__status ${status.alert ? "is-alert" : ""}`}>
+        <span className={`hunt__status ${status.tone ? `is-${status.tone}` : ""}`}>
           <i />
           {status.text.toLowerCase()} · quarantined {String(count).padStart(2, "0")}
         </span>

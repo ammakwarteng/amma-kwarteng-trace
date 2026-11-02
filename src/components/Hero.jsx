@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { owner, communities, links } from "../data/site.js";
 import ArtifactSlot from "./ArtifactSlot.jsx";
 import ThreatHunt from "./hunt/ThreatHunt.jsx";
-import MusicPlayer from "./music/MusicPlayer.jsx";
+import DoodlePad from "./doodle/DoodlePad.jsx";
 import StudyBuddy from "./buddy/StudyBuddy.jsx";
 import EmailLink from "./EmailLink.jsx";
 import "./Hero.css";
@@ -14,8 +14,23 @@ import "./Hero.css";
 // Images go in public/artifacts. Positions are in ArtifactSlot.css (art--a1 to art--a4).
 const artifacts = [];
 
+const PIN_KEY = "trace-pinned-doodle";
+
 export default function Hero() {
   const heroRef = useRef(null);
+  // A visitor's pinned doodle floats on the page and is remembered on their device.
+  const [pinned, setPinned] = useState(null);
+  useEffect(() => {
+    try { setPinned(localStorage.getItem(PIN_KEY)); } catch { /* storage blocked */ }
+  }, []);
+  const pin = (src) => {
+    setPinned(src);
+    try { localStorage.setItem(PIN_KEY, src); } catch { /* storage blocked */ }
+  };
+  const unpin = () => {
+    setPinned(null);
+    try { localStorage.removeItem(PIN_KEY); } catch { /* storage blocked */ }
+  };
 
   return (
     <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title">
@@ -27,8 +42,16 @@ export default function Hero() {
         trace<span className="visually-hidden">, the portfolio of {owner.name}</span>
       </h1>
 
+      {pinned && (
+        <figure className="pinned">
+          <img src={pinned} alt="Your pinned doodle" />
+          <figcaption className="pinned__label">your trace</figcaption>
+          <button type="button" className="pinned__remove" onClick={unpin} aria-label="Remove your pinned doodle">×</button>
+        </figure>
+      )}
+
       <div className="hero__player">
-        <MusicPlayer />
+        <DoodlePad onPin={pin} />
       </div>
 
       <div className="hero__intro">

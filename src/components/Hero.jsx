@@ -4,6 +4,7 @@ import Wall from "./Wall.jsx";
 import TracePoster from "./TracePoster.jsx";
 import ArtifactSlot from "./ArtifactSlot.jsx";
 import ThreatHunt from "./hunt/ThreatHunt.jsx";
+import MusicPlayer from "./music/MusicPlayer.jsx";
 import "./Hero.css";
 
 // Where the photographic artifacts will sit around the poster.
@@ -39,10 +40,7 @@ export default function Hero() {
           <p className="hero__lede">{owner.tagline}</p>
         </div>
 
-        <div className="hero__player-slot mono" role="note">
-          <span>Music player</span>
-          <span>Arrives in stage 3</span>
-        </div>
+        <MusicPlayer />
 
         <a className="hero__scroll mono" href="#about">
           <span>Scroll to explore</span>

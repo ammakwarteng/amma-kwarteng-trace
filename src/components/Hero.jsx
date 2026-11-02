@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { owner } from "../data/site.js";
+import { owner, communities } from "../data/site.js";
 import ArtifactSlot from "./ArtifactSlot.jsx";
 import ThreatHunt from "./hunt/ThreatHunt.jsx";
 import MusicPlayer from "./music/MusicPlayer.jsx";
@@ -34,6 +34,14 @@ export default function Hero() {
       <div className="hero__intro">
         <p className="hero__headline">{owner.headline}</p>
         <p className="hero__subline">{owner.subline}</p>
+        <ul className="hero__communities">
+          {communities.map((c) => (
+            <li key={c.short}>
+              <span className="hero__badge">{c.role.toLowerCase()}</span>
+              <a href={c.url} target="_blank" rel="noopener noreferrer">{c.name.toLowerCase()} ({c.short.toLowerCase()}) ↗</a>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <ThreatHunt surfaceRef={heroRef} />

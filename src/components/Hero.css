@@ -58,6 +58,20 @@
   max-width: 30ch;
 }
 
+.hero__communities { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 6px; pointer-events: auto; }
+.hero__communities li { display: flex; align-items: center; gap: 10px; font-size: 15px; letter-spacing: -0.02em; }
+.hero__communities a { text-decoration: none; border-bottom: 1px solid var(--white-faint); }
+.hero__communities a:hover { border-bottom-color: var(--white); }
+.hero__badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border: 1px solid var(--white);
+  border-radius: 999px;
+}
+
 /* Scroll cue: a thin arrow, bottom centre */
 .hero__scroll {
   position: absolute;
@@ -99,6 +113,7 @@
   .hero { min-height: 700px; }
   .hero__word { font-size: 31vw; left: 50%; top: 27%; transform: translate(-50%, -50%); }
   .hero__player { left: 16px; top: auto; bottom: calc(30vh + env(safe-area-inset-bottom, 0px)); }
-  .hero__intro { left: 16px; right: 16px; bottom: calc(10vh + env(safe-area-inset-bottom, 0px)); }
+  .hero__intro { left: 16px; right: 16px; bottom: calc(9vh + env(safe-area-inset-bottom, 0px)); }
+  .hero__communities li { font-size: 13px; }
   .hero__scroll { display: none; }
 }

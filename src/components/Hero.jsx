@@ -3,6 +3,7 @@ import { owner, communities, links } from "../data/site.js";
 import ArtifactSlot from "./ArtifactSlot.jsx";
 import ThreatHunt from "./hunt/ThreatHunt.jsx";
 import MusicPlayer from "./music/MusicPlayer.jsx";
+import StudyBuddy from "./buddy/StudyBuddy.jsx";
 import "./Hero.css";
 
 // Photographic artifacts that float around the word. Empty for now: add
@@ -50,6 +51,7 @@ export default function Hero() {
       </div>
 
       <ThreatHunt surfaceRef={heroRef} />
+      <StudyBuddy />
 
       <a className="hero__scroll" href="#about" aria-label="Scroll to the portfolio">
         <span aria-hidden="true" />

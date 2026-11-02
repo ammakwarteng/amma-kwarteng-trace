@@ -1,0 +1,48 @@
+// Written content for the sections below the hero. Edit freely.
+
+export const about = [
+  "I'm Amma. I got into cybersecurity because I like understanding how things work, and how they break.",
+  "My focus is identity & access management (IAM) and privileged access management (PAM): making sure the right people have the right access, and protecting the accounts that hold the keys to everything. I'm starting in IT support and building toward that one certification and one lab at a time.",
+  "I also love UX/UI and graphic design, so I care about making security clear and human. This site is my trace: an evolving record of what I'm learning and building.",
+];
+
+// Career roadmap. Set `now: true` on the phase Amma is in.
+export const roadmap = [
+  {
+    phase: "help desk",
+    when: "now",
+    now: true,
+    goal: "Learn how accounts and access work day to day.",
+    items: ["ITIL 4 Foundation", "CompTIA Security+", "Active Directory", "Entra ID", "MFA", "PowerShell basics"],
+  },
+  {
+    phase: "iam analyst",
+    when: "next",
+    goal: "Manage identities and access full time.",
+    items: ["Microsoft SC-900", "Microsoft SC-300", "SSO (SAML, OIDC)", "RBAC", "least privilege", "access reviews"],
+  },
+  {
+    phase: "pam engineer",
+    when: "then",
+    goal: "Protect privileged accounts with CyberArk.",
+    items: ["CyberArk Trustee", "CyberArk Defender: PAM", "CyberArk Sentry: PAM", "vaulting", "password rotation", "session monitoring"],
+  },
+  {
+    phase: "iam / devsecops",
+    when: "long term",
+    goal: "Automate identity and secrets across cloud and pipelines.",
+    items: ["identity automation", "secrets management", "cloud IAM"],
+  },
+];
+
+// status: "studying" | "next" | "planned" | "earned"
+// Only move a certification to "earned" once the exam is passed.
+export const certifications = [
+  { name: "ITIL 4 Foundation", issuer: "PeopleCert", status: "studying" },
+  { name: "CompTIA Security+", issuer: "CompTIA", status: "next" },
+  { name: "Microsoft SC-900", issuer: "Microsoft", status: "planned" },
+  { name: "Microsoft SC-300", issuer: "Microsoft", status: "planned" },
+  { name: "CyberArk Certified Trustee", issuer: "CyberArk", status: "planned" },
+  { name: "CyberArk Defender: PAM", issuer: "CyberArk", status: "planned" },
+  { name: "CyberArk Sentry: PAM", issuer: "CyberArk", status: "planned" },
+];

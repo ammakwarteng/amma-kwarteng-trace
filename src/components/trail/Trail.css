@@ -64,7 +64,9 @@
 }
 .trail__sec.is-reached .trail__title { opacity: 1; }
 
-.trail__body { max-width: 34rem; color: var(--white-dim); font-size: 17px; letter-spacing: -0.02em; }
+.trail__body { width: 100%; color: var(--white-dim); font-size: 17px; letter-spacing: -0.02em; }
+.trail__body > p { max-width: 34rem; }
+.trail__sec.is-right .trail__body > p { margin-left: auto; }
 .trail__body .mono { color: var(--white-faint); }
 
 .trail__contact { display: grid; gap: 14px; }

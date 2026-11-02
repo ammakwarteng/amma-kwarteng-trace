@@ -211,7 +211,7 @@ export default function MusicPlayer() {
       )}
 
       {embedState === "error" && isSpotify && (
-        <p className="mini__note mono">Spotify didn't load. <a href={track.spotify} target="_blank" rel="noopener noreferrer">Open song ↗</a></p>
+        <p className="mini__note mono">Spotify didn't load. <a href={track.spotify} target="_blank" rel="noopener noreferrer">Open song in Spotify</a></p>
       )}
       <div ref={embedHostRef} className={`mini__embed ${isSpotify && embedState !== "idle" ? "is-open" : ""}`} />
     </section>

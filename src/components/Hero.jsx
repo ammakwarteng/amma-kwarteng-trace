@@ -38,7 +38,7 @@ export default function Hero() {
           {communities.map((c) => (
             <li key={c.short}>
               <span className="hero__badge">{c.role.toLowerCase()}</span>
-              <a href={c.url} target="_blank" rel="noopener noreferrer">{c.name.toLowerCase()} ({c.short.toLowerCase()}) ↗</a>
+              <a href={c.url} target="_blank" rel="noopener noreferrer">{c.name.toLowerCase()} ({c.short.toLowerCase()})</a>
             </li>
           ))}
         </ul>

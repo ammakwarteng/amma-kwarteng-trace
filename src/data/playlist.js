@@ -5,7 +5,7 @@
 
   Each song needs a title and an artist, plus ONE of these:
 
-  1. A Spotify link (copy it from Spotify: Share → Copy Song Link)
+  1. A Spotify link (copy it from Spotify: Share, then Copy Song Link)
        { title: "Song name", artist: "Artist", spotify: "https://open.spotify.com/track/..." }
      Plays through Spotify's official player, which appears under the
      mini player while the song is on.

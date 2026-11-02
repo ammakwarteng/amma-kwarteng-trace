@@ -13,8 +13,11 @@
   reports status and the quarantine count through callbacks, only on change.
 */
 
-// Black and white only. "signal" is the locked / alert state: pure white, drawn heavier.
+// Black and white, except the threat: the malware, lock-on and detection are red,
+// the colour security tools use for threats. The trace web stays white.
 const C = {
+  threat: "#ff2b2b",
+  threatDark: "#7a0000",
   chalk: "#d9d9d9",
   dim: "rgba(255,255,255,0.6)",
   signal: "#ffffff",
@@ -38,7 +41,7 @@ const len = (x, y) => Math.hypot(x, y) || 1e-6;
 
 function pickColor() {
   const r = Math.random();
-  return r < 0.3 ? C.paper : r < 0.55 ? "#bdbdbd" : r < 0.75 ? C.grey : r < 0.92 ? C.ink : "#1c1c1c";
+  return r < 0.36 ? C.threat : r < 0.56 ? "#ff6b6b" : r < 0.73 ? "#c40000" : r < 0.86 ? "#6e0000" : r < 0.95 ? "#ffb3b3" : "#ffffff";
 }
 
 export function createHunt({ canvas, surface, getBounds, onStatus, onCount, reducedMotion }) {
@@ -210,7 +213,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
       }
     } else {
       phaseT += dt;
-      if (phase === "detect" && phaseT > 0.55) { phase = "quarantine"; phaseT = 0; setStatus("Quarantined", true); }
+      if (phase === "detect" && phaseT > 0.55) { phase = "quarantine"; phaseT = 0; setStatus("Quarantined"); }
       else if (phase === "quarantine" && phaseT > 1.1) {
         count++; onCount?.(count);
         phase = "respawn"; phaseT = 0; spawn(); mal.scale = 0; setStatus("New signature");
@@ -234,7 +237,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const fade = phase === "quarantine" ? 1 - clamp((phaseT - 0.6) / 0.5, 0, 1) : 1;
     const mvx = mal.vx * 0.012, mvy = mal.vy * 0.012;
     const split = animated ? (mal.glitchT > 0 ? 5 : 1.6) : 1.6;
-    const passes = [[-split, C.sky, 0.55], [split, C.signal, 0.55], [0, null, 1]];
+    const passes = [[-split, C.threatDark, 0.6], [split, C.threat, 0.45], [0, null, 1]];
     for (const [ox, tint, alpha] of passes) {
       ctx.globalAlpha = alpha * fade;
       mal.frags.forEach((f, i) => {
@@ -295,7 +298,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     ctx.stroke();
     for (const n of nodes) {
       if (n.isCatch) {
-        ctx.fillStyle = C.signal;
+        ctx.fillStyle = C.threat;
         ctx.fillRect(n.x - 3.5, n.y - 3.5, 7, 7);
       } else {
         ctx.fillStyle = C.wall;
@@ -321,7 +324,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
 
   function drawHunter() {
     const { x, y, lock } = hunter;
-    const col = lock > 0.55 ? C.signal : C.chalk;
+    const col = lock > 0.55 ? C.threat : C.chalk;
     const r = lerp(34, 20, lock) * Math.sqrt(S);
     const reticle = (stroke, extra, alphaScale) => {
       ctx.strokeStyle = stroke; ctx.fillStyle = stroke;
@@ -376,7 +379,9 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const fade = phase === "quarantine" ? 1 - clamp((phaseT - 0.8) / 0.3, 0, 1) : 1;
     const { x, y } = mal;
     ctx.save();
-    ctx.strokeStyle = C.signal; ctx.lineWidth = 1.2;
+    // red while the threat is live; white once it is contained
+    const tone = phase === "detect" ? C.threat : "#ffffff";
+    ctx.strokeStyle = tone; ctx.lineWidth = 1.2;
     ctx.globalAlpha = phase === "detect" ? (Math.floor(phaseT * 14) % 2 ? 1 : 0.55) : fade;
     ctx.strokeRect(Math.round(x - size / 2) + 0.5, Math.round(y - size / 2) + 0.5, Math.round(size), Math.round(size));
     if (phase === "quarantine") {
@@ -394,8 +399,8 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const tw = ctx.measureText(text).width + 14;
     const lx = clamp(x - tw / 2, 8, W - tw - 8), ly = y + 48 * S;
     ctx.globalAlpha = fade;
-    ctx.fillStyle = "#ffffff"; ctx.fillRect(lx, ly, tw, 20);
-    ctx.fillStyle = "#0a0a0a"; ctx.fillText(text, lx + 7, ly + 5);
+    ctx.fillStyle = phase === "detect" ? C.threat : "#ffffff"; ctx.fillRect(lx, ly, tw, 20);
+    ctx.fillStyle = phase === "detect" ? "#ffffff" : "#0a0a0a"; ctx.fillText(text, lx + 7, ly + 5);
     ctx.globalAlpha = 1;
   }
 

@@ -16,7 +16,7 @@ export default function App() {
             id={item.id}
             index={i + 1}
             title={item.label}
-            note="Arrives in stage 4"
+            note="arrives in stage 4"
           />
         ))}
       </main>

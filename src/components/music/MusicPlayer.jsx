@@ -107,9 +107,9 @@ export default function MusicPlayer() {
     <section className="player" aria-label="Music player">
       <div className="player__head mono">
         <span className="player__eyebrow">
-          {isSample ? "Sample data" : "On repeat"} · {String(index + 1).padStart(2, "0")}/{String(tracks.length).padStart(2, "0")}
+          {isSample ? "sample data" : "on repeat"} · {String(index + 1).padStart(2, "0")}/{String(tracks.length).padStart(2, "0")}
         </span>
-        <span className="player__via">{isSample ? "Not your music" : "via Spotify"}</span>
+        <span className="player__via">{isSample ? "not your music" : "via spotify"}</span>
       </div>
 
       <div className="player__main">

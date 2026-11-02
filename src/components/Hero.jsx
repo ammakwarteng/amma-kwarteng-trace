@@ -4,6 +4,7 @@ import ArtifactSlot from "./ArtifactSlot.jsx";
 import ThreatHunt from "./hunt/ThreatHunt.jsx";
 import MusicPlayer from "./music/MusicPlayer.jsx";
 import StudyBuddy from "./buddy/StudyBuddy.jsx";
+import EmailLink from "./EmailLink.jsx";
 import "./Hero.css";
 
 // Photographic artifacts that float around the word. Empty for now: add
@@ -47,6 +48,7 @@ export default function Hero() {
               <a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a>
             </li>
           ))}
+          <li><EmailLink /></li>
         </ul>
       </div>
 

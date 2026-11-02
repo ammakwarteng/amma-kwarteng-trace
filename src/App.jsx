@@ -2,13 +2,19 @@ import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
 import Trail from "./components/trail/Trail.jsx";
 import EmailLink from "./components/EmailLink.jsx";
+import About from "./components/sections/About.jsx";
+import Certifications from "./components/sections/Certifications.jsx";
 import { navItems, links } from "./data/site.js";
 
 // Each nav destination is a hop on the trace. Section content arrives in stage 4.
 const sections = navItems.map((item) => ({
   ...item,
   body:
-    item.id === "contact" ? (
+    item.id === "about" ? (
+      <About />
+    ) : item.id === "certifications" ? (
+      <Certifications />
+    ) : item.id === "contact" ? (
       <div className="trail__contact">
         <EmailLink variant="full" />
         <ul className="trail__links">

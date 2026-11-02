@@ -1,8 +1,20 @@
 import "./ArtifactSlot.css";
 
-// A clearly labelled placeholder for a photographic cutout.
-// Each one is replaced by Amma's real photo once it is supplied.
-export default function ArtifactSlot({ index, label, className = "" }) {
+const asset = (path) => `${import.meta.env.BASE_URL}${path}`;
+
+/*
+  A floating artifact around the word.
+  With a photo (src), it shows the cutout with a soft shadow.
+  Without one, it shows a clearly labelled placeholder until the photo arrives.
+*/
+export default function ArtifactSlot({ index, label, src, width, height, className = "" }) {
+  if (src) {
+    return (
+      <figure className={`art art--photo ${className}`}>
+        <img src={asset(src)} alt={label} width={width} height={height} loading="eager" decoding="async" draggable="false" />
+      </figure>
+    );
+  }
   return (
     <figure className={`art ${className}`} aria-hidden="true">
       <div className="art__inner">

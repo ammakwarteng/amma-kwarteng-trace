@@ -16,7 +16,8 @@
   --glass-edge: rgba(255, 255, 255, 0.22);
   --ink: #0b0b0b;
   --signal: #ffffff;
-  --threat: #ff2b2b;          /* the only red: malware and detections */
+  --threat: #ff2b2b;          /* red: malware and detections */
+  --secure: #57e389;          /* green: lock-on and quarantined */
 
   /* legacy names still used by a few components */
   --wall: var(--blue);

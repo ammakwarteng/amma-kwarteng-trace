@@ -23,8 +23,10 @@
 }
 .hunt__status { display: inline-flex; align-items: center; gap: 8px; color: var(--white); }
 .hunt__status i { width: 6px; height: 6px; border-radius: 50%; background: var(--white); display: inline-block; }
-.hunt__status.is-alert { color: var(--threat); }
-.hunt__status.is-alert i { background: var(--threat); box-shadow: 0 0 0 3px rgba(255, 43, 43, 0.25); }
+.hunt__status.is-secure { color: var(--secure); }
+.hunt__status.is-secure i { background: var(--secure); box-shadow: 0 0 0 3px rgba(87, 227, 137, 0.25); }
+.hunt__status.is-threat { color: var(--threat); }
+.hunt__status.is-threat i { background: var(--threat); box-shadow: 0 0 0 3px rgba(255, 43, 43, 0.25); }
 
 @media (max-width: 760px) {
   .hunt__readout { font-size: 13px; left: 16px; right: 16px; justify-items: start; bottom: calc(4vh + env(safe-area-inset-bottom, 0px)); }

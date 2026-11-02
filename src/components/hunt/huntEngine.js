@@ -13,10 +13,12 @@
   reports status and the quarantine count through callbacks, only on change.
 */
 
-// Black and white, except the threat: the malware, lock-on and detection are red,
-// the colour security tools use for threats. The trace web stays white.
+// Black and white, plus two signal colours: red for the threat (malware,
+// detection) and green for the defender (lock-on, quarantined / secured).
+// The trace web stays white.
 const C = {
   threat: "#ff2b2b",
+  secure: "#57e389",
   threatDark: "#7a0000",
   chalk: "#d9d9d9",
   dim: "rgba(255,255,255,0.6)",
@@ -57,7 +59,8 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
   let status = "";
   let raf = 0, running = false, visible = true, lastTs = 0;
 
-  const setStatus = (text, alert = false) => {
+  // tone: "threat" (red), "secure" (green) or null (white)
+  const setStatus = (text, alert = null) => {
     if (text === status) return;
     status = text;
     onStatus?.(text, alert);
@@ -182,7 +185,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
         const ex = -dx / d + (-dy / d) * side * 0.9, ey = -dy / d + (dx / d) * side * 0.9, el = len(ex, ey);
         mal.vx = (ex / el) * speed * 5.2; mal.vy = (ey / el) * speed * 5.2;
         mal.evadeT = 0.32; mal.cool = 1.6; mal.glitchT = 0.3;
-        setStatus("Evasion detected", true);
+        setStatus("Evasion detected", "threat");
         for (let i = 0; i < 10; i++) addGhost(true);
       }
       if (mal.evadeT > 0) mal.evadeT -= dt;
@@ -209,11 +212,11 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
       if (lockT > 0.22) {
         lockT = 0; huntT = 0; phase = "detect"; phaseT = 0; mal.vx = mal.vy = 0;
         addNode(mal.x, mal.y, true);
-        setStatus("Threat detected", true);
+        setStatus("Threat detected", "threat");
       }
     } else {
       phaseT += dt;
-      if (phase === "detect" && phaseT > 0.55) { phase = "quarantine"; phaseT = 0; setStatus("Quarantined"); }
+      if (phase === "detect" && phaseT > 0.55) { phase = "quarantine"; phaseT = 0; setStatus("Quarantined", "secure"); }
       else if (phase === "quarantine" && phaseT > 1.1) {
         count++; onCount?.(count);
         phase = "respawn"; phaseT = 0; spawn(); mal.scale = 0; setStatus("New signature");
@@ -244,7 +247,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
         const smear = (i % 5) / 5;
         const fx = lerp(f.dx - mvx * smear * 6, f.qx, q) * s, fy = lerp(f.dy - mvy * smear * 6, f.qy, q) * s;
         const w = lerp(f.w, 3, q) * s, h = lerp(f.h, 3, q) * s;
-        ctx.fillStyle = tint || (q > 0.6 ? C.chalk : f.c);
+        ctx.fillStyle = tint || (q > 0.6 ? C.secure : f.c);
         ctx.fillRect(Math.round(mal.x + fx + ox - w / 2), Math.round(mal.y + fy - h / 2), Math.ceil(w), Math.ceil(h));
       });
     }
@@ -298,7 +301,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     ctx.stroke();
     for (const n of nodes) {
       if (n.isCatch) {
-        ctx.fillStyle = C.threat;
+        ctx.fillStyle = C.secure;
         ctx.fillRect(n.x - 3.5, n.y - 3.5, 7, 7);
       } else {
         ctx.fillStyle = C.wall;
@@ -324,7 +327,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
 
   function drawHunter() {
     const { x, y, lock } = hunter;
-    const col = lock > 0.55 ? C.threat : C.chalk;
+    const col = lock > 0.55 ? C.secure : C.chalk;
     const r = lerp(34, 20, lock) * Math.sqrt(S);
     const reticle = (stroke, extra, alphaScale) => {
       ctx.strokeStyle = stroke; ctx.fillStyle = stroke;
@@ -380,7 +383,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const { x, y } = mal;
     ctx.save();
     // red while the threat is live; white once it is contained
-    const tone = phase === "detect" ? C.threat : "#ffffff";
+    const tone = phase === "detect" ? C.threat : C.secure;
     ctx.strokeStyle = tone; ctx.lineWidth = 1.2;
     ctx.globalAlpha = phase === "detect" ? (Math.floor(phaseT * 14) % 2 ? 1 : 0.55) : fade;
     ctx.strokeRect(Math.round(x - size / 2) + 0.5, Math.round(y - size / 2) + 0.5, Math.round(size), Math.round(size));
@@ -399,7 +402,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const tw = ctx.measureText(text).width + 14;
     const lx = clamp(x - tw / 2, 8, W - tw - 8), ly = y + 48 * S;
     ctx.globalAlpha = fade;
-    ctx.fillStyle = phase === "detect" ? C.threat : "#ffffff"; ctx.fillRect(lx, ly, tw, 20);
+    ctx.fillStyle = phase === "detect" ? C.threat : C.secure; ctx.fillRect(lx, ly, tw, 20);
     ctx.fillStyle = phase === "detect" ? "#ffffff" : "#0a0a0a"; ctx.fillText(text, lx + 7, ly + 5);
     ctx.globalAlpha = 1;
   }

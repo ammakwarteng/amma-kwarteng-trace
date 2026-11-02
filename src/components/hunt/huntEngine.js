@@ -13,8 +13,8 @@
   reports status and the quarantine count through callbacks, only on change.
 */
 
-// Black and white, plus two signal colours: red for the threat (malware,
-// detection) and green for the defender (lock-on, quarantined / secured).
+// Black and white, plus two signal colours: red for the threat (malware, lock-on,
+// detection) and green once it is quarantined (resolved).
 // The trace web stays white.
 const C = {
   threat: "#ff2b2b",
@@ -327,7 +327,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
 
   function drawHunter() {
     const { x, y, lock } = hunter;
-    const col = lock > 0.55 ? C.secure : C.chalk;
+    const col = phase === "quarantine" ? C.secure : lock > 0.55 ? C.threat : C.chalk;
     const r = lerp(34, 20, lock) * Math.sqrt(S);
     const reticle = (stroke, extra, alphaScale) => {
       ctx.strokeStyle = stroke; ctx.fillStyle = stroke;

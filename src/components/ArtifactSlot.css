@@ -1,0 +1,26 @@
+.slot {
+  position: absolute;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px dashed rgba(236, 232, 225, 0.35);
+  background: rgba(18, 18, 18, 0.55);
+  color: var(--chalk-dim);
+  pointer-events: none;
+}
+.slot__no { color: var(--chalk); }
+.slot__label { line-height: 1.5; }
+
+/* Positions are percentages of the hero stage so they track the poster. */
+.slot--a1 { width: 14%; aspect-ratio: 1.58; left: 1%;  top: 78%; transform: rotate(-8deg); }
+.slot--a2 { width: 7%;  aspect-ratio: 0.42; right: 1.5%; top: 60%; transform: rotate(14deg); }
+.slot--a3 { width: 20%; aspect-ratio: 2.6;  left: 38%; top: 90%; transform: rotate(4deg); }
+.slot--a4 { width: 10%; aspect-ratio: 0.77; right: 19%; top: 78%; transform: rotate(-5deg); }
+
+@media (max-width: 700px) {
+  .slot--a1 { width: 36%; left: 3%; top: 68%; }
+  .slot--a2 { width: 17%; right: 5%; top: 64%; }
+  .slot--a3, .slot--a4 { display: none; }
+}

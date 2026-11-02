@@ -295,7 +295,7 @@ export default function TracePoster() {
     const build = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = wrap.clientWidth;
-      const h = Math.round(w < 700 ? w * 1.05 : Math.min(w * 0.56, window.innerHeight * 0.74));
+      const h = Math.round(w < 700 ? w * 1.05 : Math.min(w * 0.52, window.innerHeight * 0.64));
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       canvas.style.height = `${h}px`;

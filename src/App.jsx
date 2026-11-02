@@ -1,7 +1,22 @@
 import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
-import SectionStub from "./components/SectionStub.jsx";
+import Trail from "./components/trail/Trail.jsx";
 import { navItems, links } from "./data/site.js";
+
+// Each nav destination is a hop on the trace. Section content arrives in stage 4.
+const sections = navItems.map((item) => ({
+  ...item,
+  body:
+    item.id === "contact" ? (
+      <ul className="trail__links">
+        {links.map((l) => (
+          <li key={l.label}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a></li>
+        ))}
+      </ul>
+    ) : (
+      <p className="mono">arrives in stage 4</p>
+    ),
+}));
 
 export default function App() {
   return (
@@ -10,23 +25,7 @@ export default function App() {
       <Header />
       <main>
         <Hero />
-        {navItems.map((item, i) => (
-          <SectionStub
-            key={item.id}
-            id={item.id}
-            index={i + 1}
-            title={item.label}
-            note="arrives in stage 4"
-          >
-            {item.id === "contact" && (
-              <ul className="stub__links">
-                {links.map((l) => (
-                  <li key={l.label}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a></li>
-                ))}
-              </ul>
-            )}
-          </SectionStub>
-        ))}
+        <Trail sections={sections} />
       </main>
     </>
   );

@@ -14,7 +14,8 @@
   cursor: default;
 }
 
-.doodle__head { display: flex; align-items: center; justify-content: space-between; }
+.doodle__head { display: flex; align-items: center; gap: 6px; }
+.doodle__spacer { flex: 1; }
 .doodle__title { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--white); }
 
 .doodle__pin {

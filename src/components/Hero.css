@@ -26,17 +26,36 @@
   pointer-events: none;
 }
 
-/* Music player: glass card on the left */
+/* Doodle pad: folded into a small pen button under the logo; opens on tap */
 .hero__player {
   position: absolute;
-  z-index: 8;
+  z-index: 9;
   left: max(var(--gutter), env(safe-area-inset-left, 0px));
-  top: 26%;
-  transform-origin: top left;
+  top: 132px;
 }
-/* shorter laptop screens: shrink the pad so it clears the intro text */
+.hero__pen {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  transition: background 0.2s, border-color 0.2s;
+}
+.hero__pen:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.45); }
+.hero__pen svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+.hero__pad { transform-origin: top left; animation: pad-open 0.3s var(--ease); }
+@keyframes pad-open { from { opacity: 0; transform: scale(0.9) translateY(-6px); } }
+/* shorter laptop screens: shrink the open pad so it clears the intro text */
 @media (min-width: 761px) and (max-height: 860px) {
-  .hero__player { top: 22%; transform: scale(0.84); }
+  .hero__pad { transform: scale(0.84); animation: none; }
 }
 
 /* Big lowercase line, bottom left */
@@ -121,7 +140,8 @@
 @media (max-width: 760px) {
   .hero { min-height: 700px; }
   .hero__word { font-size: 31vw; left: 50%; top: 22%; transform: translate(-50%, -50%); }
-  .hero__player { left: 16px; top: 32%; bottom: auto; transform: scale(0.7); }
+  .hero__player { left: 16px; top: auto; bottom: calc(7vh + 196px + env(safe-area-inset-bottom, 0px)); }
+  .hero__pad { transform: scale(0.82); transform-origin: bottom left; animation: none; }
   .hero__intro { left: 16px; right: 16px; bottom: calc(9vh + env(safe-area-inset-bottom, 0px)); }
   .hero__communities li { font-size: 13px; }
   .hero__links a { font-size: 13px; }

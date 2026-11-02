@@ -20,12 +20,21 @@ export default function Hero() {
   const heroRef = useRef(null);
   // A visitor's pinned doodle floats on the page and is remembered on their device.
   const [pinned, setPinned] = useState(null);
+  // The pad stays folded into a small button so it never blocks the hunt.
+  const [padOpen, setPadOpen] = useState(false);
+  useEffect(() => {
+    if (!padOpen) return;
+    const onKey = (e) => { if (e.key === "Escape") setPadOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [padOpen]);
   useEffect(() => {
     try { setPinned(localStorage.getItem(PIN_KEY)); } catch { /* storage blocked */ }
   }, []);
   const pin = (src) => {
     setPinned(src);
     try { localStorage.setItem(PIN_KEY, src); } catch { /* storage blocked */ }
+    setTimeout(() => setPadOpen(false), 700); // fold away so the sticker shows
   };
   const unpin = () => {
     setPinned(null);
@@ -50,8 +59,17 @@ export default function Hero() {
         </figure>
       )}
 
-      <div className="hero__player">
-        <DoodlePad onPin={pin} />
+      <div className="hero__player" onPointerDown={(e) => e.stopPropagation()}>
+        {padOpen ? (
+          <div className="hero__pad">
+            <DoodlePad onPin={pin} onClose={() => setPadOpen(false)} />
+          </div>
+        ) : (
+          <button type="button" className="hero__pen" onClick={() => setPadOpen(true)} aria-expanded="false">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 16l1-4 8.5-8.5a2.1 2.1 0 0 1 3 3L8 15l-4 1zM12 5l3 3" /></svg>
+            leave your trace
+          </button>
+        )}
       </div>
 
       <div className="hero__intro">

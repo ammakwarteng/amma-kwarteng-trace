@@ -51,12 +51,27 @@
 }
 .hero__pen:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.45); }
 .hero__pen svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
-.hero__pad { transform-origin: top left; animation: pad-open 0.3s var(--ease); }
-@keyframes pad-open { from { opacity: 0; transform: scale(0.9) translateY(-6px); } }
-/* shorter laptop screens: shrink the open pad so it clears the intro text */
-@media (min-width: 761px) and (max-height: 860px) {
-  .hero__pad { transform: scale(0.84); animation: none; }
+/* The open pad: a sheet that drops in from the top of the screen */
+.sheet { position: fixed; inset: 0; z-index: 200; display: grid; justify-items: center; align-items: start; }
+.sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  animation: sheet-dim 0.35s ease;
 }
+.sheet__card {
+  position: relative;
+  margin-top: calc(14vh + env(safe-area-inset-top, 0px));
+  animation: sheet-drop 0.6s cubic-bezier(0.22, 1.25, 0.36, 1);
+}
+.sheet__card .doodle { background: rgba(28, 28, 28, 0.92); box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.9); }
+.sheet.is-closing .sheet__card { animation: sheet-lift 0.38s cubic-bezier(0.6, 0, 0.8, 0.4) forwards; }
+.sheet.is-closing .sheet__backdrop { animation: sheet-dim 0.38s ease reverse forwards; }
+@keyframes sheet-drop { from { transform: translateY(calc(-100% - 14vh - 40px)); } }
+@keyframes sheet-lift { to { transform: translateY(calc(-100% - 14vh - 40px)); } }
+@keyframes sheet-dim { from { opacity: 0; } }
 
 /* Big lowercase line, bottom left */
 .hero__intro {
@@ -141,7 +156,7 @@
   .hero { min-height: 700px; }
   .hero__word { font-size: 31vw; left: 50%; top: 22%; transform: translate(-50%, -50%); }
   .hero__player { left: 16px; top: auto; bottom: calc(7vh + 196px + env(safe-area-inset-bottom, 0px)); }
-  .hero__pad { transform: scale(0.82); transform-origin: bottom left; animation: none; }
+  .sheet__card { margin-top: calc(12vh + env(safe-area-inset-top, 0px)); }
   .hero__intro { left: 16px; right: 16px; bottom: calc(9vh + env(safe-area-inset-bottom, 0px)); }
   .hero__communities li { font-size: 13px; }
   .hero__links a { font-size: 13px; }

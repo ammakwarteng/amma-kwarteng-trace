@@ -1,4 +1,5 @@
 import Header from "./components/Header.jsx";
+import Loader from "./components/loader/Loader.jsx";
 import Hero from "./components/Hero.jsx";
 import Trail from "./components/trail/Trail.jsx";
 import EmailLink from "./components/EmailLink.jsx";
@@ -29,6 +30,7 @@ const sections = navItems.map((item) => ({
 export default function App() {
   return (
     <>
+      <Loader />
       <a className="skip-link" href="#about">Skip to content</a>
       <Header />
       <main>

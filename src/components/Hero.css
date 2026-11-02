@@ -23,7 +23,7 @@
   gap: 24px;
   padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
   padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
-  margin-top: 12px;
+  margin-top: -14vh;
 }
 
 .hero__kicker { margin: 0 0 6px; color: var(--chalk-dim); }
@@ -59,7 +59,7 @@
 }
 
 @media (max-width: 900px) {
-  .hero__foot { grid-template-columns: 1fr auto; }
+  .hero__foot { grid-template-columns: 1fr auto; margin-top: -18vw; }
   .hero__foot > .player { grid-column: 1 / -1; grid-row: 2; }
 }
 @media (max-width: 520px) {

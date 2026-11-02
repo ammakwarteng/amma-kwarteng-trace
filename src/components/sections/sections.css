@@ -36,10 +36,52 @@
   margin-bottom: 10px;
 }
 .road__step.is-now .road__dot { background: var(--white); border-color: var(--white); box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12); }
+/* each step is a button that opens its details */
+.road__toggle {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  padding: 0 28px 0 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.road__toggle:hover .road__phase { color: var(--white); }
+.road__icon {
+  position: absolute;
+  right: 4px;
+  bottom: 8px;
+  width: 14px;
+  height: 14px;
+  transition: transform 0.3s var(--ease);
+}
+.road__icon::before, .road__icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.4px;
+  background: var(--white-dim);
+}
+.road__icon::after { transform: rotate(90deg); }
+.road__step.is-open .road__icon { transform: rotate(45deg); }
+.road__step.is-open .road__icon::before, .road__step.is-open .road__icon::after { background: var(--white); }
+
+.road__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s var(--ease); }
+.road__panel-inner { overflow: hidden; display: grid; gap: 8px; align-content: start; }
+.road__step.is-open .road__panel { grid-template-rows: 1fr; }
+.road__step.is-open .road__panel-inner { padding-top: 10px; }
+
 .road__head { display: flex; gap: 12px; color: var(--white-faint); }
 .road__step.is-now .road__when { color: var(--white); }
 .road__phase { margin: 0; font-size: clamp(26px, 2.6vw, 40px); font-weight: 400; letter-spacing: -0.06em; line-height: 1; }
-.road__step:not(.is-now) .road__phase { color: var(--white-dim); }
+.road__phase { display: block; color: var(--white); transition: color 0.2s; }
+.road__step:not(.is-now):not(.is-open) .road__phase { color: var(--white-dim); }
 .road__goal { margin: 0; color: var(--white-dim); font-size: 15px; letter-spacing: -0.02em; max-width: 24ch; }
 .road__items { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .road__items li {
@@ -77,7 +119,7 @@
   .road__list::before { left: 6px; right: auto; top: 6px; bottom: 6px; width: 1px; height: auto; }
   .road__step { grid-template-columns: 13px minmax(0, 1fr); column-gap: 16px; padding: 0; }
   .road__step > :not(.road__dot) { grid-column: 2; }
-  .road__dot { grid-row: 1 / span 4; margin: 0; }
+  .road__dot { grid-row: 1 / span 2; margin: 0; }
 }
 @media (max-width: 600px) {
   .certs__row { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; }

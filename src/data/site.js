@@ -18,6 +18,9 @@ export const studyGoal = {
   passed: false,
 };
 
+// Split so the full address is never written out in the built page.
+export const email = { user: "ammaafram.kwarteng", domain: "gmail.com" };
+
 export const links = [
   { label: "linkedin", url: "https://www.linkedin.com/in/amma-kwarteng-8b1b98a3" },
   { label: "github", url: "https://github.com/ammakwarteng" },

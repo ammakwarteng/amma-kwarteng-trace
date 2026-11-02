@@ -67,6 +67,9 @@
 .trail__body { max-width: 34rem; color: var(--white-dim); font-size: 17px; letter-spacing: -0.02em; }
 .trail__body .mono { color: var(--white-faint); }
 
+.trail__contact { display: grid; gap: 14px; }
+.trail__sec.is-right .trail__contact { justify-items: end; }
+.trail__contact .email a { color: var(--white); font-size: clamp(18px, 2.2vw, 28px); letter-spacing: -0.04em; text-decoration: none; border-bottom: 1px solid var(--white-faint); }
 .trail__links { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
 .trail__sec.is-right .trail__links { justify-content: flex-end; }
 .trail__links a { color: var(--white); font-size: 18px; letter-spacing: -0.03em; text-decoration: none; border-bottom: 1px solid var(--white-faint); }

@@ -1,0 +1,12 @@
+.email { display: inline-flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.email a { overflow-wrap: anywhere; }
+.email__copy {
+  background: none;
+  border: 1px solid var(--white-faint);
+  color: var(--white);
+  border-radius: 999px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.email__copy:hover { border-color: var(--white); background: rgba(255, 255, 255, 0.08); }

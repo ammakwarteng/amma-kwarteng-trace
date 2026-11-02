@@ -126,3 +126,51 @@
   .certs__issuer { grid-column: 1; grid-row: 2; }
   .certs__status { grid-row: 1 / span 2; align-self: center; min-width: 0; }
 }
+
+/* ---------- certification strip ---------- */
+.certs-wrap { display: grid; gap: 14px; }
+.marquee {
+  overflow: hidden;
+  padding: 10px 0;
+  touch-action: pan-y;
+  cursor: ew-resize;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee__track { display: flex; gap: 16px; width: max-content; will-change: transform; }
+.marquee.is-static { overflow-x: auto; cursor: auto; -webkit-mask-image: none; mask-image: none; }
+
+.cert {
+  flex: none;
+  width: clamp(220px, 22vw, 300px);
+  min-height: 180px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+.cert:hover { border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.08); transform: translateY(-3px); }
+.cert__top { display: flex; justify-content: space-between; gap: 10px; color: var(--white-faint); white-space: nowrap; }
+.cert__top > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.cert__code { margin: 0; align-self: center; font-size: clamp(40px, 4.4vw, 64px); letter-spacing: -0.07em; line-height: 1; color: var(--white-dim); }
+.cert__name { margin: 0; font-size: 14px; letter-spacing: -0.02em; color: var(--white-dim); }
+
+.cert.is-studying { border-color: rgba(255, 255, 255, 0.55); }
+.cert.is-studying .cert__code, .cert.is-studying .cert__name { color: var(--white); }
+.cert.is-studying .cert__status { color: var(--white); }
+.cert.is-studying .cert__status::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--white); vertical-align: middle; animation: live-blink 1.4s steps(2) infinite; }
+.cert.is-next .cert__status { color: var(--white-dim); }
+.cert.is-earned { border-color: rgba(87, 227, 137, 0.6); }
+.cert.is-earned .cert__code, .cert.is-earned .cert__status { color: var(--secure); }
+
+.marquee__hint { margin: 0; color: rgba(255, 255, 255, 0.35); }
+@media (hover: none) { .marquee__hint { visibility: hidden; } }
+@media (max-width: 600px) {
+  .cert { width: 230px; min-height: 160px; padding: 14px 16px; }
+  .cert__top { font-size: 10px; flex-direction: column; gap: 4px; }
+}

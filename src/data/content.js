@@ -38,11 +38,11 @@ export const roadmap = [
 // status: "studying" | "next" | "planned" | "earned"
 // Only move a certification to "earned" once the exam is passed.
 export const certifications = [
-  { name: "ITIL 4 Foundation", issuer: "PeopleCert", status: "studying" },
-  { name: "CompTIA Security+", issuer: "CompTIA", status: "next" },
-  { name: "Microsoft SC-900", issuer: "Microsoft", status: "planned" },
-  { name: "Microsoft SC-300", issuer: "Microsoft", status: "planned" },
-  { name: "CyberArk Certified Trustee", issuer: "CyberArk", status: "planned" },
-  { name: "CyberArk Defender: PAM", issuer: "CyberArk", status: "planned" },
-  { name: "CyberArk Sentry: PAM", issuer: "CyberArk", status: "planned" },
+  { name: "ITIL 4 Foundation", code: "ITIL 4", issuer: "PeopleCert", status: "studying" },
+  { name: "CompTIA Security+", code: "Sec+", issuer: "CompTIA", status: "next" },
+  { name: "Microsoft SC-900", code: "SC-900", issuer: "Microsoft", status: "planned" },
+  { name: "Microsoft SC-300", code: "SC-300", issuer: "Microsoft", status: "planned" },
+  { name: "CyberArk Certified Trustee", code: "Trustee", issuer: "CyberArk", status: "planned" },
+  { name: "CyberArk Defender: PAM", code: "Defender", issuer: "CyberArk", status: "planned" },
+  { name: "CyberArk Sentry: PAM", code: "Sentry", issuer: "CyberArk", status: "planned" },
 ];

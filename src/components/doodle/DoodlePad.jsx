@@ -40,7 +40,7 @@ function drawStroke(ctx, s) {
   ctx.stroke();
 }
 
-export default function DoodlePad({ onPin }) {
+export default function DoodlePad({ onPin, onClose }) {
   const canvasRef = useRef(null);
   const binRef = useRef(null);
   const wrapRef = useRef(null);
@@ -138,9 +138,15 @@ export default function DoodlePad({ onPin }) {
     <section className="doodle" ref={wrapRef} aria-label="Doodle pad: leave your trace">
       <div className="doodle__head">
         <span className="doodle__title">leave your trace</span>
+        <span className="doodle__spacer" />
         <button type="button" className={`doodle__pin ${pinned ? "is-done" : ""}`} onClick={pin} disabled={empty} aria-label="Pin your doodle to the page">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.5l3.2 3.2L15 6.8" /></svg>
         </button>
+        {onClose && (
+          <button type="button" className="doodle__pin doodle__close" onClick={onClose} aria-label="Close the doodle pad">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 6l8 8M14 6l-8 8" /></svg>
+          </button>
+        )}
       </div>
 
       <div className="doodle__paper">

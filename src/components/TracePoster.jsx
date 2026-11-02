@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
 import { seeded, between } from "../lib/random.js";
+import { drawCables } from "./cables.js";
 import "./TracePoster.css";
 
 /*
   The TRACE poster: a torn, wheat-pasted sheet of paper with the word TRACE
-  printed on it. Pixels "drip" out of the letters as a data smear, the trace
-  a file leaves behind. Everything is drawn on a canvas from a fixed seed,
-  so the composition is identical on every visit.
+  printed on it, a few corrupted scanlines through the letters, and a tangle
+  of cables spilling out from under the sheet. Everything is drawn on a canvas
+  from a fixed seed, so the composition is identical on every visit.
 
   The real word is in an <h1> for screen readers and search engines; the
   canvas is decorative.
@@ -15,24 +16,6 @@ import "./TracePoster.css";
 const WORD = "TRACE";
 const PAPER = "#e9e5de";
 const INK = "#141414";
-const SMEAR = [
-  { c: "#141414", w: 3 },
-  { c: "#ff5a1f", w: 4 },
-  { c: "#e9e5de", w: 2 },
-  { c: "#8fd3ff", w: 3 },
-  { c: "#c7401a", w: 1 },
-  { c: "#5b5752", w: 1 },
-];
-
-function pick(rand, list) {
-  const total = list.reduce((a, b) => a + b.w, 0);
-  let r = rand() * total;
-  for (const item of list) {
-    if ((r -= item.w) <= 0) return item.c;
-  }
-  return list[0].c;
-}
-
 function noisePattern(ctx, size = 160, seed = 7) {
   const rand = seeded(seed);
   const c = document.createElement("canvas");
@@ -105,7 +88,7 @@ function buildScene(W, H, dpr) {
   probe.font = "100px Anton";
   let fs = (maxW * 0.9) / probe.measureText(WORD).width * 100;
   let met = measure(fs);
-  const maxSheet = H * (isNarrow ? 0.62 : 0.74);
+  const maxSheet = H * (isNarrow ? 0.6 : 0.62);
   if (met.sheetH > maxSheet) { fs *= maxSheet / met.sheetH; met = measure(fs); }
   const { m, ascent, descent, capH, labelH, padY } = met;
   const paperW = Math.min(maxW, m.width / 0.9);
@@ -119,6 +102,8 @@ function buildScene(W, H, dpr) {
   base.width = W; base.height = H;
   const b = base.getContext("2d");
   const pattern = noisePattern(b);
+
+  drawCables(b, { W, H, paper, dpr, layer: "back" });
 
   b.save();
   tornPath(b, paper.x0, paper.y0, paper.x1, paper.y1, seeded(11), 9 * dpr);
@@ -188,36 +173,10 @@ function buildScene(W, H, dpr) {
   b.restore();
 
   b.drawImage(ink, 0, 0);
+  drawCables(b, { W, H, paper, dpr, layer: "front" });
 
-  // ---- Data smear: pixel columns that run out of the letters ----
-  const inkData = k.getImageData(0, 0, W, H).data;
-  const col = Math.max(2, Math.round(3 * dpr));
-  const textLeft = textX - m.width / 2;
-  const letterW = m.width / WORD.length;
-  const heavy = new Set([1, 3]); // R and C bleed the most
-  const drips = [];
   const r2 = seeded(42);
-  for (let x = Math.floor(textLeft); x < textLeft + m.width; x += col) {
-    // lowest inked pixel in this column
-    let yb = -1;
-    for (let y = Math.min(H - 1, Math.floor(baseline + descent + 2)); y > baseline - capH; y--) {
-      if (inkData[(y * W + x) * 4 + 3] > 120) { yb = y; break; }
-    }
-    if (yb < 0 || yb < baseline - capH * 0.12) continue;
-    const letter = Math.min(WORD.length - 1, Math.floor((x - textLeft) / letterW));
-    const density = heavy.has(letter) ? 0.8 : 0.22;
-    if (r2() > density) continue;
-    const room = H - yb;
-    const len = room * Math.pow(r2(), heavy.has(letter) ? 1.3 : 2.4) * 0.95;
-    const bands = [];
-    let acc = 0;
-    while (acc < len) {
-      const h = between(r2, 4, 34) * dpr;
-      bands.push({ h, c: acc === 0 ? INK : pick(r2, SMEAR) });
-      acc += h;
-    }
-    drips.push({ x: x + Math.round(between(r2, -1, 1)) * (r2() < 0.15 ? col : 0), y: yb - capH * 0.04, len, bands, speed: between(r2, 0.6, 1) });
-  }
+  const textLeft = textX - m.width / 2;
 
   // A few displaced slices of the letters, like a corrupted scanline.
   const slices = [];
@@ -228,17 +187,15 @@ function buildScene(W, H, dpr) {
     slices.push({ sx, sw, sy, h: between(r2, 5, 14) * dpr, dx: (r2() < 0.5 ? -1 : 1) * between(r2, 10, 26) * dpr, tint: i === 1 ? "#8fd3ff" : "#ff5a1f" });
   }
 
-  return { base, ink, drips, slices, col, W, H };
+  return { base, ink, slices, W, H };
 }
 
-function drawFrame(ctx, scene, t, pointerX) {
-  const { base, ink, drips, slices, col, W, H } = scene;
+function drawFrame(ctx, scene, t) {
+  const { base, ink, slices, W, H } = scene;
   ctx.clearRect(0, 0, W, H);
   ctx.drawImage(base, 0, 0);
-
-  // glitch slices
+  // corrupted scanlines: strips of the word shifted sideways
   for (const s of slices) {
-    // cut a strip of the word, cover the hole with paper, and shift the strip sideways
     ctx.fillStyle = PAPER;
     ctx.fillRect(s.sx, s.sy, s.sw, s.h);
     ctx.drawImage(ink, s.sx, s.sy, s.sw, s.h, s.sx + s.dx * t, s.sy, s.sw, s.h);
@@ -246,22 +203,6 @@ function drawFrame(ctx, scene, t, pointerX) {
     ctx.globalAlpha = 0.9 * t;
     ctx.fillRect(s.sx + s.dx * t + (s.dx > 0 ? s.sw : -6 * (s.h / 6)), s.sy, 6 * (s.h / 6), s.h);
     ctx.globalAlpha = 1;
-  }
-
-  for (const d of drips) {
-    const reach = d.len * Math.min(1, t * (0.6 + d.speed * 0.6));
-    let y = d.y;
-    const end = d.y + reach;
-    // drips lean very slightly toward the pointer (0 when there is none)
-    const lean = pointerX == null ? 0 : (pointerX - d.x) / W;
-    for (const band of d.bands) {
-      if (y >= end) break;
-      const h = Math.min(band.h, end - y);
-      const progress = (y - d.y) / Math.max(1, d.len);
-      ctx.fillStyle = band.c;
-      ctx.fillRect(Math.round(d.x + lean * progress * 22), Math.round(y), col, Math.ceil(h));
-      y += band.h;
-    }
   }
 }
 
@@ -277,8 +218,6 @@ export default function TracePoster() {
     let scene = null;
     let raf = 0;
     let start = 0;
-    let pointerX = null;
-    let targetX = null;
     let cancelled = false;
 
     const render = (now) => {
@@ -286,16 +225,14 @@ export default function TracePoster() {
       if (!start) start = now;
       const t = reduce ? 1 : Math.min(1, (now - start) / 1600);
       const eased = 1 - Math.pow(1 - t, 3);
-      if (targetX != null) pointerX = pointerX == null ? targetX : pointerX + (targetX - pointerX) * 0.08;
-      drawFrame(ctx, scene, eased, reduce ? null : pointerX);
-      const settling = targetX != null && pointerX != null && Math.abs(targetX - pointerX) > 0.5;
-      if (t < 1 || settling) raf = requestAnimationFrame(render);
+      drawFrame(ctx, scene, eased);
+      if (t < 1) raf = requestAnimationFrame(render);
     };
 
     const build = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = wrap.clientWidth;
-      const h = Math.round(w < 700 ? w * 1.05 : Math.min(w * 0.52, window.innerHeight * 0.64));
+      const h = Math.round(w < 700 ? w * 1.15 : Math.min(w * 0.6, window.innerHeight * 0.8));
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       canvas.style.height = `${h}px`;
@@ -316,21 +253,11 @@ export default function TracePoster() {
     });
     ro.observe(wrap);
 
-    const onMove = (e) => {
-      if (reduce || !scene) return;
-      const r = canvas.getBoundingClientRect();
-      targetX = ((e.clientX - r.left) / r.width) * scene.W;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(render);
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-
     return () => {
       cancelled = true;
       cancelAnimationFrame(raf);
       ro.disconnect();
       clearTimeout(resizeTimer);
-      window.removeEventListener("pointermove", onMove);
     };
   }, []);
 

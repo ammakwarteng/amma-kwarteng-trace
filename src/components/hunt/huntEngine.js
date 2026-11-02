@@ -13,15 +13,16 @@
   reports status and the quarantine count through callbacks, only on change.
 */
 
+// Black and white only. "signal" is the locked / alert state: pure white, drawn heavier.
 const C = {
-  chalk: "#ffffff",
-  dim: "rgba(255,255,255,0.72)",
-  signal: "#ff5a1f",
-  sky: "#9ef0ff",
-  ink: "#0b0b0b",
+  chalk: "#d9d9d9",
+  dim: "rgba(255,255,255,0.6)",
+  signal: "#ffffff",
+  sky: "#9a9a9a",
+  ink: "#3a3a3a",
   paper: "#ffffff",
-  wall: "#1f3cf0",
-  grey: "#0e1a6b",
+  wall: "#0a0a0a",
+  grey: "#6b6b6b",
 };
 const MONO = '500 11px "JetBrains Mono", ui-monospace, monospace';
 const TRACE_MAX = 70;
@@ -37,7 +38,7 @@ const len = (x, y) => Math.hypot(x, y) || 1e-6;
 
 function pickColor() {
   const r = Math.random();
-  return r < 0.38 ? C.ink : r < 0.62 ? C.signal : r < 0.8 ? C.paper : r < 0.95 ? C.sky : C.grey;
+  return r < 0.3 ? C.paper : r < 0.55 ? "#bdbdbd" : r < 0.75 ? C.grey : r < 0.92 ? C.ink : "#1c1c1c";
 }
 
 export function createHunt({ canvas, surface, getBounds, onStatus, onCount, reducedMotion }) {
@@ -250,7 +251,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
   function drawGhosts() {
     for (const g of ghosts) {
       ctx.globalAlpha = clamp(g.life / g.max, 0, 1) * 0.7;
-      ctx.fillStyle = g.c === C.ink ? "#0b1340" : g.c;
+      ctx.fillStyle = g.c;
       ctx.fillRect(Math.round(g.x), Math.round(g.y), Math.ceil(g.w * 0.6), Math.ceil(g.h * 0.6));
     }
     ctx.globalAlpha = 1;
@@ -287,7 +288,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
   function drawTrace() {
     if (!edges.length && !nodes.length) return;
     ctx.save();
-    ctx.strokeStyle = "rgba(255,255,255,0.55)";
+    ctx.strokeStyle = "rgba(255,255,255,0.45)";
     ctx.lineWidth = 1;
     ctx.beginPath();
     for (const [a, b] of edges) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); }
@@ -346,8 +347,8 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     ctx.save();
     ctx.translate(x, y);
     ctx.lineCap = "square";
-    reticle("rgba(8,20,110,0.35)", 2.4, 0.9); // soft outline so it reads over white type
-    reticle(col, 0, 1);
+    reticle("rgba(0,0,0,0.6)", 2.4, 0.9); // dark outline so it reads over the white word
+    reticle(col, lock > 0.55 ? 0.8 : 0, 1);
     ctx.restore();
     ctx.globalAlpha = 1;
 
@@ -360,7 +361,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
       : phase === "detect" ? "DETECTED" : phase === "quarantine" ? "ISOLATING" : "SCANNING";
     const sub = phase === "hunt" ? `DIST ${String(d).padStart(4, "0")}PX` : mal.sig.toUpperCase();
     const bw = Math.max(ctx.measureText(label).width, ctx.measureText(sub).width) + 12;
-    ctx.fillStyle = "rgba(10,24,140,0.55)";
+    ctx.fillStyle = "rgba(10,10,10,0.75)";
     ctx.fillRect(right ? tx - 6 : tx - bw + 6, ty - 4, bw, 34);
     ctx.fillStyle = col; ctx.fillText(label, tx, ty);
     ctx.fillStyle = C.dim;
@@ -393,8 +394,8 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const tw = ctx.measureText(text).width + 14;
     const lx = clamp(x - tw / 2, 8, W - tw - 8), ly = y + 48 * S;
     ctx.globalAlpha = fade;
-    ctx.fillStyle = C.signal; ctx.fillRect(lx, ly, tw, 20);
-    ctx.fillStyle = "#ffffff"; ctx.fillText(text, lx + 7, ly + 5);
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(lx, ly, tw, 20);
+    ctx.fillStyle = "#0a0a0a"; ctx.fillText(text, lx + 7, ly + 5);
     ctx.globalAlpha = 1;
   }
 

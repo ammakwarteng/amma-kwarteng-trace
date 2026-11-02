@@ -5,15 +5,18 @@ import "./DoodlePad.css";
   "leave your trace": a small drawing pad in the hero.
   - Draw with a finger or mouse in the site's colours.
   - Undo / redo.
-  - Bin: the doodle crumples into a ball and drops into the bin.
+  - Wipe: a quick sweep clears the pad.
   - Check: pins the doodle to the page as a floating sticker (onPin).
 */
 
 const COLORS = [
   { id: "white", value: "#ffffff", label: "White" },
-  { id: "grey", value: "#8a8a8a", label: "Grey" },
-  { id: "red", value: "#ff2b2b", label: "Red" },
-  { id: "green", value: "#57e389", label: "Green" },
+  { id: "pink", value: "#ff7eb6", label: "Pink" },
+  { id: "orange", value: "#ff9f43", label: "Orange" },
+  { id: "yellow", value: "#ffe066", label: "Yellow" },
+  { id: "green", value: "#5ef0a0", label: "Green" },
+  { id: "blue", value: "#5cc8ff", label: "Blue" },
+  { id: "purple", value: "#b18cff", label: "Purple" },
 ];
 const W = 236, H = 168;
 
@@ -42,13 +45,11 @@ function drawStroke(ctx, s) {
 
 export default function DoodlePad({ onPin, onClose }) {
   const canvasRef = useRef(null);
-  const binRef = useRef(null);
   const wrapRef = useRef(null);
   const [strokes, setStrokes] = useState([]);
   const [redo, setRedo] = useState([]);
   const [color, setColor] = useState(COLORS[0].value);
-  const [crumple, setCrumple] = useState(null); // { src, dx, dy }
-  const [binHit, setBinHit] = useState(false);
+  const [wipe, setWipe] = useState(null); // snapshot being swept away
   const [pinned, setPinned] = useState(false);
   const live = useRef(null);
 
@@ -108,22 +109,17 @@ export default function DoodlePad({ onPin, onClose }) {
     setRedo((r) => r.slice(0, -1));
   };
 
-  // Crumple the doodle into a ball and drop it in the bin.
-  const binIt = () => {
-    if (!strokes.length || crumple) return;
+  // Wipe: the drawing is swept off left to right.
+  const wipeIt = () => {
+    if (!strokes.length || wipe) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) { setStrokes([]); setRedo([]); return; }
-    const c = canvasRef.current.getBoundingClientRect();
-    const b = binRef.current.getBoundingClientRect();
-    setCrumple({
-      src: canvasRef.current.toDataURL("image/png"),
-      dx: b.left + b.width / 2 - (c.left + c.width / 2),
-      dy: b.top + b.height / 2 - (c.top + c.height / 2),
-    });
+    if (!reduce) {
+      setWipe(canvasRef.current.toDataURL("image/png"));
+      setTimeout(() => setWipe(null), 450);
+    }
     setStrokes([]);
     setRedo([]);
-    setTimeout(() => { setBinHit(true); setTimeout(() => setBinHit(false), 450); }, 820);
-    setTimeout(() => setCrumple(null), 1000);
+    setPinned(false);
   };
 
   const pin = () => {
@@ -161,14 +157,12 @@ export default function DoodlePad({ onPin, onClose }) {
           role="img"
           aria-label={empty ? "Empty drawing area" : "Your doodle"}
         />
-        {empty && !crumple && <span className="doodle__placeholder" aria-hidden="true">draw something</span>}
-        {crumple && (
-          <img
-            className="doodle__ball"
-            src={crumple.src}
-            alt=""
-            style={{ "--dx": `${crumple.dx}px`, "--dy": `${crumple.dy}px` }}
-          />
+        {empty && !wipe && <span className="doodle__placeholder" aria-hidden="true">draw something</span>}
+        {wipe && (
+          <>
+            <img className="doodle__wiping" src={wipe} alt="" />
+            <span className="doodle__sweep" aria-hidden="true" />
+          </>
         )}
       </div>
 
@@ -176,8 +170,8 @@ export default function DoodlePad({ onPin, onClose }) {
         <button type="button" className="doodle__tool" onClick={undo} disabled={empty} aria-label="Undo">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5L3.5 8.5 7 12M4 8.5h8a4.5 4.5 0 0 1 0 9H9" /></svg>
         </button>
-        <button type="button" ref={binRef} className={`doodle__tool doodle__bin ${binHit ? "is-hit" : ""}`} onClick={binIt} disabled={empty && !crumple} aria-label="Crumple and bin the doodle">
-          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M8 6V4h4v2M5.5 6l.8 10.5h7.4L14.5 6M8.5 9v5M11.5 9v5" /></svg>
+        <button type="button" className="doodle__tool" onClick={wipeIt} disabled={empty} aria-label="Wipe the pad clean">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.5 4.5l4 4-7 7H5l-1.5-1.5a1.4 1.4 0 0 1 0-2zM7.5 8.5l4 4M8.5 15.5H16" /></svg>
         </button>
         <button type="button" className="doodle__tool" onClick={redoStroke} disabled={!redo.length} aria-label="Redo">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M13 5l3.5 3.5L13 12M16 8.5H8a4.5 4.5 0 0 0 0 9h3" /></svg>

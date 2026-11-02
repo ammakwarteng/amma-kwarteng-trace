@@ -11,7 +11,7 @@ const artifacts = [
   { id: "a1", label: "access card", className: "art--a1" },
   { id: "a2", label: "laptop detail", className: "art--a2" },
   { id: "a3", label: "Coiled blue ethernet cable", className: "art--a3", src: "artifacts/ethernet-cable.webp", width: 486, height: 393 },
-  { id: "a4", label: "usb drive", className: "art--a4" },
+  { id: "a4", label: "Silver USB flash drive with its cap off", className: "art--a4", src: "artifacts/usb-drive.webp", width: 402, height: 203 },
 ];
 
 export default function Hero() {

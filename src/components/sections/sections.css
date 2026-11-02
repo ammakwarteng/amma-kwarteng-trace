@@ -174,3 +174,5 @@
   .cert { width: 230px; min-height: 160px; padding: 14px 16px; }
   .cert__top { font-size: 10px; flex-direction: column; gap: 4px; }
 }
+
+@keyframes live-blink { 50% { opacity: 0.2; } }

@@ -26,18 +26,19 @@ export const links = [
   { label: "github", url: "https://github.com/ammakwarteng" },
 ];
 
-// Professional communities. Shown in the hero now and in full in the
-// communities section (stage 4).
+// Professional communities, shown in the hero.
 export const communities = [
   { name: "Women in CyberSecurity", short: "WiCyS", role: "Member", url: "https://www.wicys.org/" },
 ];
 
+// Sections in the menu and on the page. Set ready: true once a section has
+// real content; sections that are not ready stay hidden everywhere.
 export const navItems = [
-  { id: "about", label: "about" },
-  { id: "portfolio", label: "portfolio" },
-  { id: "projects", label: "projects" },
-  { id: "skills", label: "skills" },
-  { id: "certifications", label: "certifications" },
-  { id: "resume", label: "resume" },
-  { id: "contact", label: "contact" },
-];
+  { id: "about", label: "about", ready: true },
+  { id: "portfolio", label: "portfolio", ready: false },
+  { id: "projects", label: "projects", ready: false },
+  { id: "skills", label: "skills", ready: false },
+  { id: "certifications", label: "certifications", ready: true },
+  { id: "resume", label: "resume", ready: false },
+  { id: "contact", label: "contact", ready: true },
+].filter((item) => item.ready);

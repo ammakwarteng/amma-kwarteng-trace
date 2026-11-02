@@ -1,9 +1,0 @@
-.poster {
-  position: relative;
-  width: 100%;
-}
-.poster__canvas {
-  display: block;
-  width: 100%;
-  /* height is set from the width in TracePoster.jsx */
-}

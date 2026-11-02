@@ -2,18 +2,20 @@
 
 export const owner = {
   name: "Amma Kwarteng",
-  brand: "AMMA KWARTENG",
+  brand: "amma kwarteng",
+  headline: "an evolving archive",
+  subline: "of my projects, technical exploration, skills, and professional journey.",
   tagline: "An evolving archive of my projects, technical exploration, skills, and professional journey.",
   focus: "Cybersecurity · IT · Design",
   timeZone: "America/Toronto",
 };
 
 export const navItems = [
-  { id: "about", label: "About" },
-  { id: "portfolio", label: "Portfolio" },
-  { id: "projects", label: "Projects" },
-  { id: "skills", label: "Skills" },
-  { id: "certifications", label: "Certifications" },
-  { id: "resume", label: "Resume" },
-  { id: "contact", label: "Contact" },
+  { id: "about", label: "about" },
+  { id: "portfolio", label: "portfolio" },
+  { id: "projects", label: "projects" },
+  { id: "skills", label: "skills" },
+  { id: "certifications", label: "certifications" },
+  { id: "resume", label: "resume" },
+  { id: "contact", label: "contact" },
 ];

@@ -7,26 +7,25 @@
   pointer-events: none; /* input is read from the hero, so links and scrolling keep working */
 }
 
+/* Bottom-right: what the hunter is doing, plus the two shortcuts */
 .hunt__readout {
   position: absolute;
-  z-index: 6;
-  top: calc(64px + env(safe-area-inset-top, 0px));
-  right: max(var(--gutter), env(safe-area-inset-right, 0px));
-  display: flex;
-  gap: 18px;
-  color: var(--chalk-dim);
+  z-index: 8;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  font-size: 15px;
+  letter-spacing: -0.03em;
+  color: var(--white-dim);
   pointer-events: none;
 }
-.hunt__status { display: inline-flex; align-items: center; gap: 8px; color: var(--chalk); }
-.hunt__status i {
-  width: 6px;
-  height: 6px;
-  background: var(--chalk-dim);
-  display: inline-block;
-}
-.hunt__status.is-alert { color: var(--signal); }
+.hunt__status { display: inline-flex; align-items: center; gap: 8px; color: var(--white); }
+.hunt__status i { width: 6px; height: 6px; border-radius: 50%; background: var(--white); display: inline-block; }
 .hunt__status.is-alert i { background: var(--signal); }
 
-@media (max-width: 520px) {
-  .hunt__readout { top: calc(62px + env(safe-area-inset-top, 0px)); left: max(var(--gutter), env(safe-area-inset-left, 0px)); right: auto; }
+@media (max-width: 760px) {
+  .hunt__readout { font-size: 13px; left: 16px; right: 16px; justify-items: start; bottom: calc(4vh + env(safe-area-inset-bottom, 0px)); }
+  .hunt__hint { display: none; }
 }

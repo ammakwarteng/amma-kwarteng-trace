@@ -27,11 +27,11 @@ export default function SystemStatus({ className = "" }) {
   return (
     <p className={`status mono ${className}`}>
       <span className="status__dot" aria-hidden="true" />
-      <span>Sys · Secure</span>
+      <span>sys · secure</span>
       {time && (
         <span className="status__time">
           <span className="visually-hidden">Local time in Ontario: </span>
-          ON {time}
+          on {time}
         </span>
       )}
     </p>

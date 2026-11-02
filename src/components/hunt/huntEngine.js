@@ -14,16 +14,17 @@
 */
 
 const C = {
-  chalk: "#ece8e1",
-  dim: "#8f8b85",
+  chalk: "#ffffff",
+  dim: "rgba(255,255,255,0.72)",
   signal: "#ff5a1f",
-  sky: "#8fd3ff",
-  ink: "#141414",
-  paper: "#e9e5de",
-  wall: "#121212",
-  grey: "#5b5752",
+  sky: "#9ef0ff",
+  ink: "#0b0b0b",
+  paper: "#ffffff",
+  wall: "#1f3cf0",
+  grey: "#0e1a6b",
 };
 const MONO = '500 11px "JetBrains Mono", ui-monospace, monospace';
+const TRACE_MAX = 70;
 const SIGNATURES = ["Trojan.Gen.TR4", "Dropper.Win32.k", "PUA.Keylogger.x", "Backdoor.Agent.7", "Worm.Net.Relay", "Spyware.Clip.b"];
 
 // Tuned in the prototype review.
@@ -46,6 +47,8 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
   const hunter = { x: 0, y: 0, vx: 0, vy: 0, lock: 0, spin: 0 };
   const mal = { x: 0, y: 0, vx: 0, vy: 0, seed: Math.random() * 100, evadeT: 0, cool: 0, frags: [], glitchT: 0, scale: 1, sig: SIGNATURES[0] };
   const ghosts = [];
+  const thread = { x: 0 };
+  let nodes = [], edges = [], lastNodeT = 0;
   let phase = "hunt", phaseT = 0, huntT = 0, lockT = 0, count = 0, ghostT = 0, now = 0;
   let status = "";
   let raf = 0, running = false, visible = true, lastTs = 0;
@@ -81,7 +84,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const b = getBounds?.() || {};
     bounds = { top: b.top ?? 90, bottom: b.bottom ?? H - 120, left: 40, right: W - 40 };
     if (mal.frags.length === 0) {
-      hunter.x = W * 0.12; hunter.y = bounds.bottom - 20;
+      hunter.x = W * 0.42; hunter.y = bounds.top + 60; thread.x = hunter.x;
       spawn();
     } else {
       mal.x = clamp(mal.x, bounds.left, bounds.right);
@@ -146,6 +149,9 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     hunter.x += hunter.vx * dt; hunter.y += hunter.vy * dt;
     hunter.spin += dt * (phase === "hunt" ? 0.6 : 3);
 
+    thread.x = lerp(thread.x || hunter.x, hunter.x, 1 - Math.pow(0.04, dt));
+    recordTrace();
+
     const dx = mal.x - hunter.x, dy = mal.y - hunter.y, d = len(dx, dy);
     hunter.lock = lerp(hunter.lock, phase !== "hunt" && phase !== "respawn" ? 1 : clamp(1 - (d - 30) / 120, 0, 1), 1 - Math.pow(0.001, dt));
 
@@ -198,6 +204,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
       else lockT = Math.max(0, lockT - dt * 2);
       if (lockT > 0.22) {
         lockT = 0; huntT = 0; phase = "detect"; phaseT = 0; mal.vx = mal.vy = 0;
+        addNode(mal.x, mal.y, true);
         setStatus("Threat detected", true);
       }
     } else {
@@ -243,17 +250,71 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
   function drawGhosts() {
     for (const g of ghosts) {
       ctx.globalAlpha = clamp(g.life / g.max, 0, 1) * 0.7;
-      ctx.fillStyle = g.c === C.ink ? "#3a3936" : g.c;
+      ctx.fillStyle = g.c === C.ink ? "#0b1340" : g.c;
       ctx.fillRect(Math.round(g.x), Math.round(g.y), Math.ceil(g.w * 0.6), Math.ceil(g.h * 0.6));
     }
     ctx.globalAlpha = 1;
   }
 
-  function drawTether() {
-    if (!pointer.active || now - pointer.last > 3 || phase !== "hunt") return;
+  // ---------- the trace: a web of thin lines the hunter leaves behind ----------
+  function addNode(x, y, isCatch = false) {
+    const node = { x, y, isCatch };
+    const prev = nodes[nodes.length - 1];
+    if (prev) edges.push([prev, node]);
+    // sometimes tie back to a nearby older node, which builds a web
+    let best = null, bestD = 160 * S;
+    for (let i = 0; i < nodes.length - 2; i++) {
+      const d = len(nodes[i].x - x, nodes[i].y - y);
+      if (d < bestD) { bestD = d; best = nodes[i]; }
+    }
+    if (best && Math.random() < 0.55) edges.push([best, node]);
+    nodes.push(node);
+    if (nodes.length > TRACE_MAX) {
+      const gone = nodes.shift();
+      edges = edges.filter(([a, b]) => a !== gone && b !== gone);
+    }
+  }
+  function recordTrace() {
+    if (phase !== "hunt") return;
+    const last = nodes[nodes.length - 1];
+    if (now - lastNodeT < 0.22) return;
+    if (last && len(last.x - hunter.x, last.y - hunter.y) < 70 * S) return;
+    lastNodeT = now;
+    addNode(hunter.x, hunter.y);
+  }
+  function clearTrace() { nodes = []; edges = []; }
+
+  function drawTrace() {
+    if (!edges.length && !nodes.length) return;
     ctx.save();
-    ctx.strokeStyle = C.chalk; ctx.globalAlpha = 0.28; ctx.setLineDash([2, 5]); ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(pointer.x, pointer.y); ctx.lineTo(hunter.x, hunter.y); ctx.stroke();
+    ctx.strokeStyle = "rgba(255,255,255,0.55)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (const [a, b] of edges) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); }
+    ctx.stroke();
+    for (const n of nodes) {
+      if (n.isCatch) {
+        ctx.fillStyle = C.signal;
+        ctx.fillRect(n.x - 3.5, n.y - 3.5, 7, 7);
+      } else {
+        ctx.fillStyle = C.wall;
+        ctx.strokeStyle = "rgba(255,255,255,0.8)";
+        ctx.beginPath(); ctx.arc(n.x, n.y, 2.6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  // The hunter hangs from a thread anchored at the top of the hero.
+  function drawThread() {
+    const r = lerp(34, 20, hunter.lock) * Math.sqrt(S);
+    ctx.save();
+    ctx.strokeStyle = "rgba(255,255,255,0.85)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(thread.x, 0);
+    ctx.quadraticCurveTo((thread.x + hunter.x) / 2 + (hunter.vx * 0.02), hunter.y * 0.5, hunter.x, hunter.y - r - 10);
+    ctx.stroke();
     ctx.restore();
   }
 
@@ -285,7 +346,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     ctx.save();
     ctx.translate(x, y);
     ctx.lineCap = "square";
-    reticle("rgba(18,18,18,0.55)", 2.4, 0.9); // dark outline so it reads on the light poster
+    reticle("rgba(8,20,110,0.35)", 2.4, 0.9); // soft outline so it reads over white type
     reticle(col, 0, 1);
     ctx.restore();
     ctx.globalAlpha = 1;
@@ -299,7 +360,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
       : phase === "detect" ? "DETECTED" : phase === "quarantine" ? "ISOLATING" : "SCANNING";
     const sub = phase === "hunt" ? `DIST ${String(d).padStart(4, "0")}PX` : mal.sig.toUpperCase();
     const bw = Math.max(ctx.measureText(label).width, ctx.measureText(sub).width) + 12;
-    ctx.fillStyle = "rgba(18,18,18,0.72)";
+    ctx.fillStyle = "rgba(10,24,140,0.55)";
     ctx.fillRect(right ? tx - 6 : tx - bw + 6, ty - 4, bw, 34);
     ctx.fillStyle = col; ctx.fillText(label, tx, ty);
     ctx.fillStyle = C.dim;
@@ -333,14 +394,15 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const lx = clamp(x - tw / 2, 8, W - tw - 8), ly = y + 48 * S;
     ctx.globalAlpha = fade;
     ctx.fillStyle = C.signal; ctx.fillRect(lx, ly, tw, 20);
-    ctx.fillStyle = C.wall; ctx.fillText(text, lx + 7, ly + 5);
+    ctx.fillStyle = "#ffffff"; ctx.fillText(text, lx + 7, ly + 5);
     ctx.globalAlpha = 1;
   }
 
   function draw(animated) {
     ctx.clearRect(0, 0, W, H);
+    drawTrace();
+    drawThread();
     drawGhosts();
-    drawTether();
     drawMalware(animated);
     drawQuarantine();
     drawHunter();
@@ -377,9 +439,25 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     pointer.active = true; pointer.last = now;
   };
   const onLeave = () => { pointer.active = false; };
+  // Double-click: the hunter lunges at the target.
+  const onDouble = () => {
+    if (phase !== "hunt") return;
+    const dx = mal.x - hunter.x, dy = mal.y - hunter.y, d = len(dx, dy);
+    hunter.vx += (dx / d) * 1700 * S; hunter.vy += (dy / d) * 1700 * S;
+  };
+  // Delete / Backspace: clear the trace (ignored while typing in a field).
+  const onKey = (e) => {
+    if (e.key !== "Delete" && e.key !== "Backspace") return;
+    const t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    if (!visible) return;
+    clearTrace();
+  };
   surface.addEventListener("pointermove", onMove, { passive: true });
   surface.addEventListener("pointerdown", onMove, { passive: true });
   surface.addEventListener("pointerleave", onLeave);
+  surface.addEventListener("dblclick", onDouble);
+  document.addEventListener("keydown", onKey);
 
   const io = new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
@@ -402,5 +480,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     surface.removeEventListener("pointermove", onMove);
     surface.removeEventListener("pointerdown", onMove);
     surface.removeEventListener("pointerleave", onLeave);
+    surface.removeEventListener("dblclick", onDouble);
+    document.removeEventListener("keydown", onKey);
   };
 }

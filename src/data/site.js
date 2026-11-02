@@ -10,6 +10,14 @@ export const owner = {
   timeZone: "America/Toronto",
 };
 
+// The study buddy in the hero. Set startDate ("YYYY-MM-DD") to show a day
+// count; set passed: true on exam day and he celebrates.
+export const studyGoal = {
+  label: "itil 4 foundation",
+  startDate: null,
+  passed: false,
+};
+
 export const links = [
   { label: "linkedin", url: "https://www.linkedin.com/in/amma-kwarteng-8b1b98a3" },
   { label: "github", url: "https://github.com/ammakwarteng" },

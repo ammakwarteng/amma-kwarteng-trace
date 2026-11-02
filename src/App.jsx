@@ -6,7 +6,7 @@ import About from "./components/sections/About.jsx";
 import Certifications from "./components/sections/Certifications.jsx";
 import { navItems, links } from "./data/site.js";
 
-// Each nav destination is a hop on the trace. Section content arrives in stage 4.
+// Each nav destination is a hop on the trace. Sections without content yet show "coming soon".
 const sections = navItems.map((item) => ({
   ...item,
   body:
@@ -24,7 +24,7 @@ const sections = navItems.map((item) => ({
         </ul>
       </div>
     ) : (
-      <p className="mono">arrives in stage 4</p>
+      <p className="mono">coming soon</p>
     ),
 }));
 

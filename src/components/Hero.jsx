@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { owner, communities } from "../data/site.js";
+import { owner, communities, links } from "../data/site.js";
 import ArtifactSlot from "./ArtifactSlot.jsx";
 import ThreatHunt from "./hunt/ThreatHunt.jsx";
 import MusicPlayer from "./music/MusicPlayer.jsx";
@@ -39,6 +39,13 @@ export default function Hero() {
             <li key={c.short}>
               <span className="hero__badge">{c.role.toLowerCase()}</span>
               <a href={c.url} target="_blank" rel="noopener noreferrer">{c.name.toLowerCase()} ({c.short.toLowerCase()})</a>
+            </li>
+          ))}
+        </ul>
+        <ul className="hero__links">
+          {links.map((l) => (
+            <li key={l.label}>
+              <a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a>
             </li>
           ))}
         </ul>

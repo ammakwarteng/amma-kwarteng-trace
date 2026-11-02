@@ -10,6 +10,11 @@ export const owner = {
   timeZone: "America/Toronto",
 };
 
+export const links = [
+  { label: "linkedin", url: "https://www.linkedin.com/in/amma-kwarteng-8b1b98a3" },
+  { label: "github", url: "https://github.com/ammakwarteng" },
+];
+
 // Professional communities. Shown in the hero now and in full in the
 // communities section (stage 4).
 export const communities = [

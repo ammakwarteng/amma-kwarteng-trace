@@ -1,7 +1,7 @@
 import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
 import SectionStub from "./components/SectionStub.jsx";
-import { navItems } from "./data/site.js";
+import { navItems, links } from "./data/site.js";
 
 export default function App() {
   return (
@@ -17,7 +17,15 @@ export default function App() {
             index={i + 1}
             title={item.label}
             note="arrives in stage 4"
-          />
+          >
+            {item.id === "contact" && (
+              <ul className="stub__links">
+                {links.map((l) => (
+                  <li key={l.label}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a></li>
+                ))}
+              </ul>
+            )}
+          </SectionStub>
         ))}
       </main>
     </>

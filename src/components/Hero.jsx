@@ -5,14 +5,12 @@ import ThreatHunt from "./hunt/ThreatHunt.jsx";
 import MusicPlayer from "./music/MusicPlayer.jsx";
 import "./Hero.css";
 
-// Photographic artifacts float around the word. Entries with a src show the
-// photo; the rest are labelled placeholders until Amma supplies the photo.
-const artifacts = [
-  { id: "a1", label: "access card", className: "art--a1" },
-  { id: "a2", label: "laptop detail", className: "art--a2" },
-  { id: "a3", label: "Coiled blue ethernet cable", className: "art--a3", src: "artifacts/ethernet-cable.webp", width: 486, height: 393 },
-  { id: "a4", label: "Silver USB flash drive with its cap off", className: "art--a4", src: "artifacts/usb-drive.webp", width: 402, height: 203 },
-];
+// Photographic artifacts that float around the word. Empty for now: add
+// Amma's own photos here later, e.g.
+// { id: "a1", label: "Handwritten password123 sticky note", className: "art--a1",
+//   src: "artifacts/sticky-note.webp", width: 600, height: 600 },
+// Images go in public/artifacts. Positions are in ArtifactSlot.css (art--a1 to art--a4).
+const artifacts = [];
 
 export default function Hero() {
   const heroRef = useRef(null);

@@ -27,14 +27,25 @@
   50% { transform: translateY(-10px); }
 }
 
+/* With a real photo: just the cutout, a soft shadow and a slight tilt */
+.art--photo img {
+  width: 100%;
+  height: auto;
+  transform: rotate(var(--rot, 0deg));
+  filter: drop-shadow(0 26px 30px rgba(0, 0, 0, 0.65)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 /* Positions around the word */
 .art--a1 { width: 11vw; aspect-ratio: 1.58; left: 15%; top: 33%; --rot: -14deg; animation-delay: -2s; }
 .art--a2 { width: 12vw; aspect-ratio: 0.82; right: 9%; top: 36%; --rot: 12deg; animation-delay: -5s; }
-.art--a3 { width: 11vw; aspect-ratio: 0.9;  right: 18%; top: 63%; --rot: -10deg; animation-delay: -7s; }
+.art--a3 { width: 17vw; right: 14%; top: 60%; --rot: -8deg; animation-delay: -7s; }
 .art--a4 { width: 8vw;  aspect-ratio: 1.1;  left: 33%; bottom: -4%; --rot: 6deg; animation-delay: -1s; }
 
 @media (max-width: 760px) {
   .art--a1 { width: 26vw; left: 6%; top: 13%; }
   .art--a2 { width: 26vw; right: 6%; top: 11%; }
-  .art--a3, .art--a4 { display: none; }
+  .art--a3 { width: 34vw; right: 4%; top: 33%; }
+  .art--a4 { display: none; }
 }

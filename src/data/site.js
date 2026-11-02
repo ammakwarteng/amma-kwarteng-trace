@@ -14,7 +14,7 @@ export const owner = {
 // count; set passed: true on exam day and he celebrates.
 export const studyGoal = {
   label: "itil 4 foundation",
-  startDate: null,
+  startDate: "2026-11-02",
   passed: false,
 };
 

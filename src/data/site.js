@@ -10,6 +10,12 @@ export const owner = {
   timeZone: "America/Toronto",
 };
 
+// Professional communities. Shown in the hero now and in full in the
+// communities section (stage 4).
+export const communities = [
+  { name: "Women in CyberSecurity", short: "WiCyS", role: "Member", url: "https://www.wicys.org/" },
+];
+
 export const navItems = [
   { id: "about", label: "about" },
   { id: "portfolio", label: "portfolio" },

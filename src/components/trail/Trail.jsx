@@ -156,6 +156,7 @@ export default function Trail({ sections }) {
                 <span className="trail__icon" aria-hidden="true" />
               </button>
             </h2>
+            <p className="trail__hint mono" aria-hidden="true">{isOpen ? "tap the title to close" : "tap to open"}</p>
             <div className="trail__panel" id={panelId} {...(isOpen ? {} : { inert: "" })}>
               <div className="trail__panel-inner">
                 <div className="trail__body">{s.body}</div>

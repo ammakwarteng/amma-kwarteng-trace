@@ -67,9 +67,7 @@
   30% { transform: translateY(-8px); }
 }
 
+/* Phones: no room for him without crowding the hero, so he only appears on larger screens */
 @media (max-width: 760px) {
-  /* the bottom of a phone screen is full, so he sits under the header */
-  .buddy { top: calc(84px + env(safe-area-inset-top, 0px)); bottom: auto; }
-  .buddy__say { order: 3; border-radius: 10px 2px 10px 10px; }
-  .buddy__sprite { width: 54px; height: 42px; }
+  .buddy { display: none; }
 }

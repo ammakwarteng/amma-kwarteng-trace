@@ -16,6 +16,35 @@ export default function Trail({ sections }) {
   const headRef = useRef(null);
   const [geo, setGeo] = useState({ d: "", w: 0, h: 0, nodes: [] });
   const [reached, setReached] = useState(-1);
+  // Every section starts closed; the visitor opens what they want to read.
+  const [open, setOpen] = useState(() => new Set());
+  const toggle = (id) =>
+    setOpen((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+
+  // Jumping to a section (menu links, scroll arrow, a shared #link) opens it.
+  useEffect(() => {
+    const openFromHash = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      if (sections.some((s) => s.id === id)) setOpen((prev) => new Set(prev).add(id));
+    };
+    const onClick = (e) => {
+      const a = e.target.closest?.('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute("href").slice(1);
+      if (sections.some((s) => s.id === id)) setOpen((prev) => new Set(prev).add(id));
+    };
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    document.addEventListener("click", onClick);
+    return () => {
+      window.removeEventListener("hashchange", openFromHash);
+      document.removeEventListener("click", onClick);
+    };
+  }, [sections]);
 
   // Build the route from the node positions; rebuild when the layout changes.
   useEffect(() => {
@@ -31,7 +60,7 @@ export default function Trail({ sections }) {
       let d = `M ${x} ${y}`;
       pts.forEach((p) => {
         // orthogonal hop: down, across, down, with small chamfered corners
-        const midY = p.y - Math.min(120, (p.y - y) * 0.45);
+        const midY = p.y - Math.min(64, (p.y - y) * 0.3);
         const c = 14 * Math.sign(p.x - x || 1);
         d += ` L ${x} ${midY - 14} L ${x + c} ${midY} L ${p.x - c} ${midY} L ${p.x} ${midY + 14} L ${p.x} ${p.y}`;
         x = p.x; y = p.y;
@@ -100,21 +129,41 @@ export default function Trail({ sections }) {
         </g>
       </svg>
 
-      {sections.map((s, i) => (
-        <section
-          key={s.id}
-          id={s.id}
-          className={`trail__sec ${i % 2 ? "is-right" : ""} ${i <= reached ? "is-reached" : ""}`}
-          aria-labelledby={`${s.id}-title`}
-        >
-          <div className="trail__head-row">
-            <span className="trail__node" data-node aria-hidden="true" />
-            <span className="trail__hop mono">hop {String(i + 1).padStart(2, "0")} · {s.id}</span>
-          </div>
-          <DecryptText as="h2" id={`${s.id}-title`} className="trail__title" text={s.label} />
-          <div className="trail__body">{s.body}</div>
-        </section>
-      ))}
+      {sections.map((s, i) => {
+        const isOpen = open.has(s.id);
+        const panelId = `${s.id}-panel`;
+        return (
+          <section
+            key={s.id}
+            id={s.id}
+            className={`trail__sec ${i % 2 ? "is-right" : ""} ${i <= reached ? "is-reached" : ""} ${isOpen ? "is-open" : ""}`}
+            aria-labelledby={`${s.id}-title`}
+          >
+            <div className="trail__head-row">
+              <span className="trail__node" data-node aria-hidden="true" />
+              <span className="trail__hop mono">hop {String(i + 1).padStart(2, "0")} · {s.id}</span>
+            </div>
+            <h2 className="trail__h" id={`${s.id}-title`}>
+              <button
+                type="button"
+                className="trail__toggle"
+                aria-expanded={isOpen}
+                aria-controls={panelId}
+                aria-label={s.label}
+                onClick={() => toggle(s.id)}
+              >
+                <DecryptText className="trail__title" text={s.label} />
+                <span className="trail__icon" aria-hidden="true" />
+              </button>
+            </h2>
+            <div className="trail__panel" id={panelId} {...(isOpen ? {} : { inert: "" })}>
+              <div className="trail__panel-inner">
+                <div className="trail__body">{s.body}</div>
+              </div>
+            </div>
+          </section>
+        );
+      })}
     </div>
   );
 }

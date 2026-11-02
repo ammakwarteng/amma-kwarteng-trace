@@ -76,3 +76,8 @@
   .hero { padding-top: calc(72px + env(safe-area-inset-top, 0px)); }
   .hero__scroll span:first-child { display: none; }
 }
+
+/* The hero is the hunting ground: a precise crosshair cursor, text above the canvas. */
+.hero { cursor: crosshair; }
+.hero a, .hero button { cursor: pointer; }
+.hero__foot { z-index: 7; }

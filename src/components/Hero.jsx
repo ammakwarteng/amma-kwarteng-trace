@@ -1,10 +1,12 @@
+import { useRef } from "react";
 import { owner } from "../data/site.js";
 import Wall from "./Wall.jsx";
 import TracePoster from "./TracePoster.jsx";
 import ArtifactSlot from "./ArtifactSlot.jsx";
+import ThreatHunt from "./hunt/ThreatHunt.jsx";
 import "./Hero.css";
 
-// Where the photographic artifacts will sit around the poster (Stage 2).
+// Where the photographic artifacts will sit around the poster.
 // Each slot is a labelled placeholder until Amma supplies the photo.
 const slots = [
   { id: "a1", label: "Access card", className: "slot--a1" },
@@ -14,8 +16,11 @@ const slots = [
 ];
 
 export default function Hero() {
+  const heroRef = useRef(null);
+  const footRef = useRef(null);
+
   return (
-    <section className="hero" id="top" aria-labelledby="hero-title">
+    <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title">
       <Wall />
 
       <div className="hero__stage">
@@ -26,7 +31,9 @@ export default function Hero() {
         ))}
       </div>
 
-      <div className="hero__foot">
+      <ThreatHunt surfaceRef={heroRef} footRef={footRef} />
+
+      <div className="hero__foot" ref={footRef}>
         <div className="hero__intro">
           <p className="mono hero__kicker">© 2026 {owner.brand} — {owner.focus}</p>
           <p className="hero__lede">{owner.tagline}</p>

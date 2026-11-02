@@ -2,7 +2,7 @@
 .about { display: grid; gap: 64px; width: 100%; }
 .about__text { display: grid; gap: 18px; max-width: 40rem; }
 .about__text p { margin: 0; font-size: clamp(18px, 1.6vw, 24px); line-height: 1.4; letter-spacing: -0.03em; color: var(--white); }
-.about__text p + p { color: var(--white-dim); }
+.about__text p + p { color: var(--white); }
 
 /* roadmap: four phases joined by a thin line */
 .road__label { margin: 0 0 18px; color: var(--white-faint); }

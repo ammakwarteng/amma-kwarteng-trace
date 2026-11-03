@@ -4,7 +4,6 @@ import { owner, communities, links } from "../data/site.js";
 import ArtifactSlot from "./ArtifactSlot.jsx";
 import ThreatHunt from "./hunt/ThreatHunt.jsx";
 import DoodlePad from "./doodle/DoodlePad.jsx";
-import StudyBuddy from "./buddy/StudyBuddy.jsx";
 import EmailLink from "./EmailLink.jsx";
 import "./Hero.css";
 
@@ -106,7 +105,6 @@ export default function Hero() {
       </div>
 
       <ThreatHunt surfaceRef={heroRef} />
-      <StudyBuddy />
 
       <a className="hero__scroll" href="#about" aria-label="Scroll to the portfolio">
         <span aria-hidden="true" />

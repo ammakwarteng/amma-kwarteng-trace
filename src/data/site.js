@@ -10,14 +10,6 @@ export const owner = {
   timeZone: "America/Toronto",
 };
 
-// The study buddy in the hero. Set startDate ("YYYY-MM-DD") to show a day
-// count; set passed: true on exam day and he celebrates.
-export const studyGoal = {
-  label: "itil 4 foundation",
-  startDate: "2026-11-02",
-  passed: false,
-};
-
 // Split so the full address is never written out in the built page.
 export const email = { user: "ammaafram.kwarteng", domain: "gmail.com" };
 

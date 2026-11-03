@@ -18,7 +18,7 @@
   top: 50%;
   transform: translate(-46%, -48%);
   margin: 0;
-  font-size: clamp(120px, 17.5vw, 340px);
+  font-size: clamp(120px, min(17.5vw, 30vh), 340px); /* height cap keeps it off the intro on short screens */
   font-weight: 400;
   letter-spacing: -0.075em;
   line-height: 0.8;

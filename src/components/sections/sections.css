@@ -111,7 +111,7 @@
 .certs__row.is-studying .certs__status { color: var(--white); }
 .certs__row.is-studying .certs__status::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: var(--white); vertical-align: middle; animation: live-blink 1.4s steps(2) infinite; }
 .certs__row.is-next .certs__status { color: var(--white-dim); }
-.certs__row.is-earned .certs__status { color: var(--secure); }
+.certs__row.is-earned .certs__status { color: var(--white); }
 .certs__row.is-planned .certs__name { color: var(--white-dim); }
 
 @media (max-width: 900px) {
@@ -166,7 +166,9 @@
 .cert.is-studying .cert__status::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--white); vertical-align: middle; animation: live-blink 1.4s steps(2) infinite; }
 .cert.is-next .cert__status { color: var(--white-dim); }
 .cert.is-earned { border-color: rgba(87, 227, 137, 0.6); }
-.cert.is-earned .cert__code, .cert.is-earned .cert__status { color: var(--secure); }
+/* earned: solid white (green is reserved for quarantined malware) */
+.cert.is-earned { border-color: var(--white); }
+.cert.is-earned .cert__code, .cert.is-earned .cert__name, .cert.is-earned .cert__status { color: var(--white); }
 
 .marquee__hint { margin: 0; color: rgba(255, 255, 255, 0.35); }
 @media (hover: none) { .marquee__hint { visibility: hidden; } }

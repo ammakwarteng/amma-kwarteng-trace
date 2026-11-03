@@ -31,6 +31,6 @@ export const navItems = [
   { id: "projects", label: "projects", ready: false },
   { id: "skills", label: "skills", ready: false },
   { id: "certifications", label: "certifications", ready: true },
-  { id: "resume", label: "resume", ready: false },
+  { id: "resume", label: "resume", ready: true },
   { id: "contact", label: "contact", ready: true },
 ].filter((item) => item.ready);

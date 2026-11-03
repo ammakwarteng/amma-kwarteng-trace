@@ -48,10 +48,10 @@ function pickColor() {
 
 export function createHunt({ canvas, surface, getBounds, onStatus, onCount, reducedMotion }) {
   const ctx = canvas.getContext("2d");
-  let W = 0, H = 0, S = 1, bounds = { top: 80, bottom: 0, left: 0, right: 0 };
-  const pointer = { x: 0, y: 0, active: false, last: -1e9 };
+  let W = 0, H = 0, S = 1, R = 1, bounds = { top: 80, bottom: 0, left: 0, right: 0 };
+  const pointer = { x: 0, y: 0, active: false, last: -1e9, speed: 0, t: 0 };
   const hunter = { x: 0, y: 0, vx: 0, vy: 0, lock: 0, spin: 0 };
-  const mal = { x: 0, y: 0, vx: 0, vy: 0, seed: Math.random() * 100, evadeT: 0, cool: 0, frags: [], glitchT: 0, scale: 1, sig: SIGNATURES[0] };
+  const mal = { x: 0, y: 0, vx: 0, vy: 0, seed: Math.random() * 100, evadeT: 0, cool: 0, dartT: 0, frags: [], glitchT: 0, scale: 1, sig: SIGNATURES[0] };
   const ghosts = [];
   const thread = { x: 0 };
   let nodes = [], edges = [], lastNodeT = 0;
@@ -88,6 +88,9 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     S = clamp(W / 820, 1, 1.75);
+    // R scales the malware's speed and reaction range down on small screens,
+    // so a phone-sized hero is still catchable. Laptops and up stay at 1.
+    R = clamp(W / 760, 0.55, 1);
     const b = getBounds?.() || {};
     bounds = { top: b.top ?? 90, bottom: b.bottom ?? H - 120, left: 40, right: W - 40 };
     if (mal.frags.length === 0) {
@@ -102,9 +105,11 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
 
   function spawn() {
     let best = null, bestD = -1;
-    for (let i = 0; i < 8; i++) {
+    const aimX = pointer.active ? pointer.x : hunter.x, aimY = pointer.active ? pointer.y : hunter.y;
+    for (let i = 0; i < 10; i++) {
       const x = rnd(W * 0.15, W * 0.85), y = rnd(bounds.top + 20, bounds.bottom - 20);
-      const d = len(x - hunter.x, y - hunter.y);
+      // reappear well clear of both the reticle and the cursor
+      const d = Math.min(len(x - hunter.x, y - hunter.y), len(x - aimX, y - aimY));
       if (d > bestD) { bestD = d; best = { x, y }; }
     }
     Object.assign(mal, best);
@@ -141,10 +146,14 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
         ax = mal.x + Math.cos(now * 0.8) * orbit; ay = mal.y + Math.sin(now * 1.05) * orbit * 0.7;
         k = huntT > 11 ? 14 : 4; c = huntT > 11 ? 6 : 3.6;
       } else {
+        // The pull toward the target fades while the visitor moves fast, so
+        // quick, deliberate moves are theirs; slow, careful aim gets help.
         const dc = len(pointer.x - mal.x, pointer.y - mal.y);
-        const influence = clamp(1 - dc / 300, 0, 1) * TUNE.pull;
+        const steady = clamp(1 - pointer.speed / 1400, 0.25, 1);
+        const influence = clamp(1 - dc / 300, 0, 1) * TUNE.pull * steady;
         ax = lerp(pointer.x, mal.x, influence); ay = lerp(pointer.y, mal.y, influence);
-        k = 34 * TUNE.hunterResponse ** 2; c = 10 * TUNE.hunterResponse;
+        // close to critically damped: settles on the cursor without wobbling
+        k = 34 * TUNE.hunterResponse ** 2; c = 11.4 * TUNE.hunterResponse;
       }
     } else {
       ax = mal.x; ay = mal.y; k = 90; c = 18;
@@ -162,28 +171,62 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const dx = mal.x - hunter.x, dy = mal.y - hunter.y, d = len(dx, dy);
     hunter.lock = lerp(hunter.lock, phase !== "hunt" && phase !== "respawn" ? 1 : clamp(1 - (d - 30) / 120, 0, 1), 1 - Math.pow(0.001, dt));
 
+    pointer.speed *= Math.pow(0.02, dt); // decays when the pointer rests
+
     if (phase === "hunt") {
       huntT += dt;
       // ---- malware ----
       const tgt = wanderTarget(now * TUNE.malwareSpeed);
-      const speed = 150 * TUNE.malwareSpeed;
+      const base = 150 * TUNE.malwareSpeed * R;
+
+      // Flee from where the reticle is heading, not just where it is.
+      const look = 0.18;
+      const px = hunter.x + clamp(hunter.vx * look, -160, 160), py = hunter.y + clamp(hunter.vy * look, -160, 160);
+      const fdx = mal.x - px, fdy = mal.y - py, fd = len(fdx, fdy);
+      const reach = 220 * R;
+      const fear = Math.max(clamp(1 - fd / reach, 0, 1), clamp(1 - d / reach, 0, 1));
+
+      // Rhythm: a slow "mood" alternates cruising, brief hesitations and
+      // quicker stretches. Under threat it never hesitates.
+      const mood = 0.5 + 0.5 * Math.sin(now * 0.9 + mal.seed) * Math.sin(now * 0.37 + mal.seed * 2.3);
+      const speed = base * Math.max(lerp(0.3, 1.35, mood * mood * (3 - 2 * mood)), fear > 0.15 ? 1 : 0);
+
       let desX = tgt.x - mal.x, desY = tgt.y - mal.y;
       const dl = len(desX, desY);
       desX = (desX / dl) * speed; desY = (desY / dl) * speed;
-      const fear = clamp(1 - d / 220, 0, 1);
-      desX += (-dx / d) * fear * speed * 1.1; desY += (-dy / d) * fear * speed * 1.1;
+      desX += (fdx / fd) * fear * base * 1.15; desY += (fdy / fd) * fear * base * 1.15;
+
+      // Occasional small dart while cruising, so it never drifts at one pace.
+      mal.dartT -= dt;
+      if (fear < 0.1 && mal.dartT <= 0 && Math.random() < dt * 0.5) {
+        mal.vx += (desX / len(desX, desY)) * base * 1.4; mal.vy += (desY / len(desX, desY)) * base * 1.4;
+        mal.dartT = 1.2;
+      }
+
       const m = 60;
+      // Slide along a wall instead of being pinned into it (no corner traps).
+      const cx = (bounds.left + bounds.right) / 2, cy = (bounds.top + bounds.bottom) / 2;
+      const slide = (into, along, toward) => { const push = Math.abs(into); return [into * 0.15, along + Math.sign(along || toward) * push * 0.9]; };
+      if ((mal.x < bounds.left + m && desX < 0) || (mal.x > bounds.right - m && desX > 0)) [desX, desY] = slide(desX, desY, cy - mal.y);
+      if ((mal.y < bounds.top + m && desY < 0) || (mal.y > bounds.bottom - m && desY > 0)) [desY, desX] = slide(desY, desX, cx - mal.x);
       if (mal.x < bounds.left + m) desX += (bounds.left + m - mal.x) * 4;
       if (mal.x > bounds.right - m) desX -= (mal.x - (bounds.right - m)) * 4;
       if (mal.y < bounds.top + m) desY += (bounds.top + m - mal.y) * 4;
       if (mal.y > bounds.bottom - m) desY -= (mal.y - (bounds.bottom - m)) * 4;
 
       mal.cool -= dt;
-      const near = d < 120 + 30 * S;
+      const near = d < (120 + 30 * S) * R;
       if (near && mal.cool <= 0 && mal.evadeT <= 0 && Math.random() < dt * TUNE.evasion * 3.2) {
-        const side = Math.random() < 0.5 ? 1 : -1;
-        const ex = -dx / d + (-dy / d) * side * 0.9, ey = -dy / d + (dx / d) * side * 0.9, el = len(ex, ey);
-        mal.vx = (ex / el) * speed * 5.2; mal.vy = (ey / el) * speed * 5.2;
+        // Dash to whichever side has more room, so it never dives into a wall.
+        const dash = (side) => { const ex = dx / d + (-dy / d) * side * 0.9, ey = dy / d + (dx / d) * side * 0.9, el = len(ex, ey); return [ex / el, ey / el]; };
+        const room = ([ux, uy]) => {
+          const x = mal.x + ux * 90, y = mal.y + uy * 90;
+          return Math.min(x - bounds.left, bounds.right - x, y - bounds.top, bounds.bottom - y);
+        };
+        const a = dash(1), b = dash(-1);
+        const pickA = Math.abs(room(a) - room(b)) < 20 ? Math.random() < 0.5 : room(a) > room(b);
+        const [ex, ey] = pickA ? a : b;
+        mal.vx = ex * base * 5.2; mal.vy = ey * base * 5.2;
         mal.evadeT = 0.32; mal.cool = 1.6; mal.glitchT = 0.3;
         setStatus("Evasion detected", "threat");
         for (let i = 0; i < 10; i++) addGhost(true);
@@ -239,13 +282,18 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const q = phase === "quarantine" ? clamp(phaseT / 0.5, 0, 1) : 0;
     const fade = phase === "quarantine" ? 1 - clamp((phaseT - 0.6) / 0.5, 0, 1) : 1;
     const mvx = mal.vx * 0.012, mvy = mal.vy * 0.012;
-    const split = animated ? (mal.glitchT > 0 ? 5 : 1.6) : 1.6;
-    const passes = [[-split, C.threatDark, 0.6], [split, C.threat, 0.45], [0, null, 1]];
+    // brief, restrained glitch at the moment of detection (about three frames)
+    const hit = animated && phase === "detect" && phaseT < 0.06;
+    const split = animated ? (hit ? 6 : mal.glitchT > 0 ? 5 : 1.6) : 1.6;
+    const passes = hit
+      ? [[-split, C.threatDark, 0.6], [split, C.threat, 0.5], [-split * 0.5, "#ffffff", 0.3], [0, null, 1]]
+      : [[-split, C.threatDark, 0.6], [split, C.threat, 0.45], [0, null, 1]];
     for (const [ox, tint, alpha] of passes) {
       ctx.globalAlpha = alpha * fade;
       mal.frags.forEach((f, i) => {
         const smear = (i % 5) / 5;
-        const fx = lerp(f.dx - mvx * smear * 6, f.qx, q) * s, fy = lerp(f.dy - mvy * smear * 6, f.qy, q) * s;
+        const slice = hit && i % 4 === 0 ? 3 : 0; // a few fragments jump sideways
+        const fx = lerp(f.dx - mvx * smear * 6, f.qx, q) * s + slice, fy = lerp(f.dy - mvy * smear * 6, f.qy, q) * s;
         const w = lerp(f.w, 3, q) * s, h = lerp(f.h, 3, q) * s;
         ctx.fillStyle = tint || (q > 0.6 ? C.secure : f.c);
         ctx.fillRect(Math.round(mal.x + fx + ox - w / 2), Math.round(mal.y + fy - h / 2), Math.ceil(w), Math.ceil(h));
@@ -442,12 +490,25 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
   function stop() { running = false; cancelAnimationFrame(raf); }
 
   // ---------- input (listened on the hero, so the canvas never blocks clicks or scrolling) ----------
-  const onMove = (e) => {
+  // Aim from any pointer. Speed is tracked so the reticle's assist can ease
+  // off during fast, deliberate moves.
+  const aim = (clientX, clientY) => {
     const r = canvas.getBoundingClientRect();
-    pointer.x = e.clientX - r.left; pointer.y = e.clientY - r.top;
+    const x = clientX - r.left, y = clientY - r.top;
+    const t = performance.now() / 1000, gap = t - pointer.t;
+    if (pointer.active && gap > 0 && gap < 0.1) {
+      pointer.speed = Math.max(pointer.speed * 0.6, len(x - pointer.x, y - pointer.y) / gap);
+    }
+    pointer.x = x; pointer.y = y; pointer.t = t;
     pointer.active = true; pointer.last = now;
   };
-  const onLeave = () => { pointer.active = false; };
+  const onMove = (e) => { if (e.pointerType !== "touch") aim(e.clientX, e.clientY); };
+  // Mouse leaving the hero hands control back to the autopilot. Touch has no
+  // hover, so a lifted finger keeps aiming until the idle timeout instead.
+  const onLeave = (e) => { if (e.pointerType !== "touch") pointer.active = false; };
+  // Fingers: passive listeners only read the position. They never call
+  // preventDefault, so scrolling, taps and links behave exactly as before.
+  const onTouch = (e) => { const t = e.touches[0]; if (t) aim(t.clientX, t.clientY); };
   // Double-click: the hunter lunges at the target.
   const onDouble = () => {
     if (phase !== "hunt") return;
@@ -465,6 +526,8 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
   surface.addEventListener("pointermove", onMove, { passive: true });
   surface.addEventListener("pointerdown", onMove, { passive: true });
   surface.addEventListener("pointerleave", onLeave);
+  surface.addEventListener("touchstart", onTouch, { passive: true });
+  surface.addEventListener("touchmove", onTouch, { passive: true });
   surface.addEventListener("dblclick", onDouble);
   document.addEventListener("keydown", onKey);
 
@@ -489,6 +552,8 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     surface.removeEventListener("pointermove", onMove);
     surface.removeEventListener("pointerdown", onMove);
     surface.removeEventListener("pointerleave", onLeave);
+    surface.removeEventListener("touchstart", onTouch);
+    surface.removeEventListener("touchmove", onTouch);
     surface.removeEventListener("dblclick", onDouble);
     document.removeEventListener("keydown", onKey);
   };

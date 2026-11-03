@@ -5,6 +5,7 @@ import Trail from "./components/trail/Trail.jsx";
 import EmailLink from "./components/EmailLink.jsx";
 import About from "./components/sections/About.jsx";
 import Certifications from "./components/sections/Certifications.jsx";
+import Resume from "./components/sections/Resume.jsx";
 import { navItems, links } from "./data/site.js";
 
 // Each section that is ready (see navItems in site.js) is a hop on the trace.
@@ -15,6 +16,8 @@ const sections = navItems.map((item) => ({
       <About />
     ) : item.id === "certifications" ? (
       <Certifications />
+    ) : item.id === "resume" ? (
+      <Resume />
     ) : item.id === "contact" ? (
       <div className="trail__contact">
         <EmailLink variant="full" />

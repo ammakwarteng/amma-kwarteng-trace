@@ -150,3 +150,6 @@ vite.config.ts.timestamp-*
 
 # stray screenshots from local testing
 /*.png
+
+# Never publish a readable résumé; only public/resume.enc.json (encrypted)
+*.pdf

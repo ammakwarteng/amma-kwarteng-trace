@@ -178,3 +178,53 @@
 }
 
 @keyframes live-blink { 50% { opacity: 0.2; } }
+
+/* Employer-only résumé: restricted access panel */
+.resume { display: grid; gap: 16px; max-width: 34rem; }
+.trail__sec.is-right .resume { margin-left: auto; justify-items: end; }
+.resume__label { margin: 0; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: 0.06em; color: var(--white); }
+.resume__dot { width: 7px; height: 7px; border-radius: 50%; border: 1.2px solid var(--white); display: inline-block; }
+.resume__dot.is-open { background: var(--white); }
+.resume__lead { margin: 0; font-size: clamp(17px, 1.4vw, 21px); line-height: 1.4; letter-spacing: -0.03em; color: var(--white); }
+.resume__form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.resume__field { display: grid; gap: 6px; flex: 1 1 220px; min-width: 0; }
+.resume__field span { font-size: 11px; letter-spacing: 0.06em; color: var(--white-faint); }
+.resume__field input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 16px; /* 16px keeps phones from zooming in */
+  letter-spacing: 0.04em;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.resume__field input:focus { border-color: var(--white); background: rgba(255, 255, 255, 0.07); }
+.resume__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--white);
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s, background 0.2s, color 0.2s;
+}
+.resume__btn:hover { opacity: 0.85; }
+.resume__btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.resume__btn:focus-visible, .resume__field input:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+.resume__btn--ghost { background: transparent; color: var(--white); }
+.resume__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.resume__msg { margin: -4px 0 0; min-height: 1.4em; font-size: 12px; color: var(--white-faint); }
+.resume__msg.is-denied { color: var(--threat); }
+.resume__request { margin: 0; font-size: 15px; color: var(--white-dim); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
+.trail__sec.is-right .resume__request { justify-content: flex-end; }

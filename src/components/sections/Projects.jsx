@@ -16,6 +16,12 @@ export default function Projects() {
           <ul className="project__points">
             {p.points.map((pt) => <li key={pt}>{pt}</li>)}
           </ul>
+          {p.image && (
+            <figure className="project__figure">
+              <img src={`${import.meta.env.BASE_URL}${p.image.src}`} alt={p.image.alt} width="72" height="72" loading="lazy" />
+              <figcaption className="mono">{p.image.caption}</figcaption>
+            </figure>
+          )}
           <ul className="project__tags" aria-label="Skills used">
             {p.tags.map((t) => <li key={t} className="mono">{t}</li>)}
           </ul>

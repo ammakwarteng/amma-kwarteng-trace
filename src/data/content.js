@@ -58,12 +58,14 @@ export const projects = [
       "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero and an employer-only, encrypted résumé.",
     points: [
       "Designed the concept and look of an interactive cybersecurity portfolio",
+      "Art-directed the full visual identity: layout, interactions and the Trace A logo",
       "Registered a custom domain and configured DNS records (A, CNAME, TXT) for GitHub Pages hosting and HTTPS",
       "Locked my résumé behind an access code using AES-256 encryption, so only employers I share it with can open it",
       "Set up privacy-friendly analytics with the dashboard restricted to me only",
       "Verified domain ownership and set up automatic publishing on every update",
     ],
-    tags: ["DNS", "HTTPS", "encryption", "access control", "GitHub"],
+    image: { src: "projects/trace-a.svg", alt: "The Trace A logo: the letter A drawn as a route through nodes", caption: "the trace a logo" },
+    tags: ["DNS", "HTTPS", "encryption", "access control", "GitHub", "UX/UI"],
     links: [{ label: "source code", url: "https://github.com/ammakwarteng/amma-kwarteng-trace" }],
   },
 ];

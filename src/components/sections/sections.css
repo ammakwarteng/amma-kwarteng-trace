@@ -228,3 +228,23 @@
 .resume__msg.is-denied { color: var(--threat); }
 .resume__request { margin: 0; font-size: 15px; color: var(--white-dim); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
 .trail__sec.is-right .resume__request { justify-content: flex-end; }
+
+/* Projects: one card per project, newest first */
+.projects { display: grid; gap: 20px; width: 100%; max-width: 46rem; }
+.trail__sec.is-right .projects { margin-left: auto; text-align: left; }
+.project { display: grid; gap: 12px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255, 255, 255, 0.03); }
+.project__meta { margin: 0; display: flex; justify-content: space-between; gap: 12px; font-size: 12px; letter-spacing: 0.06em; color: var(--white-faint); }
+.project__meta span:first-child { display: inline-flex; align-items: center; gap: 8px; color: var(--white); }
+.project__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--white); display: inline-block; }
+.project__name { margin: 0; font-size: clamp(24px, 2.4vw, 34px); font-weight: 400; letter-spacing: -0.05em; line-height: 1.05; color: var(--white); }
+.project__summary { margin: 0; font-size: 17px; line-height: 1.45; letter-spacing: -0.02em; color: var(--white); }
+.project__points { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 15px; line-height: 1.45; color: var(--white-dim); }
+.project__tags { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.project__tags li { padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 11px; letter-spacing: 0.04em; color: var(--white-dim); }
+.project__links { margin: 0; display: flex; flex-wrap: wrap; gap: 18px; }
+.project__links a { color: var(--white); font-size: 15px; text-decoration: none; border-bottom: 1px solid var(--white-faint); }
+.project__links a:hover { border-bottom-color: var(--white); }
+@media (max-width: 700px) {
+  .project { padding: 18px; }
+  .project__summary { font-size: 16px; }
+}

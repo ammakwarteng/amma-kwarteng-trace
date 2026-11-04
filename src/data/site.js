@@ -28,7 +28,7 @@ export const communities = [
 export const navItems = [
   { id: "about", label: "about", ready: true },
   { id: "portfolio", label: "portfolio", ready: false },
-  { id: "projects", label: "projects", ready: false },
+  { id: "projects", label: "projects", ready: true },
   { id: "skills", label: "skills", ready: false },
   { id: "certifications", label: "certifications", ready: true },
   { id: "resume", label: "resume", ready: true },

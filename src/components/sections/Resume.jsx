@@ -69,7 +69,7 @@ export default function Resume() {
 
   const msg = {
     checking: "verifying…",
-    denied: "access denied: that code didn't work. Check it and try again.",
+    denied: "Access denied: that code didn't work. Check it and try again.",
     unavailable: "The résumé couldn't be loaded right now. Please try again later.",
   }[state];
 

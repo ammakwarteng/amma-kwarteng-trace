@@ -58,13 +58,13 @@ export const projects = [
     summary:
       "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero and an employer-only, encrypted résumé.",
     points: [
-      "Set up a custom domain with DNS records (A, CNAME, TXT), GitHub Pages hosting and HTTPS",
-      "Encrypted my résumé with AES-256-GCM; employers unlock it in their own browser with an access code",
-      "Added privacy-friendly analytics (no cookies) with a dashboard only I can access",
-      "Publishes automatically with GitHub Actions on every update",
-      "Built with React and Vite, using AI-assisted development",
+      "Designed the concept and look of an interactive cybersecurity portfolio",
+      "Registered a custom domain and configured DNS records (A, CNAME, TXT) for GitHub Pages hosting and HTTPS",
+      "Locked my résumé behind an access code using AES-256 encryption, so only employers I share it with can open it",
+      "Set up privacy-friendly analytics with the dashboard restricted to me only",
+      "Verified domain ownership and set up automatic publishing on every update",
     ],
-    tags: ["DNS", "HTTPS", "encryption", "access control", "GitHub Actions", "React"],
+    tags: ["DNS", "HTTPS", "encryption", "access control", "GitHub"],
     links: [{ label: "source code", url: "https://github.com/ammakwarteng/amma-kwarteng-trace" }],
   },
 ];

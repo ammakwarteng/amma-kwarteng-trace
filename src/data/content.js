@@ -3,7 +3,7 @@
 export const about = [
   "I'm Amma. I got into cybersecurity because I like understanding how things work, and how they break.",
   "My focus is identity & access management (IAM) and privileged access management (PAM): making sure the right people have the right access, and protecting the accounts that hold the keys to everything. I'm starting in IT support and building toward that one certification and one lab at a time.",
-  "I also love UX/UI and graphic design, so I care about making security clear and human. This site is my trace: an evolving record of what I'm learning and building.",
+  "I also love UX/UI and graphic design, so I care about making security clear. This site is my trace: an evolving record of what I'm learning and building.",
 ];
 
 // Career roadmap. Set `now: true` on the phase Amma is in.

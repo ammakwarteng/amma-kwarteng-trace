@@ -4,11 +4,14 @@ import "./sections.css";
 
 const LABEL = { studying: "currently studying", next: "next goal", planned: "planned", earned: "earned" };
 
-// Only earned certifications are shown publicly. The others stay in
-// content.js as goals; change a status to "earned" once the exam is passed
-// and it appears here. With only a few cards, they sit still instead of
-// scrolling.
-const shown = certifications.filter((c) => c.status === "earned");
+// Shown publicly: earned certifications plus the one being studied and the
+// next goal. "planned" ones stay in content.js. Change a status to "earned"
+// only once the exam is passed. With only a few cards, they sit still
+// instead of scrolling.
+const ORDER = { earned: 0, studying: 1, next: 2 };
+const shown = certifications
+  .filter((c) => c.status in ORDER)
+  .sort((a, b) => ORDER[a.status] - ORDER[b.status]);
 const MARQUEE_MIN = 4;
 
 /*

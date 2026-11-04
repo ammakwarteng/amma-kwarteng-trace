@@ -47,3 +47,24 @@ export const certifications = [
   { name: "CyberArk Defender: PAM", code: "Defender", issuer: "CyberArk", status: "planned" },
   { name: "CyberArk Sentry: PAM", code: "Sentry", issuer: "CyberArk", status: "planned" },
 ];
+
+// Projects, newest first. Add a new object at the top of the list for each
+// project; the section shows them in this order.
+export const projects = [
+  {
+    name: "TRACE — this portfolio",
+    year: "2026",
+    status: "live",
+    summary:
+      "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero and an employer-only, encrypted résumé.",
+    points: [
+      "Set up a custom domain with DNS records (A, CNAME, TXT), GitHub Pages hosting and HTTPS",
+      "Encrypted my résumé with AES-256-GCM; employers unlock it in their own browser with an access code",
+      "Added privacy-friendly analytics (no cookies) with a dashboard only I can access",
+      "Publishes automatically with GitHub Actions on every update",
+      "Built with React and Vite, using AI-assisted development",
+    ],
+    tags: ["DNS", "HTTPS", "encryption", "access control", "GitHub Actions", "React"],
+    links: [{ label: "source code", url: "https://github.com/ammakwarteng/amma-kwarteng-trace" }],
+  },
+];

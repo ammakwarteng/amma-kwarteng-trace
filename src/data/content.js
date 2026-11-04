@@ -55,12 +55,12 @@ export const projects = [
     year: "2026",
     status: "live",
     summary:
-      "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero and an employer-only, encrypted résumé.",
+      "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero and an employer-only, encrypted resume.",
     points: [
       "Designed the concept and look of an interactive cybersecurity portfolio",
       "Designed the full visual identity: layout, interactions and logo",
       "Registered a custom domain and configured DNS records (A, CNAME, TXT) for GitHub Pages hosting and HTTPS",
-      "Locked my résumé behind an access code using AES-256 encryption, so only employers I share it with can open it",
+      "Locked my resume behind an access code using AES-256 encryption, so only employers I share it with can open it",
       "Set up privacy-friendly analytics with the dashboard restricted to me only",
       "Verified domain ownership and set up automatic publishing on every update",
     ],

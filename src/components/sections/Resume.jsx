@@ -3,7 +3,7 @@ import EmailLink from "../EmailLink.jsx";
 import "./sections.css";
 
 /*
-  Employer-only résumé.
+  Employer-only resume.
   The published file (resume.enc.json) is the PDF encrypted with AES-256-GCM;
   the key comes from the access code via PBKDF2-SHA-256. Decryption happens
   here in the browser, so the code and the readable PDF never leave the
@@ -58,9 +58,9 @@ export default function Resume() {
     return (
       <div className="resume">
         <p className="resume__label mono"><i className="resume__dot is-open" aria-hidden="true" />access granted</p>
-        <p className="resume__lead">Thanks for your interest. My résumé is ready.</p>
+        <p className="resume__lead">Thanks for your interest. My resume is ready.</p>
         <div className="resume__actions">
-          <a className="resume__btn" href={url} target="_blank" rel="noopener">view résumé</a>
+          <a className="resume__btn" href={url} target="_blank" rel="noopener">view resume</a>
           <a className="resume__btn resume__btn--ghost" href={url} download="Amma-Kwarteng-Resume.pdf">download pdf</a>
         </div>
       </div>
@@ -70,13 +70,13 @@ export default function Resume() {
   const msg = {
     checking: "verifying…",
     denied: "Access denied: that code didn't work. Check it and try again.",
-    unavailable: "The résumé couldn't be loaded right now. Please try again later.",
+    unavailable: "The resume couldn't be loaded right now. Please try again later.",
   }[state];
 
   return (
     <div className="resume">
       <p className="resume__label mono"><i className="resume__dot" aria-hidden="true" />restricted · employer access</p>
-      <p className="resume__lead">My résumé is encrypted. Employers can unlock it with the access code I share.</p>
+      <p className="resume__lead">My resume is encrypted. Employers can unlock it with the access code I share.</p>
       <form className="resume__form" onSubmit={submit}>
         <label className="resume__field">
           <span className="mono">access code</span>

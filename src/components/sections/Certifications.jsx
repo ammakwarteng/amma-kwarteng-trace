@@ -6,13 +6,14 @@ const LABEL = { studying: "currently studying", next: "next goal", planned: "pla
 
 // Shown publicly: earned certifications plus the one being studied and the
 // next goal. "planned" ones stay in content.js. Change a status to "earned"
-// only once the exam is passed. With only a few cards, they sit still
-// instead of scrolling.
+// only once the exam is passed. The strip always scrolls; with only a few
+// cards they are repeated so the loop fills even a wide screen.
 const ORDER = { earned: 0, studying: 1, next: 2 };
 const shown = certifications
   .filter((c) => c.status in ORDER)
   .sort((a, b) => ORDER[a.status] - ORDER[b.status]);
-const MARQUEE_MIN = 4;
+const LOOP_MIN = 8; // cards per loop, enough to span any screen width
+const loop = Array.from({ length: Math.ceil(LOOP_MIN / Math.max(1, shown.length)) }, () => shown).flat();
 
 /*
   A moving strip of certification cards.
@@ -99,20 +100,12 @@ export default function Certifications() {
     </article>
   );
 
-  if (shown.length < MARQUEE_MIN) {
-    return (
-      <ul className="certs-static" aria-label="Certifications">
-        {shown.map((c) => <li key={c.name}>{card(c, c.name)}</li>)}
-      </ul>
-    );
-  }
-
   return (
     <div className="certs-wrap">
       <div className="marquee" ref={wrapRef} aria-hidden="true">
         <div className="marquee__track" ref={trackRef}>
-          {shown.map((c) => card(c, `a-${c.name}`))}
-          {shown.map((c) => card(c, `b-${c.name}`))}
+          {loop.map((c, i) => card(c, `a-${i}`))}
+          {loop.map((c, i) => card(c, `b-${i}`))}
         </div>
       </div>
       <p className="marquee__hint mono" aria-hidden="true">move your mouse over the strip to steer it · swipe on touch</p>

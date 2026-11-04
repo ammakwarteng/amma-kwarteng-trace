@@ -51,28 +51,46 @@ export default function Trail({ sections }) {
     const wrap = wrapRef.current;
     const build = () => {
       const box = wrap.getBoundingClientRect();
-      const pts = [...wrap.querySelectorAll("[data-node]")].map((n) => {
-        const r = n.getBoundingClientRect();
-        return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top };
+      const secs = [...wrap.querySelectorAll(".trail__sec")];
+      const pts = secs.map((sec, i) => {
+        const r = sec.querySelector("[data-node]").getBoundingClientRect();
+        // bottom of the previous section's visible content, so the crossing
+        // line can run in the clear space between sections
+        const prev = secs[i - 1];
+        const prevBottom = prev
+          ? Math.max(...[...prev.children].map((c) => c.getBoundingClientRect().bottom)) - box.top
+          : null;
+        return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top, prevBottom };
       });
       const w = wrap.clientWidth, h = wrap.scrollHeight;
       let x = w / 2, y = 0;
       let d = `M ${x} ${y}`;
       pts.forEach((p) => {
-        // orthogonal hop: down, across, down, with small chamfered corners
-        const midY = p.y - Math.min(64, (p.y - y) * 0.3);
+        // orthogonal hop: down, across, down, with small chamfered corners.
+        // The across line sits between the previous content and this node.
+        let midY = p.y - Math.min(64, (p.y - y) * 0.3);
+        if (p.prevBottom != null) {
+          const lo = p.prevBottom + 22, hi = p.y - 30;
+          midY = lo <= hi ? (lo + hi) / 2 : hi;
+        }
         const c = 14 * Math.sign(p.x - x || 1);
         d += ` L ${x} ${midY - 14} L ${x + c} ${midY} L ${p.x - c} ${midY} L ${p.x} ${midY + 14} L ${p.x} ${p.y}`;
         x = p.x; y = p.y;
       });
       d += ` L ${x} ${h}`;
-      setGeo({ d, w, h, nodes: pts });
+      setGeo({ d, w, h, nodes: pts.map(({ x, y }) => ({ x, y })) });
     };
+    // Rebuild whenever the page or anything inside a section changes size
+    // (a section or a roadmap step opening grows its content without
+    // necessarily changing the page height).
+    let queued = 0;
+    const schedule = () => { if (!queued) queued = requestAnimationFrame(() => { queued = 0; build(); }); };
     build();
-    const ro = new ResizeObserver(build);
+    const ro = new ResizeObserver(schedule);
     ro.observe(wrap);
+    wrap.querySelectorAll(".trail__sec, .trail__panel-inner").forEach((el) => ro.observe(el));
     document.fonts?.ready?.then(build);
-    return () => ro.disconnect();
+    return () => { ro.disconnect(); cancelAnimationFrame(queued); };
   }, [sections.length]);
 
   // Draw the route up to the reading line (60% down the viewport).

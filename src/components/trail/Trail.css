@@ -27,7 +27,7 @@
   gap: 18px;
   scroll-margin-top: 10vh;
 }
-.trail__sec.is-open { min-height: 72vh; }
+.trail__sec.is-open { min-height: 72vh; padding-bottom: 56px; } /* room for the route to cross below the content */
 .trail__sec.is-right { justify-items: end; text-align: right; }
 
 /* the title is the open / close button */

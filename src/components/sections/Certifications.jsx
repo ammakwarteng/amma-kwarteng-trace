@@ -4,6 +4,13 @@ import "./sections.css";
 
 const LABEL = { studying: "currently studying", next: "next goal", planned: "planned", earned: "earned" };
 
+// Only earned certifications are shown publicly. The others stay in
+// content.js as goals; change a status to "earned" once the exam is passed
+// and it appears here. With only a few cards, they sit still instead of
+// scrolling.
+const shown = certifications.filter((c) => c.status === "earned");
+const MARQUEE_MIN = 4;
+
 /*
   A moving strip of certification cards.
   - Drifts on its own in a seamless loop.
@@ -19,6 +26,7 @@ export default function Certifications() {
 
   useEffect(() => {
     const wrap = wrapRef.current, track = trackRef.current;
+    if (!wrap || !track) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       wrap.classList.add("is-static");
       return;
@@ -88,18 +96,26 @@ export default function Certifications() {
     </article>
   );
 
+  if (shown.length < MARQUEE_MIN) {
+    return (
+      <ul className="certs-static" aria-label="Certifications">
+        {shown.map((c) => <li key={c.name}>{card(c, c.name)}</li>)}
+      </ul>
+    );
+  }
+
   return (
     <div className="certs-wrap">
       <div className="marquee" ref={wrapRef} aria-hidden="true">
         <div className="marquee__track" ref={trackRef}>
-          {certifications.map((c) => card(c, `a-${c.name}`))}
-          {certifications.map((c) => card(c, `b-${c.name}`))}
+          {shown.map((c) => card(c, `a-${c.name}`))}
+          {shown.map((c) => card(c, `b-${c.name}`))}
         </div>
       </div>
       <p className="marquee__hint mono" aria-hidden="true">move your mouse over the strip to steer it · swipe on touch</p>
 
       <ul className="visually-hidden">
-        {certifications.map((c) => (
+        {shown.map((c) => (
           <li key={c.name}>{c.name}, {c.issuer}: {LABEL[c.status]}</li>
         ))}
       </ul>

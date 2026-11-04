@@ -251,3 +251,7 @@
 .project__figure { margin: 4px 0 0; display: flex; align-items: center; gap: 14px; }
 .project__figure img { width: 72px; height: 72px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--black); }
 .project__figure figcaption { font-size: 11px; letter-spacing: 0.06em; color: var(--white-faint); }
+/* a few earned certifications: still cards instead of the scrolling strip */
+.certs-static { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 16px; }
+.trail__sec.is-right .certs-static { justify-content: flex-end; }
+.certs-static .cert { text-align: left; }

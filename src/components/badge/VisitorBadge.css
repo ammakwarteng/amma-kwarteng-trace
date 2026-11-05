@@ -231,5 +231,21 @@
    line comes down and where the card leaves the screen */
 @media (min-width: 761px) {
   .badge { justify-items: end; padding-top: 0; }
-  .badge__track { width: min(100%, 680px); margin-right: -36px; }
+  .badge__track { width: min(100%, 760px); height: 244px; margin-right: -36px; }
+
+  /* a bigger card and reader (about 22% larger) so the print is easy to read */
+  .badge__card { width: 268px; height: 170px; padding: 16px 17px 0; border-radius: 13px; bottom: 41px; }
+  .badge__ticks { inset: 8px; }
+  .badge__org { font-size: 22px; }
+  .badge__sub { font-size: 8px; }
+  .badge__mark { width: 27px; height: 27px; }
+  .badge__foot { left: 17px; right: 17px; bottom: 44px; font-size: 8px; gap: 5px; padding-top: 8px; }
+  .badge__stripe { bottom: 11px; height: 27px; }
+  .badge__groove { left: calc(max(44%, 288px) + 5px); right: 5px; bottom: 76px; height: 27px; border-radius: 7px 7px 0 0; }
+  .badge__readhead { bottom: 13px; width: 20px; height: 10px; }
+  .badge__reader { left: max(44%, 288px); height: 90px; }
+  .badge__trim { height: 11px; }
+  .badge__face { inset: 11px 0 0; padding: 0 20px; }
+  .badge__light { width: 8px; height: 8px; }
+  .badge__screws i { width: 6px; height: 6px; }
 }

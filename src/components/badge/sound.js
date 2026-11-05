@@ -4,6 +4,8 @@
 let ctx = null;
 const audio = () => {
   try {
+    // iPhone: play like media, so the silent switch doesn't mute it (Safari 16.4+)
+    if (navigator.audioSession && navigator.audioSession.type !== "playback") navigator.audioSession.type = "playback";
     ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
     if (ctx.state === "suspended") ctx.resume();
     return ctx;
@@ -11,6 +13,19 @@ const audio = () => {
     return null;
   }
 };
+
+// Call from inside a touch/click handler before any sound: iPhones and some
+// browsers only start audio during a real user gesture.
+export function unlockAudio() {
+  const a = audio();
+  if (!a) return;
+  try {
+    const src = a.createBufferSource();
+    src.buffer = a.createBuffer(1, 1, 22050);
+    src.connect(a.destination);
+    src.start(0);
+  } catch { /* ignore */ }
+}
 
 // Two short high beeps, like a card reader accepting a badge.
 export function beep() {
@@ -23,7 +38,7 @@ export function beep() {
     osc.type = "square";
     osc.frequency.value = 1760;
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.05, t + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.12, t + 0.005);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.085);
     osc.connect(gain).connect(a.destination);
     osc.start(t);
@@ -49,7 +64,7 @@ export function swoosh(delay = 0.18) {
   filter.frequency.setValueAtTime(500, t);
   filter.frequency.exponentialRampToValueAtTime(3200, t + len);
   gain.gain.setValueAtTime(0.0001, t);
-  gain.gain.exponentialRampToValueAtTime(0.09, t + 0.12);
+  gain.gain.exponentialRampToValueAtTime(0.16, t + 0.12);
   gain.gain.exponentialRampToValueAtTime(0.0001, t + len);
   src.connect(filter).connect(gain).connect(a.destination);
   src.start(t);

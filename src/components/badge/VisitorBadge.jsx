@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { track } from "../../track.js";
-import { beep, buzz, swoosh } from "./sound.js";
+import { beep, buzz, swoosh, unlockAudio } from "./sound.js";
 import LockScreen from "./LockScreen.jsx";
 import "./VisitorBadge.css";
 
@@ -51,6 +51,7 @@ export default function VisitorBadge() {
 
   const onDown = (e) => {
     if (state === "granted") return;
+    unlockAudio();
     e.currentTarget.setPointerCapture(e.pointerId);
     drag.current = { start: e.clientX - x, last: e.clientX };
     setState("reading");
@@ -69,6 +70,7 @@ export default function VisitorBadge() {
   };
   const onUp = () => {
     if (!drag.current) return;
+    unlockAudio();
     drag.current = null;
     setTilt(0);
     if (x > max() * 0.85) grant();
@@ -91,7 +93,7 @@ export default function VisitorBadge() {
           role="button"
           tabIndex={state === "granted" ? -1 : 0}
           aria-label="Access card: swipe to sign out"
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); grant(); } }}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); unlockAudio(); grant(); } }}
         >
           <span aria-hidden="true" className="badge__ticks" />
           <span aria-hidden="true" className="badge__head">
@@ -117,7 +119,6 @@ export default function VisitorBadge() {
           <span className="badge__trim" />
           <span className="badge__face">
             <span className="badge__light" />
-            <span className="badge__label mono">TRACE</span>
             <span className="badge__screws"><i /><i /></span>
           </span>
         </div>

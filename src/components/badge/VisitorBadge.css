@@ -5,6 +5,7 @@
   gap: 16px;
   padding: 4vh max(var(--gutter), env(safe-area-inset-right, 0px)) calc(10vh + env(safe-area-inset-bottom, 0px)) max(var(--gutter), env(safe-area-inset-left, 0px));
   text-align: center;
+  overflow-x: clip; /* the card leaves the screen without widening the page */
 }
 .badge__eyebrow { margin: 0; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white-faint); }
 
@@ -51,6 +52,7 @@
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .badge.is-reading .badge__card { cursor: grabbing; transition: none; }
+.badge.is-granted .badge__card { cursor: default; transition: transform 0.9s cubic-bezier(0.55, 0, 0.75, 0.2), opacity 0.9s ease-in; opacity: 0; }
 .badge__chip { grid-column: 1; width: 22px; height: 16px; border-radius: 3px; background: linear-gradient(135deg, #cfcfcb, #9d9d98); }
 .badge__role { grid-column: 2; grid-row: 1; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; }
 .badge__name { grid-column: 1 / -1; grid-row: 2; align-self: center; font-size: 26px; letter-spacing: -0.05em; line-height: 1; }

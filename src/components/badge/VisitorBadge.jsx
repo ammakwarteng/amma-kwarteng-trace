@@ -22,7 +22,9 @@ export default function VisitorBadge() {
   const grant = () => {
     if (state === "granted") return;
     setState("granted");
-    setX(max());
+    // carry on through the reader and off the screen
+    const t = trackRef.current?.getBoundingClientRect();
+    setX(t ? window.innerWidth - t.left + 40 : 1200);
     track("visitor-badge-swiped", "Visitor badge swiped at the end of the trace");
   };
 

@@ -132,7 +132,10 @@ export default function LockScreen({ onResume }) {
               <span className="vm-cover__time">{time}</span>
               <span className="vm-cover__date">{date}</span>
             </span>
-            <span className="vm-cover__hint mono">press ctrl + alt + delete to unlock · or tap</span>
+            <span className="vm-cover__hint mono">
+              <span className="vm-only-desk">press ctrl + alt + delete to unlock · or tap</span>
+              <span className="vm-only-phone">tap to unlock</span>
+            </span>
           </button>
         )}
 
@@ -199,7 +202,7 @@ export default function LockScreen({ onResume }) {
       </div>
 
       <div className="vmw__status mono" aria-hidden="true">
-        <span>to direct input to this VM, click inside or press ctrl+g.</span>
+        <span className="vm-only-desk">to direct input to this VM, click inside or press ctrl+g.</span>
         <span className="vmw__status-icons"><i /><i /><i /></span>
       </div>
     </div>,

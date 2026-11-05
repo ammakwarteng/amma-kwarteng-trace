@@ -142,7 +142,11 @@ html.is-locked, html.is-locked body { overflow: hidden; }
 @keyframes vm-fade { from { opacity: 0; } }
 @keyframes vm-rise { from { opacity: 0; transform: translateY(14px); } }
 
+.vm-only-phone { display: none; }
 @media (max-width: 700px) {
+  .vm-only-desk { display: none; }
+  .vm-only-phone { display: inline; }
+  .vmw__status { justify-content: flex-end; }
   .vmw__menu-words { display: none; }
   .vmw__menu { justify-content: flex-start; }
   .vm-cover { padding-bottom: 22%; }

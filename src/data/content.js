@@ -53,7 +53,7 @@ export const projects = [
   {
     name: "Active Directory home lab",
     year: "2026",
-    status: "in progress",
+    status: "complete",
     summary:
       "A small company network on my laptop: a Windows Server 2022 domain controller running my own domain, lab.ammakwarteng.com, with departments, employees and group-based access.",
     points: [
@@ -65,8 +65,9 @@ export const projects = [
       "Set domain password rules with Group Policy: 12-character minimum, complexity, 90-day maximum age and 24-password history",
       "Added account lockout after 5 failed attempts (30-minute lockout) and confirmed it by locking a test account",
       "Resolved the locked-out user like a help desk ticket: unlocked the account and reset the password with a forced change at next logon",
+      "Offboarded a leaver: disabled the account, removed group access, recorded the leave date and moved it to a _Disabled Users OU, then verified it with PowerShell",
     ],
-    next: "Next: offboarding a leaver: disable the account, remove group access and move it out of active staff.",
+    next: "Covers the full joiner, mover, leaver identity lifecycle on a working domain.",
     gallery: [
       { src: "projects/ad-lab/01.webp", caption: "DC01 promoted to a domain controller for lab.ammakwarteng.com" },
       { src: "projects/ad-lab/02.webp", caption: "Network fixed: replies from the gateway and the internet" },
@@ -81,6 +82,8 @@ export const projects = [
       { src: "projects/ad-lab/11.webp", caption: "Lockout tested: Abena Owusu locked after repeated wrong passwords" },
       { src: "projects/ad-lab/12.webp", caption: "Help desk fix: reset the password and unlock the account" },
       { src: "projects/ad-lab/13.webp", caption: "Confirmed: no accounts locked out" },
+      { src: "projects/ad-lab/14.webp", caption: "Offboarding: the leaver's account disabled" },
+      { src: "projects/ad-lab/15.webp", caption: "Leaver verified: disabled, no group access, moved to _Disabled Users" },
     ],
     tags: ["Active Directory", "Windows Server 2022", "Group Policy", "DNS", "VMware", "PowerShell", "IAM", "troubleshooting"],
   },

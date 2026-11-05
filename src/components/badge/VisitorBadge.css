@@ -226,3 +226,10 @@
   .badge__shine { animation: none; }
   .badge.is-reading .badge__light { animation: none; }
 }
+
+/* Laptops and up: sit at the end of the trace, on the right, where the route
+   line comes down and where the card leaves the screen */
+@media (min-width: 761px) {
+  .badge { justify-items: end; padding-top: 0; }
+  .badge__track { width: min(100%, 680px); margin-right: -36px; }
+}

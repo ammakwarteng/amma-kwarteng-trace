@@ -48,7 +48,10 @@ export default function Projects() {
         return (
         <article key={p.name} className={`project ${isOpen ? "is-open" : ""}`}>
           <p className="project__meta mono">
-            <span><i className={`project__dot ${p.status === "live" ? "" : "is-open"}`} aria-hidden="true" />{p.status}</span>
+            <span className="project__status">
+              {p.type && <span className="project__type">{p.type}</span>}
+              <i className={`project__dot is-${p.status.replace(/\s+/g, "-")}`} aria-hidden="true" />{p.status}
+            </span>
             <span>{p.year}</span>
           </p>
           <h3 className="project__name">{p.name}</h3>

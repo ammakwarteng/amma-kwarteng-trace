@@ -330,3 +330,18 @@
 @media (max-width: 700px) {
   .project__gallery li { flex-basis: 72%; }
 }
+
+/* Project labels: type tag + a softly pulsing status dot */
+.project__status { display: inline-flex; align-items: center; gap: 8px; }
+.project__type { padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--white-dim); }
+.project__dot.is-live { background: var(--secure); border: 0; animation: dot-pulse 2s ease-in-out infinite; --glow: rgba(87, 227, 137, 0.55); }
+.project__dot.is-complete { background: var(--white); border: 0; animation: dot-pulse 2.4s ease-in-out infinite; --glow: rgba(255, 255, 255, 0.5); }
+.project__dot.is-in-progress { background: transparent; border: 1.2px solid var(--white); animation: dot-blink 1.4s steps(2) infinite; }
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--glow); opacity: 1; }
+  50% { box-shadow: 0 0 0 5px transparent; opacity: 0.55; }
+}
+@keyframes dot-blink { 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) {
+  .project__dot { animation: none !important; }
+}

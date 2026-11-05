@@ -48,6 +48,7 @@ export default function App() {
         <Trail sections={sections} />
         <VisitorBadge />
       </main>
+      <footer className="site-footer mono">© {new Date().getFullYear()} amma kwarteng. all rights reserved.</footer>
     </>
   );
 }

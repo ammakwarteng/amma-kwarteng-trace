@@ -202,49 +202,44 @@ export function beep() { playClip(clips.beep, liveBeep); }
 // The card swooshing away after the beep.
 export function swoosh() { playClip(clips.swoosh, liveSwoosh, 120); }
 
-// Continuous "zzzip" of a magnetic stripe dragged through a reader head.
+// A soft, smooth "shhh" of the card sliding through the reader (no buzz).
+// Louder and brighter the faster the card moves; silent when it stops.
 let scrape = null;
 export function startScrape() {
   const a = audio();
   if (!a || scrape) return;
-  const buf = a.createBuffer(1, a.sampleRate, a.sampleRate);
+  const buf = a.createBuffer(1, a.sampleRate * 2, a.sampleRate);
   const d = buf.getChannelData(0);
-  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  // soft "pink-ish" noise: smoother than plain white noise
+  let last = 0;
+  for (let i = 0; i < d.length; i++) { last = 0.97 * last + 0.03 * (Math.random() * 2 - 1); d[i] = last * 6; }
   const src = a.createBufferSource();
   src.buffer = buf;
   src.loop = true;
   const band = a.createBiquadFilter();
   band.type = "bandpass";
-  band.frequency.value = 2200;
-  band.Q.value = 0.9;
-  const grit = a.createGain();
-  grit.gain.value = 0.6;
-  const lfo = a.createOscillator();
-  lfo.frequency.value = 55;
-  const lfoDepth = a.createGain();
-  lfoDepth.gain.value = 0.4;
-  lfo.connect(lfoDepth).connect(grit.gain);
+  band.frequency.value = 900;
+  band.Q.value = 0.6;
   const vol = a.createGain();
   vol.gain.value = 0.0001;
-  src.connect(band).connect(grit).connect(vol).connect(a.destination);
+  src.connect(band).connect(vol).connect(a.destination);
   src.start();
-  lfo.start();
-  scrape = { src, lfo, vol, band, a };
+  scrape = { src, vol, band, a };
 }
 export function setScrapeSpeed(speed) {
   if (!scrape) return;
   const { vol, band, a } = scrape;
   const s = Math.min(1, Math.abs(speed) / 18);
   const t = a.currentTime;
-  vol.gain.setTargetAtTime(0.0001 + s * 0.22, t, 0.03);
-  band.frequency.setTargetAtTime(1600 + s * 2400, t, 0.05);
+  vol.gain.setTargetAtTime(0.0001 + s * 0.16, t, 0.05);
+  band.frequency.setTargetAtTime(700 + s * 1300, t, 0.08);
 }
 export function stopScrape() {
   if (!scrape) return;
-  const { src, lfo, vol, a } = scrape;
+  const { src, vol, a } = scrape;
   const t = a.currentTime;
-  vol.gain.setTargetAtTime(0.0001, t, 0.03);
-  try { src.stop(t + 0.2); lfo.stop(t + 0.2); } catch { /* already stopped */ }
+  vol.gain.setTargetAtTime(0.0001, t, 0.05);
+  try { src.stop(t + 0.3); } catch { /* already stopped */ }
   scrape = null;
 }
 

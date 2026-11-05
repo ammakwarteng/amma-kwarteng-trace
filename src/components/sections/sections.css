@@ -255,3 +255,25 @@
 .certs-static { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 16px; }
 .trail__sec.is-right .certs-static { justify-content: flex-end; }
 .certs-static .cert { text-align: left; }
+
+/* Project screenshot gallery and viewer */
+.project__dot.is-open { background: transparent; border: 1.2px solid var(--white); }
+.project__gallery { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.project__gallery button { display: block; width: 100%; padding: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--black); cursor: zoom-in; transition: border-color 0.2s, transform 0.2s; }
+.project__gallery button:hover { border-color: var(--white); transform: translateY(-2px); }
+.project__gallery button:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+.project__gallery img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+.project__next { margin: 0; font-size: 12px; letter-spacing: 0.02em; color: var(--white-faint); }
+
+.shot { max-width: min(1100px, 94vw); width: 100%; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--black-2); color: var(--white); }
+.shot::backdrop { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(3px); }
+.shot__figure { margin: 0; display: grid; }
+.shot__figure img { display: block; width: 100%; height: auto; max-height: 76vh; object-fit: contain; background: #000; }
+.shot__figure figcaption { display: flex; gap: 12px; align-items: baseline; padding: 14px 16px 4px; font-size: 15px; letter-spacing: -0.02em; }
+.shot__figure figcaption .mono { font-size: 11px; color: var(--white-faint); }
+.shot__nav { display: flex; gap: 8px; justify-content: flex-end; padding: 8px 16px 14px; }
+.shot__nav button { padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--white); font-family: var(--font-mono); font-size: 12px; cursor: pointer; }
+.shot__nav button:hover { border-color: var(--white); }
+@media (max-width: 700px) {
+  .project__gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

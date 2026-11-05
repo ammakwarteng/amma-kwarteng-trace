@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { track } from "../../track.js";
-import { beep, buzz, setScrapeSpeed, startScrape, stopScrape, swoosh, unlockAudio } from "./sound.js";
+import { beep, buzz, installAudioUnlock, setScrapeSpeed, startScrape, stopScrape, swoosh, unlockAudio } from "./sound.js";
 import LockScreen from "./LockScreen.jsx";
 import "./VisitorBadge.css";
 
@@ -22,6 +22,9 @@ export default function VisitorBadge() {
   const [glint, setGlint] = useState({ x: 30, y: 20 }); // highlight position on the card, %
   const drag = useRef(null);
   const trackRef = useRef(null);
+
+  // get audio ready on the visitor's first tap anywhere, so the swipe has sound
+  useEffect(() => { installAudioUnlock(); return () => stopScrape(); }, []);
 
   // travel along the reader's groove to its far end
   const CARD = 220;
@@ -93,6 +96,7 @@ export default function VisitorBadge() {
           onPointerMove={onMove}
           onPointerUp={onUp}
           onPointerCancel={onUp}
+          onTouchEnd={unlockAudio}
           role="button"
           tabIndex={state === "granted" ? -1 : 0}
           aria-label="Access card: swipe to sign out"

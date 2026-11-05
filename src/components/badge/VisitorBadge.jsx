@@ -19,6 +19,7 @@ export default function VisitorBadge() {
   const [tilt, setTilt] = useState(0);        // degrees, follows drag direction
   const [state, setState] = useState("idle"); // idle | reading | granted
   const [locked, setLocked] = useState(false);
+  const [glint, setGlint] = useState({ x: 30, y: 20 }); // highlight position on the card, %
   const drag = useRef(null);
   const trackRef = useRef(null);
 
@@ -54,7 +55,12 @@ export default function VisitorBadge() {
     drag.current = { start: e.clientX - x, last: e.clientX };
     setState("reading");
   };
+  const onHover = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    setGlint({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
+  };
   const onMove = (e) => {
+    onHover(e);
     if (!drag.current) return;
     const dx = e.clientX - drag.current.last;
     drag.current.last = e.clientX;
@@ -77,15 +83,18 @@ export default function VisitorBadge() {
         <div className="badge__groove" aria-hidden="true" />
         <div
           className="badge__card"
-          style={{ transform: `translateX(${x}px) rotate(${tilt}deg)` }}
+          style={{ transform: `translateX(${x}px) rotate(${tilt}deg)`, "--gx": `${glint.x}%`, "--gy": `${glint.y}%` }}
           onPointerDown={onDown}
           onPointerMove={onMove}
           onPointerUp={onUp}
           onPointerCancel={onUp}
-          aria-hidden="true"
+          role="button"
+          tabIndex={state === "granted" ? -1 : 0}
+          aria-label="Access card: swipe to sign out"
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); grant(); } }}
         >
-          <span className="badge__ticks" />
-          <span className="badge__head">
+          <span aria-hidden="true" className="badge__ticks" />
+          <span aria-hidden="true" className="badge__head">
             <span className="badge__brand">
               <span className="badge__org">TRACE</span>
               <span className="badge__sub mono">SECURE ACCESS CREDENTIAL</span>
@@ -96,12 +105,13 @@ export default function VisitorBadge() {
               <path d="M4 9V4h5M23 4h5v5M28 23v5h-5M9 28H4v-5" />
             </svg>
           </span>
-          <span className="badge__foot mono">
+          <span aria-hidden="true" className="badge__foot mono">
             <span>ACCESS CONTROL</span>
             <span>SWIPE TO SIGN OUT →</span>
           </span>
-          <span className="badge__stripe" />
-          <span className="badge__shine" />
+          <span aria-hidden="true" className="badge__stripe" />
+          <span className="badge__glint" aria-hidden="true" />
+          <span className="badge__shine" aria-hidden="true" />
         </div>
         <div className="badge__reader" aria-hidden="true">
           <span className="badge__trim" />
@@ -112,10 +122,7 @@ export default function VisitorBadge() {
           </span>
         </div>
       </div>
-      <p className="badge__status mono" role="status" aria-live="polite">{status}</p>
-      {state !== "granted" && (
-        <button type="button" className="badge__btn mono" onClick={grant}>swipe badge</button>
-      )}
+      <p className="visually-hidden" role="status" aria-live="polite">{state === "idle" ? "" : status}</p>
       {locked && <LockScreen onResume={resume} />}
     </section>
   );

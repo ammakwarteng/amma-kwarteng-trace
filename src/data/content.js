@@ -117,3 +117,33 @@ export const projects = [
     links: [{ label: "source code", url: "https://github.com/ammakwarteng/amma-kwarteng-trace" }],
   },
 ];
+
+// Skills, grouped. Only skills with proof (a project, lab, certification or
+// job). Things still being learned stay in the roadmap until they're done.
+export const skills = [
+  {
+    group: "identity & access",
+    proof: "Active Directory home lab",
+    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy (Group Policy)"],
+  },
+  {
+    group: "support",
+    proof: "home lab and work history",
+    items: ["password resets", "account unlocks", "device and network troubleshooting", "ticketing", "AV equipment setup"],
+  },
+  {
+    group: "systems & tools",
+    proof: "home lab",
+    items: ["Windows Server 2022", "PowerShell", "DNS", "VMware Workstation", "Microsoft 365"],
+  },
+  {
+    group: "governance",
+    proof: "ISO/IEC 27001:2022 Lead Auditor",
+    items: ["ISO/IEC 27001", "access control", "auditing"],
+  },
+  {
+    group: "web & design",
+    proof: "TRACE, this portfolio",
+    items: ["custom domains", "DNS records", "HTTPS", "GitHub Pages", "UX/UI"],
+  },
+];

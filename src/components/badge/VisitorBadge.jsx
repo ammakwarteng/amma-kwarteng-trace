@@ -26,8 +26,13 @@ export default function VisitorBadge() {
   useEffect(() => { installAudioUnlock(); return () => stopScrape(); }, []);
 
   // travel along the reader's groove to its far end
-  const CARD = 220;
-  const max = () => (trackRef.current ? trackRef.current.clientWidth - CARD - 10 : 300);
+  // (the card is bigger on laptops, so read its width from the page)
+  const max = () => {
+    const t = trackRef.current;
+    if (!t) return 300;
+    const card = t.querySelector(".badge__card")?.offsetWidth || 220;
+    return t.clientWidth - card - 10;
+  };
 
   const grant = () => {
     if (state === "granted") return;

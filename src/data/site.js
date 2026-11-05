@@ -29,7 +29,7 @@ export const navItems = [
   { id: "about", label: "about", ready: true },
   { id: "portfolio", label: "portfolio", ready: false },
   { id: "projects", label: "projects", ready: true },
-  { id: "skills", label: "skills", ready: false },
+  { id: "skills", label: "skills", ready: true },
   { id: "certifications", label: "certifications", ready: true },
   { id: "resume", label: "resume", ready: true },
   { id: "contact", label: "contact", ready: true },

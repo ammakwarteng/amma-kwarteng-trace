@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import EmailLink from "../EmailLink.jsx";
+import { track } from "../../track.js";
 import "./sections.css";
 
 /*
@@ -47,6 +48,7 @@ export default function Resume() {
     try {
       setUrl(await unlock(code.trim()));
       setState("granted");
+      track("resume-unlocked", "Resume unlocked with the access code");
       setCode("");
     } catch (err) {
       setState(err.message === "unavailable" ? "unavailable" : "denied");

@@ -119,7 +119,6 @@ export const projects = [
     ],
     image: { src: "projects/logo.svg", alt: "My logo: a tracking reticle", caption: "my logo" },
     tags: ["DNS", "HTTPS", "encryption", "access control", "GitHub", "UX/UI"],
-    links: [{ label: "source code", url: "https://github.com/ammakwarteng/amma-kwarteng-trace" }],
   },
 ];
 

@@ -244,7 +244,28 @@
   scrollbar-width: thin;
   scrollbar-color: var(--white-faint) transparent;
 }
-.projects > .project { flex: 0 0 min(560px, 86%); scroll-snap-align: start; }
+.projects { align-items: stretch; }
+.projects > .project { flex: 0 0 min(560px, 86%); width: min(560px, 86%); min-width: 0; scroll-snap-align: start; }
+.projects > .project > * { min-width: 0; max-width: 100%; }
+/* tags sit at the bottom so equal-height cards line up */
+.projects > .project > .project__more { margin-top: auto; }
+.projects > .project { display: flex; flex-direction: column; }
+.project__more {
+  align-self: flex-start;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--white);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.project__more:hover { border-color: var(--white); }
+.project__more:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+.project__details { display: grid; gap: 12px; }
+.project__details[hidden] { display: none; }
 .projects-hint { margin: 0; font-size: 11px; letter-spacing: 0.04em; color: var(--white-faint); }
 .trail__sec.is-right .projects, .trail__sec.is-right .projects-wrap { text-align: left; }
 .project { display: grid; gap: 12px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255, 255, 255, 0.03); }

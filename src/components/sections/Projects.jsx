@@ -8,6 +8,13 @@ const url = (src) => `${import.meta.env.BASE_URL}${src}`;
 // A project's gallery shows thumbnails; tapping one opens it large.
 export default function Projects() {
   const [shot, setShot] = useState(null); // { list, index }
+  const [openCards, setOpenCards] = useState(() => new Set()); // cards showing full details
+  const toggleCard = (name) =>
+    setOpenCards((prev) => {
+      const next = new Set(prev);
+      next.has(name) ? next.delete(name) : next.add(name);
+      return next;
+    });
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -35,17 +42,17 @@ export default function Projects() {
       <p className="projects-hint mono" aria-hidden="true">{projects.length} projects · scroll sideways for more</p>
     )}
     <div className="projects" aria-label="Projects">
-      {projects.map((p) => (
-        <article key={p.name} className="project">
+      {projects.map((p) => {
+        const isOpen = openCards.has(p.name);
+        const detailsId = `project-details-${p.name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
+        return (
+        <article key={p.name} className={`project ${isOpen ? "is-open" : ""}`}>
           <p className="project__meta mono">
             <span><i className={`project__dot ${p.status === "live" ? "" : "is-open"}`} aria-hidden="true" />{p.status}</span>
             <span>{p.year}</span>
           </p>
           <h3 className="project__name">{p.name}</h3>
           <p className="project__summary">{p.summary}</p>
-          <ul className="project__points">
-            {p.points.map((pt) => <li key={pt}>{pt}</li>)}
-          </ul>
           {p.gallery?.length > 0 && (
             <ul
               className="project__gallery"
@@ -67,13 +74,27 @@ export default function Projects() {
           {p.gallery?.length > 0 && (
             <p className="project__gallery-hint mono" aria-hidden="true">{p.gallery.length} screenshots · scroll sideways, tap to enlarge</p>
           )}
-          {p.next && <p className="project__next mono">{p.next}</p>}
           {p.image && (
             <figure className="project__figure">
               <img src={url(p.image.src)} alt={p.image.alt} width="72" height="72" loading="lazy" />
               <figcaption className="mono">{p.image.caption}</figcaption>
             </figure>
           )}
+          <div className="project__details" id={detailsId} hidden={!isOpen}>
+            <ul className="project__points">
+              {p.points.map((pt) => <li key={pt}>{pt}</li>)}
+            </ul>
+            {p.next && <p className="project__next mono">{p.next}</p>}
+          </div>
+          <button
+            type="button"
+            className="project__more mono"
+            aria-expanded={isOpen}
+            aria-controls={detailsId}
+            onClick={() => toggleCard(p.name)}
+          >
+            {isOpen ? "show less" : `read more · ${p.points.length} details`}
+          </button>
           <ul className="project__tags" aria-label="Skills used">
             {p.tags.map((t) => <li key={t} className="mono">{t}</li>)}
           </ul>
@@ -85,7 +106,8 @@ export default function Projects() {
             </p>
           )}
         </article>
-      ))}
+        );
+      })}
     </div>
 
       <dialog

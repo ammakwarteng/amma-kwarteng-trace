@@ -6,8 +6,9 @@ import "./VisitorBadge.css";
 
 /*
   The end of the trace: a visitor ID badge you swipe through a reader to sign
-  out. While dragged it tilts and lifts; on access the reader beeps, the light
-  turns green and the card swooshes off, then the TRACE-VM lock screen
+  out. The card's magnetic stripe edge rides in the reader's groove; on access
+  the reader beeps, its white LED lights and the card swooshes off, then the
+  TRACE-VM lock screen
   appears. Nothing on the site is locked behind it. Drag the card across the
   reader (mouse or finger), or use the button for keyboard and screen readers.
 */
@@ -21,9 +22,9 @@ export default function VisitorBadge() {
   const drag = useRef(null);
   const trackRef = useRef(null);
 
-  // stop with the front part of the card inside the reader's slot
-  const CARD = 200, READER = 92;
-  const max = () => (trackRef.current ? trackRef.current.clientWidth - READER - CARD + 70 : 300);
+  // travel along the reader's groove to its far end
+  const CARD = 220;
+  const max = () => (trackRef.current ? trackRef.current.clientWidth - CARD - 10 : 300);
 
   const grant = () => {
     if (state === "granted") return;
@@ -57,7 +58,7 @@ export default function VisitorBadge() {
     if (!drag.current) return;
     const dx = e.clientX - drag.current.last;
     drag.current.last = e.clientX;
-    setTilt((t) => Math.max(-7, Math.min(7, t * 0.6 + dx * 0.5)));
+    setTilt((t) => Math.max(-2, Math.min(2, t * 0.6 + dx * 0.25)));
     setX(Math.max(0, Math.min(max(), e.clientX - drag.current.start)));
   };
   const onUp = () => {
@@ -73,7 +74,7 @@ export default function VisitorBadge() {
   return (
     <section className={`badge is-${state}`} aria-label="Visitor badge">
       <div className="badge__track" ref={trackRef}>
-        <div className="badge__reader-back" aria-hidden="true" />
+        <div className="badge__groove" aria-hidden="true" />
         <div
           className="badge__card"
           style={{ transform: `translateX(${x}px) rotate(${tilt}deg)` }}
@@ -83,40 +84,32 @@ export default function VisitorBadge() {
           onPointerCancel={onUp}
           aria-hidden="true"
         >
-          <svg className="badge__etch" viewBox="0 0 200 126" preserveAspectRatio="none">
-            <path d="M-5 96 L38 70 L74 88 L118 40 L160 58 L205 22" />
-            <path d="M-5 30 L30 44 L62 18 L96 34" />
-            <path d="M118 40 L132 104 L176 118 L205 96" />
-            {[[38, 70], [74, 88], [118, 40], [160, 58], [30, 44], [62, 18], [96, 34], [132, 104], [176, 118]].map(([cx, cy]) => (
-              <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="2.2" />
-            ))}
-          </svg>
-          <span className="badge__top">
-            <span className="badge__org">trace</span>
-            <svg className="badge__nfc" viewBox="0 0 20 20"><path d="M6 6a6 6 0 0 1 0 8M9.5 4a9 9 0 0 1 0 12M13 2a12 12 0 0 1 0 16" /></svg>
-          </span>
-          <span className="badge__mid">
-            <span className="badge__chip"><i /><i /><i /></span>
-            <span className="badge__holo">
-              <svg viewBox="0 0 32 32">
-                <circle cx="16" cy="16" r="9" />
-                <path d="M16 3v7M16 22v7M3 16h7M22 16h7" />
-                <path d="M4 9V4h5M23 4h5v5M28 23v5h-5M9 28H4v-5" />
-              </svg>
+          <span className="badge__ticks" />
+          <span className="badge__head">
+            <span className="badge__brand">
+              <span className="badge__org">TRACE</span>
+              <span className="badge__sub mono">SECURE ACCESS CREDENTIAL</span>
             </span>
+            <svg className="badge__mark" viewBox="0 0 32 32">
+              <circle cx="16" cy="16" r="9" />
+              <path d="M16 3v7M16 22v7M3 16h7M22 16h7" />
+              <path d="M4 9V4h5M23 4h5v5M28 23v5h-5M9 28H4v-5" />
+            </svg>
           </span>
-          <span className="badge__bottom">
-            <span className="badge__who">
-              <span className="badge__role mono">visitor access</span>
-              <span className="badge__name">guest</span>
-            </span>
-            <span className="badge__meta mono">id 0426<br />{today}</span>
+          <span className="badge__foot mono">
+            <span>ACCESS CONTROL</span>
+            <span>SWIPE TO SIGN OUT →</span>
           </span>
+          <span className="badge__stripe" />
           <span className="badge__shine" />
         </div>
         <div className="badge__reader" aria-hidden="true">
-          <span className="badge__light" />
-          <span className="badge__brand mono">trace</span>
+          <span className="badge__trim" />
+          <span className="badge__face">
+            <span className="badge__light" />
+            <span className="badge__label mono">TRACE</span>
+            <span className="badge__screws"><i /><i /></span>
+          </span>
         </div>
       </div>
       <p className="badge__status mono" role="status" aria-live="polite">{status}</p>

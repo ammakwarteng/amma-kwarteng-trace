@@ -1,4 +1,5 @@
 import Header from "./components/Header.jsx";
+import VisitorBadge from "./components/badge/VisitorBadge.jsx";
 import Loader from "./components/loader/Loader.jsx";
 import Hero from "./components/Hero.jsx";
 import Trail from "./components/trail/Trail.jsx";
@@ -45,6 +46,7 @@ export default function App() {
       <main>
         <Hero />
         <Trail sections={sections} />
+        <VisitorBadge />
       </main>
     </>
   );

@@ -1,11 +1,13 @@
 import { useRef, useState } from "react";
 import { track } from "../../track.js";
+import LockScreen from "./LockScreen.jsx";
 import "./VisitorBadge.css";
 
 /*
   The end of the trace: a visitor badge you swipe through a reader to sign
-  out. The card flies off, the light turns green, then the visitor is sent
-  to Google. Nothing is locked behind it. Drag the card across the reader
+  out. The card flies off, the light turns green, then the TRACE-VM lock
+  screen appears (resume with the guest password, or exit to Google).
+  Nothing on the site is locked behind it. Drag the card across the reader
   (mouse or finger), or use the button for keyboard and screen readers.
 */
 const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "numeric" });
@@ -13,6 +15,7 @@ const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "
 export default function VisitorBadge() {
   const [x, setX] = useState(0);          // card offset in px while dragging
   const [state, setState] = useState("idle"); // idle | reading | granted
+  const [locked, setLocked] = useState(false); // TRACE-VM lock screen showing
   const drag = useRef(null);
   const trackRef = useRef(null);
 
@@ -27,9 +30,17 @@ export default function VisitorBadge() {
     const t = trackRef.current?.getBoundingClientRect();
     setX(t ? window.innerWidth - t.left + 40 : 1200);
     track("visitor-badge-swiped", "Visitor badge swiped at the end of the trace");
-    // signed out: leave the site once the card has gone (google.com shows
-    // each visitor their own country's results)
-    setTimeout(() => window.location.assign("https://www.google.com/"), 1600);
+    // signed out: lock the session once the card has gone
+    setTimeout(() => setLocked(true), 1100);
+  };
+
+  // back from TRACE-VM: reset the badge and return to the top of the trace
+  const resume = () => {
+    setLocked(false);
+    setX(0);
+    setState("idle");
+    // after the lock screen has unmounted (it blocks scrolling while open)
+    setTimeout(() => window.scrollTo({ top: 0, behavior: "instant" }), 0);
   };
 
   const onDown = (e) => {
@@ -82,6 +93,7 @@ export default function VisitorBadge() {
       {state !== "granted" && (
         <button type="button" className="badge__btn mono" onClick={grant}>swipe badge</button>
       )}
+      {locked && <LockScreen onResume={resume} />}
     </section>
   );
 }

@@ -3,9 +3,10 @@ import { track } from "../../track.js";
 import "./VisitorBadge.css";
 
 /*
-  The end of the trace: a visitor badge you swipe through a reader.
-  Nothing is locked behind it; it's a goodbye. Drag the card across the
-  reader (mouse or finger), or use the button for keyboard and screen readers.
+  The end of the trace: a visitor badge you swipe through a reader to sign
+  out. The card flies off, the light turns green, then the visitor is sent
+  to Google. Nothing is locked behind it. Drag the card across the reader
+  (mouse or finger), or use the button for keyboard and screen readers.
 */
 const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "numeric" });
 
@@ -26,6 +27,9 @@ export default function VisitorBadge() {
     const t = trackRef.current?.getBoundingClientRect();
     setX(t ? window.innerWidth - t.left + 40 : 1200);
     track("visitor-badge-swiped", "Visitor badge swiped at the end of the trace");
+    // signed out: leave the site once the card has gone (google.com shows
+    // each visitor their own country's results)
+    setTimeout(() => window.location.assign("https://www.google.com/"), 1600);
   };
 
   const onDown = (e) => {
@@ -45,11 +49,10 @@ export default function VisitorBadge() {
     else { setX(0); setState("idle"); }
   };
 
-  const status = state === "granted" ? "access granted · thanks for visiting the trace" : state === "reading" ? "reading badge…" : "swipe your badge to sign out";
+  const status = state === "granted" ? "signing out…" : state === "reading" ? "reading badge…" : "swipe your badge to sign out";
 
   return (
     <section className={`badge is-${state}`} aria-label="Visitor badge">
-      <p className="badge__eyebrow mono">end of trace</p>
       <div className="badge__track" ref={trackRef}>
         <div className="badge__reader" aria-hidden="true">
           <span className="badge__light" />

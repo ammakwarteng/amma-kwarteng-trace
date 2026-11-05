@@ -60,7 +60,7 @@ export default function Resume() {
     return (
       <div className="resume">
         <p className="resume__label mono"><i className="resume__dot is-open" aria-hidden="true" />access granted</p>
-        <p className="resume__lead">Thanks for your interest. My resume is ready.</p>
+        <p className="resume__lead">thanks for your interest. my resume is ready.</p>
         <div className="resume__actions">
           <a className="resume__btn" href={url} target="_blank" rel="noopener">view resume</a>
           <a className="resume__btn resume__btn--ghost" href={url} download="Amma-Kwarteng-Resume.pdf">download pdf</a>
@@ -71,14 +71,14 @@ export default function Resume() {
 
   const msg = {
     checking: "verifying…",
-    denied: "Access denied: that code didn't work. Check it and try again.",
-    unavailable: "The resume couldn't be loaded right now. Please try again later.",
+    denied: "access denied: that code didn't work. check it and try again.",
+    unavailable: "the resume couldn't be loaded right now. please try again later.",
   }[state];
 
   return (
     <div className="resume">
       <p className="resume__label mono"><i className="resume__dot" aria-hidden="true" />restricted · employer access</p>
-      <p className="resume__lead">My resume is encrypted. Employers can unlock it with the access code I share.</p>
+      <p className="resume__lead">my resume is encrypted. employers can unlock it with the access code i share.</p>
       <form className="resume__form" onSubmit={submit}>
         <label className="resume__field">
           <span className="mono">access code</span>
@@ -99,7 +99,7 @@ export default function Resume() {
       <p id="resume-msg" className={`resume__msg mono ${state === "denied" ? "is-denied" : ""}`} role="status" aria-live="polite">
         {msg || " "}
       </p>
-      <p className="resume__request">No code? Request one: <EmailLink variant="full" /></p>
+      <p className="resume__request">no code? request one: <EmailLink variant="full" /></p>
     </div>
   );
 }

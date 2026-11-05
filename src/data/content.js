@@ -61,6 +61,7 @@ export const certifications = [
 export const projects = [
   {
     name: "Active Directory home lab",
+    type: "lab",
     year: "2026",
     status: "complete",
     summary:
@@ -98,6 +99,7 @@ export const projects = [
   },
   {
     name: "TRACE — this portfolio",
+    type: "project",
     year: "2026",
     status: "live",
     summary:

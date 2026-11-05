@@ -163,6 +163,11 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const hs = len(hunter.vx, hunter.vy), maxH = 1500 * TUNE.hunterResponse;
     if (hs > maxH) { hunter.vx *= maxH / hs; hunter.vy *= maxH / hs; }
     hunter.x += hunter.vx * dt; hunter.y += hunter.vy * dt;
+    // keep the whole reticle (rings and brackets) on screen, never cut off at an edge
+    const edge = 66 * Math.sqrt(S);
+    if (hunter.y > H - edge) { hunter.y = H - edge; hunter.vy = Math.min(0, hunter.vy); }
+    if (hunter.x < edge) { hunter.x = edge; hunter.vx = Math.max(0, hunter.vx); }
+    if (hunter.x > W - edge) { hunter.x = W - edge; hunter.vx = Math.min(0, hunter.vx); }
     hunter.spin += dt * (phase === "hunt" ? 0.6 : 3);
 
     thread.x = lerp(thread.x || hunter.x, hunter.x, 1 - Math.pow(0.04, dt));

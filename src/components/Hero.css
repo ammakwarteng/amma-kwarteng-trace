@@ -115,42 +115,58 @@
 .hero__links a { font-size: 15px; letter-spacing: -0.02em; text-decoration: none; border-bottom: 1px solid var(--white-faint); }
 .hero__links a:hover { border-bottom-color: var(--white); }
 
-/* Scroll cue: a thin arrow, bottom centre */
+/* Scroll cue: the start of the trace. A node with the route line running down
+   to the bottom edge, where it continues as the trail below. A small pulse
+   travels down it to invite scrolling. */
 .hero__scroll {
   position: absolute;
   z-index: 8;
   left: 50%;
-  bottom: calc(5vh + env(safe-area-inset-bottom, 0px));
+  bottom: 0;
   width: 24px;
-  height: 64px;
+  height: calc(9vh + 14px);
   transform: translateX(-50%);
   display: block;
+}
+.hero__scroll::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border: 1.2px solid var(--white);
+  border-radius: 50%;
+  background: var(--black);
+  transform: translateX(-50%);
 }
 .hero__scroll span {
   position: absolute;
   left: 50%;
-  top: 0;
+  top: 11px;
   bottom: 0;
-  width: 1.5px;
+  width: 1.2px;
   background: var(--white);
   transform: translateX(-50%);
-  animation: scroll-nudge 2.4s var(--ease) infinite;
+  overflow: hidden;
 }
 .hero__scroll span::after {
   content: "";
   position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 14px;
-  height: 14px;
-  border-right: 1.5px solid var(--white);
-  border-bottom: 1.5px solid var(--white);
-  transform: translate(-50%, 0) rotate(45deg);
+  left: -2px;
+  top: -30%;
+  width: 5px;
+  height: 30%;
+  background: linear-gradient(180deg, transparent, var(--white));
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+  animation: scroll-pulse 2.2s var(--ease) infinite;
 }
-@keyframes scroll-nudge {
-  0%, 100% { transform: translate(-50%, 0); }
-  50% { transform: translate(-50%, 8px); }
+@keyframes scroll-pulse {
+  0% { top: -30%; }
+  70%, 100% { top: 100%; }
 }
+.hero__scroll:focus-visible { outline: 2px solid var(--white); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .hero__scroll span::after { animation: none; display: none; } }
 
 @media (max-width: 760px) {
   .hero { min-height: 700px; }

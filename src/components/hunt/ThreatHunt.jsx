@@ -21,7 +21,7 @@ export default function ThreatHunt({ surfaceRef }) {
       canvas,
       surface,
       reducedMotion,
-      getBounds: () => ({ top: 110, bottom: canvas.clientHeight - 40 }),
+      getBounds: () => ({ top: 110, bottom: canvas.clientHeight - 110 }), // room for the reticle below
       onStatus: (text, tone) => setStatus({ text, tone }),
       onCount: setCount,
     });

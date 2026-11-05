@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { track } from "../../track.js";
-import { beep, buzz, swoosh, unlockAudio } from "./sound.js";
+import { beep, buzz, setScrapeSpeed, startScrape, stopScrape, swoosh, unlockAudio } from "./sound.js";
 import LockScreen from "./LockScreen.jsx";
 import "./VisitorBadge.css";
 
@@ -52,6 +52,7 @@ export default function VisitorBadge() {
   const onDown = (e) => {
     if (state === "granted") return;
     unlockAudio();
+    startScrape();
     e.currentTarget.setPointerCapture(e.pointerId);
     drag.current = { start: e.clientX - x, last: e.clientX };
     setState("reading");
@@ -65,12 +66,14 @@ export default function VisitorBadge() {
     if (!drag.current) return;
     const dx = e.clientX - drag.current.last;
     drag.current.last = e.clientX;
+    setScrapeSpeed(dx);
     setTilt((t) => Math.max(-2, Math.min(2, t * 0.6 + dx * 0.25)));
     setX(Math.max(0, Math.min(max(), e.clientX - drag.current.start)));
   };
   const onUp = () => {
     if (!drag.current) return;
     unlockAudio();
+    stopScrape();
     drag.current = null;
     setTilt(0);
     if (x > max() * 0.85) grant();

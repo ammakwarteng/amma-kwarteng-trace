@@ -47,10 +47,10 @@ export function beep() {
 }
 
 // A soft swoosh: filtered noise sweeping up as the card leaves.
-export function swoosh(delay = 0.18) {
+export function swoosh(delay = 0.12) {
   const a = audio();
   if (!a) return;
-  const len = 0.45;
+  const len = 0.7;
   const buf = a.createBuffer(1, Math.floor(a.sampleRate * len), a.sampleRate);
   const data = buf.getChannelData(0);
   for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
@@ -61,10 +61,10 @@ export function swoosh(delay = 0.18) {
   filter.Q.value = 1.2;
   const gain = a.createGain();
   const t = a.currentTime + delay;
-  filter.frequency.setValueAtTime(500, t);
-  filter.frequency.exponentialRampToValueAtTime(3200, t + len);
+  filter.frequency.setValueAtTime(400, t);
+  filter.frequency.exponentialRampToValueAtTime(4200, t + len * 0.8);
   gain.gain.setValueAtTime(0.0001, t);
-  gain.gain.exponentialRampToValueAtTime(0.16, t + 0.12);
+  gain.gain.exponentialRampToValueAtTime(0.3, t + 0.18);
   gain.gain.exponentialRampToValueAtTime(0.0001, t + len);
   src.connect(filter).connect(gain).connect(a.destination);
   src.start(t);
@@ -74,4 +74,55 @@ export function swoosh(delay = 0.18) {
 // A small buzz on phones that support it (not iPhone).
 export function buzz() {
   try { navigator.vibrate?.([18, 40, 18]); } catch { /* not supported */ }
+}
+
+// Continuous "zzzip" of a magnetic stripe dragged through a reader head.
+// startScrape() while dragging, setScrapeSpeed(px per frame) as it moves,
+// stopScrape() on release. Louder the faster the card moves.
+let scrape = null;
+export function startScrape() {
+  const a = audio();
+  if (!a || scrape) return;
+  const len = 1;
+  const buf = a.createBuffer(1, a.sampleRate * len, a.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const src = a.createBufferSource();
+  src.buffer = buf;
+  src.loop = true;
+  const band = a.createBiquadFilter();
+  band.type = "bandpass";
+  band.frequency.value = 2200;
+  band.Q.value = 0.9;
+  // a fast tremolo gives the gritty "zip" texture of a real swipe
+  const grit = a.createGain();
+  grit.gain.value = 0.6;
+  const lfo = a.createOscillator();
+  lfo.frequency.value = 55;
+  const lfoDepth = a.createGain();
+  lfoDepth.gain.value = 0.4;
+  lfo.connect(lfoDepth).connect(grit.gain);
+  const vol = a.createGain();
+  vol.gain.value = 0.0001;
+  src.connect(band).connect(grit).connect(vol).connect(a.destination);
+  src.start();
+  lfo.start();
+  scrape = { src, lfo, vol, band, a };
+}
+export function setScrapeSpeed(speed) {
+  if (!scrape) return;
+  const { vol, band, a } = scrape;
+  const s = Math.min(1, Math.abs(speed) / 18);
+  const t = a.currentTime;
+  vol.gain.setTargetAtTime(0.0001 + s * 0.22, t, 0.03);
+  band.frequency.setTargetAtTime(1600 + s * 2400, t, 0.05);
+}
+export function stopScrape() {
+  if (!scrape) return;
+  const { src, lfo, vol, a } = scrape;
+  const t = a.currentTime;
+  vol.gain.setTargetAtTime(0.0001, t, 0.03);
+  src.stop(t + 0.2);
+  lfo.stop(t + 0.2);
+  scrape = null;
 }

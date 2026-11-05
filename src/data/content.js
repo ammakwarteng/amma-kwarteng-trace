@@ -51,6 +51,31 @@ export const certifications = [
 // project; the section shows them in this order.
 export const projects = [
   {
+    name: "Active Directory home lab",
+    year: "2026",
+    status: "in progress",
+    summary:
+      "A small company network on my laptop: a Windows Server 2022 domain controller running my own domain, lab.ammakwarteng.com, with departments, employees and group-based access.",
+    points: [
+      "Installed Windows Server 2022 in VMware Workstation and promoted it to a domain controller (AD DS and DNS) for lab.ammakwarteng.com",
+      "Gave the server a static IP, then diagnosed a VMware NAT gateway misconfiguration (192.168.168.0 instead of .2) that blocked all traffic, and confirmed the fix with ping",
+      "Built an OU structure for IT, HR, Finance and Sales",
+      "Onboarded four users, each required to change their password at first logon",
+      "Created a security group per department and verified every membership with PowerShell (Get-ADGroupMember)",
+    ],
+    next: "Next: password and lockout policies, then help desk tasks: password resets, account unlocks and offboarding a leaver.",
+    gallery: [
+      { src: "projects/ad-lab/01.webp", caption: "DC01 promoted to a domain controller for lab.ammakwarteng.com" },
+      { src: "projects/ad-lab/02.webp", caption: "Network fixed: replies from the gateway and the internet" },
+      { src: "projects/ad-lab/03.webp", caption: "Departments as organizational units under _Company" },
+      { src: "projects/ad-lab/04.webp", caption: "Onboarding a user who must change their password at first logon" },
+      { src: "projects/ad-lab/05.webp", caption: "All four users and their department groups" },
+      { src: "projects/ad-lab/06.webp", caption: "Group-based access: Kofi Asante in Finance-Staff" },
+      { src: "projects/ad-lab/07.webp", caption: "Every group membership verified with PowerShell" },
+    ],
+    tags: ["Active Directory", "Windows Server 2022", "DNS", "VMware", "PowerShell", "IAM", "troubleshooting"],
+  },
+  {
     name: "TRACE — this portfolio",
     year: "2026",
     status: "live",

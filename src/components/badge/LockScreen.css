@@ -70,3 +70,15 @@ html.is-locked, html.is-locked body { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .vm, .vm.is-leaving { animation: none; }
 }
+
+/* sign-out sequence and powered-off screen */
+.vm--power { grid-template-rows: 1fr; align-items: center; background: #000; }
+.vm__power { display: grid; justify-items: center; gap: 18px; text-align: center; }
+.vm__power p { margin: 0; font-size: 20px; letter-spacing: -0.02em; }
+.vm__spinner { width: 34px; height: 34px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.15); border-top-color: var(--white); animation: vm-spin 0.9s linear infinite; }
+@keyframes vm-spin { to { transform: rotate(360deg); } }
+.vm__off { font-size: 12px !important; letter-spacing: 0.1em !important; color: var(--white-faint); }
+.vm__poweron { display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--white); font-family: var(--font-mono); font-size: 13px; cursor: pointer; }
+.vm__poweron svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.vm__poweron:hover { border-color: var(--white); }
+@media (prefers-reduced-motion: reduce) { .vm__spinner { animation-duration: 3s; } }

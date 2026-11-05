@@ -103,7 +103,7 @@ export const projects = [
     year: "2026",
     status: "live",
     summary:
-      "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero, an employer-only encrypted resume and an access-badge sign-out that ends in a locked virtual machine.",
+      "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero, an employer-only encrypted resume and an access-card sign-out that ends in a virtual machine.",
     points: [
       "Designed the concept and look of an interactive cybersecurity portfolio",
       "Designed the full visual identity: layout, interactions and logo",
@@ -113,8 +113,8 @@ export const projects = [
       "Verified domain ownership and set up automatic publishing on every update",
       "Designed an interactive threat hunt: a tracking reticle follows the mouse or finger to detect and quarantine a fragment of malware",
       "Designed a \"leave your trace\" doodle pad where visitors draw and pin their own doodle",
-      "Designed an access-badge sign-out: visitors swipe a badge through a card reader to end their visit",
-      "Designed TRACE-VM, a locked virtual-machine screen after sign-out, with a guest login, a sign-out sequence and power on",
+      "Designed an access-card sign-out: a brushed-silver magnetic-stripe credential that visitors drag through a swipe reader, with a swipe sound, a reader beep and a white LED",
+      "Designed TRACE-VM, a virtual machine that opens after sign-out: a hypervisor-style window, a lock screen with Ctrl+Alt+Del, a guest login, a sign-out sequence and a boot sequence on power on",
       "Added private event counts for doodles, resume unlocks and badge swipes, so I can see how visitors use the site without collecting personal data",
     ],
     image: { src: "projects/logo.svg", alt: "My logo: a tracking reticle", caption: "my logo" },

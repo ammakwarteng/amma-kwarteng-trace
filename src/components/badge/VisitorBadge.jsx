@@ -43,12 +43,9 @@ export default function VisitorBadge() {
     setTimeout(() => setLocked(true), 1100);
   };
 
-  // back from the audit log: reset the badge and return to the top of the trace
+  // back from the audit log: start a fresh session (the intro plays again)
   const resume = () => {
-    setLocked(false);
-    setX(0);
-    setState("idle");
-    setTimeout(() => window.scrollTo({ top: 0, behavior: "instant" }), 0);
+    window.dispatchEvent(new Event("trace:new-session"));
   };
 
   const onDown = (e) => {

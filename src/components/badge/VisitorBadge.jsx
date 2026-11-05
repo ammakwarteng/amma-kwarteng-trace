@@ -88,7 +88,9 @@ export default function VisitorBadge() {
   return (
     <section className={`badge is-${state}`} aria-label="Visitor badge">
       <div className="badge__track" ref={trackRef}>
-        <div className="badge__groove" aria-hidden="true" />
+        <div className="badge__groove" aria-hidden="true">
+          <span className="badge__readhead" />
+        </div>
         <div
           className="badge__card"
           style={{ transform: `translateX(${x}px) rotate(${tilt}deg)`, "--gx": `${glint.x}%`, "--gy": `${glint.y}%` }}

@@ -8,7 +8,7 @@ import "./LockScreen.css";
   badge signs out. Nothing on the site is protected by it. The guest password
   is printed on screen on purpose; it's an easter egg, not access control.
   - correct password: back to the top of the site
-  - exit: go to Google
+  - sign out: a VM sign-out sequence, then "powered off" with a power-on button
 */
 const GUEST_PASSWORD = "trace2026";
 
@@ -16,6 +16,7 @@ export default function LockScreen({ onResume }) {
   const [value, setValue] = useState("");
   const [wrong, setWrong] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const [power, setPower] = useState("on"); // on | signing-out | off
   const [now, setNow] = useState(() => new Date());
   const inputRef = useRef(null);
 
@@ -43,13 +44,42 @@ export default function LockScreen({ onResume }) {
     }
   };
 
-  const exit = () => {
-    track("trace-vm-exit", "TRACE-VM exit to Google");
-    window.location.assign("https://www.google.com/");
+  const signOut = () => {
+    track("trace-vm-signed-out", "TRACE-VM signed out");
+    setPower("signing-out");
+    setTimeout(() => setPower("off"), 2200);
+  };
+  const powerOn = () => {
+    setPower("on");
+    setValue("");
+    setWrong(false);
+    setTimeout(() => inputRef.current?.focus(), 400);
   };
 
   const time = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   const date = now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
+
+  if (power !== "on") {
+    return createPortal(
+      <div className={`vm vm--power is-${power}`} role="dialog" aria-modal="true" aria-label="TRACE-VM">
+        {power === "signing-out" ? (
+          <div className="vm__power" role="status" aria-live="polite">
+            <span className="vm__spinner" aria-hidden="true" />
+            <p>signing out…</p>
+          </div>
+        ) : (
+          <div className="vm__power">
+            <p className="vm__off mono">trace-vm · powered off</p>
+            <button type="button" className="vm__poweron" onClick={powerOn} autoFocus>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8M7 6.3A7.5 7.5 0 1 0 17 6.3" /></svg>
+              power on
+            </button>
+          </div>
+        )}
+      </div>,
+      document.body
+    );
+  }
 
   return createPortal(
     <div className={`vm ${leaving ? "is-leaving" : ""}`} role="dialog" aria-modal="true" aria-label="TRACE-VM session locked">
@@ -96,7 +126,7 @@ export default function LockScreen({ onResume }) {
 
       <footer className="vm__foot mono">
         <p id="vm-hint">guest password hint: <code>{GUEST_PASSWORD}</code></p>
-        <button type="button" onClick={exit}>exit to google</button>
+        <button type="button" onClick={signOut}>sign out</button>
       </footer>
     </div>,
     document.body

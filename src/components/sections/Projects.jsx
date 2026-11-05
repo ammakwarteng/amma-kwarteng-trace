@@ -30,7 +30,11 @@ export default function Projects() {
   const current = shot && shot.list[shot.index];
 
   return (
-    <div className="projects">
+    <div className="projects-wrap">
+    {projects.length > 1 && (
+      <p className="projects-hint mono" aria-hidden="true">{projects.length} projects · scroll sideways for more</p>
+    )}
+    <div className="projects" aria-label="Projects">
       {projects.map((p) => (
         <article key={p.name} className="project">
           <p className="project__meta mono">
@@ -82,6 +86,7 @@ export default function Projects() {
           )}
         </article>
       ))}
+    </div>
 
       <dialog
         ref={dialogRef}

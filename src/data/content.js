@@ -21,16 +21,16 @@ export const roadmap = [
     items: ["Microsoft SC-900", "Microsoft SC-300", "SSO (SAML, OIDC)", "RBAC", "least privilege", "access reviews"],
   },
   {
-    phase: "pam engineer",
+    phase: "iam engineer",
     when: "then",
-    goal: "Protect privileged accounts with CyberArk.",
+    goal: "Design and run identity and privileged access systems, including CyberArk PAM.",
     items: ["CyberArk Trustee", "CyberArk Defender: PAM", "CyberArk Sentry: PAM", "vaulting", "password rotation", "session monitoring"],
   },
   {
-    phase: "iam / devsecops",
+    phase: "devsecops",
     when: "long term",
-    goal: "Automate identity and secrets across cloud and pipelines.",
-    items: ["identity automation", "secrets management", "cloud IAM"],
+    goal: "Automate security, identity and secrets across cloud and pipelines.",
+    items: ["secrets management", "cloud IAM", "CI/CD security", "infrastructure as code"],
   },
 ];
 

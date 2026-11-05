@@ -50,7 +50,7 @@ export const certifications = [
   { name: "ITIL 4 Foundation", code: "ITIL 4", issuer: "PeopleCert", status: "studying" },
   { name: "CompTIA Security+", code: "Sec+", issuer: "CompTIA", status: "next" },
   { name: "Microsoft SC-900", code: "SC-900", issuer: "Microsoft", status: "planned" },
-  { name: "Microsoft SC-300", code: "SC-300", issuer: "Microsoft", status: "planned" },
+  { name: "Microsoft SC-300: Identity and Access Administrator", code: "SC-300", issuer: "Microsoft", status: "next" },
   { name: "CyberArk Certified Trustee", code: "Trustee", issuer: "CyberArk", status: "planned" },
   { name: "CyberArk Defender: PAM", code: "Defender", issuer: "CyberArk", status: "planned" },
   { name: "CyberArk Sentry: PAM", code: "Sentry", issuer: "CyberArk", status: "planned" },

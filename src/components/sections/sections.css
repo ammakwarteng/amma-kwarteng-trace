@@ -230,8 +230,23 @@
 .trail__sec.is-right .resume__request { justify-content: flex-end; }
 
 /* Projects: one card per project, newest first */
-.projects { display: grid; gap: 20px; width: 100%; max-width: 46rem; }
-.trail__sec.is-right .projects { margin-left: auto; text-align: left; }
+/* projects: a sideways gallery of cards, each snapping into place */
+.projects-wrap { display: grid; gap: 10px; width: 100%; }
+.projects {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  padding: 2px 2px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--white-faint) transparent;
+}
+.projects > .project { flex: 0 0 min(560px, 86%); scroll-snap-align: start; }
+.projects-hint { margin: 0; font-size: 11px; letter-spacing: 0.04em; color: var(--white-faint); }
+.trail__sec.is-right .projects, .trail__sec.is-right .projects-wrap { text-align: left; }
 .project { display: grid; gap: 12px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255, 255, 255, 0.03); }
 .project__meta { margin: 0; display: flex; justify-content: space-between; gap: 12px; font-size: 12px; letter-spacing: 0.06em; color: var(--white-faint); }
 .project__meta span:first-child { display: inline-flex; align-items: center; gap: 8px; color: var(--white); }

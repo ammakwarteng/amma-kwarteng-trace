@@ -43,7 +43,14 @@ export default function Projects() {
             {p.points.map((pt) => <li key={pt}>{pt}</li>)}
           </ul>
           {p.gallery?.length > 0 && (
-            <ul className="project__gallery" aria-label={`${p.name} screenshots`}>
+            <ul
+              className="project__gallery"
+              aria-label={`${p.name} screenshots`}
+              onScroll={(e) => {
+                const g = e.currentTarget;
+                g.classList.toggle("is-end", g.scrollLeft + g.clientWidth >= g.scrollWidth - 4);
+              }}
+            >
               {p.gallery.map((g, i) => (
                 <li key={g.src}>
                   <button type="button" onClick={() => setShot({ list: p.gallery, index: i })} aria-label={`Open screenshot: ${g.caption}`}>
@@ -52,6 +59,9 @@ export default function Projects() {
                 </li>
               ))}
             </ul>
+          )}
+          {p.gallery?.length > 0 && (
+            <p className="project__gallery-hint mono" aria-hidden="true">{p.gallery.length} screenshots · scroll sideways, tap to enlarge</p>
           )}
           {p.next && <p className="project__next mono">{p.next}</p>}
           {p.image && (

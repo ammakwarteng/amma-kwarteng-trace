@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { track } from "../../track.js";
 import { beep, buzz, installAudioUnlock, setScrapeSpeed, startScrape, stopScrape, swoosh, unlockAudio } from "./sound.js";
-import LockScreen from "./LockScreen.jsx";
+import AuditLog from "./AuditLog.jsx";
 import "./VisitorBadge.css";
 
 /*
   The end of the trace: a visitor ID badge you swipe through a reader to sign
   out. The card's magnetic stripe edge rides in the reader's groove; on access
-  the reader beeps, its white LED lights and the card swooshes off, then the
-  TRACE-VM lock screen
-  appears. Nothing on the site is locked behind it. Drag the card across the
+  the reader beeps, its LED turns green and the card swooshes off, then the
+  session audit log appears. Nothing on the site is locked behind it. Drag the card across the
   reader (mouse or finger), or use the button for keyboard and screen readers.
 */
 const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "numeric" });
@@ -44,7 +43,7 @@ export default function VisitorBadge() {
     setTimeout(() => setLocked(true), 1100);
   };
 
-  // back from TRACE-VM: reset the badge and return to the top of the trace
+  // back from the audit log: reset the badge and return to the top of the trace
   const resume = () => {
     setLocked(false);
     setX(0);
@@ -133,7 +132,7 @@ export default function VisitorBadge() {
         </div>
       </div>
       <p className="visually-hidden" role="status" aria-live="polite">{state === "idle" ? "" : status}</p>
-      {locked && <LockScreen onResume={resume} />}
+      {locked && <AuditLog onResume={resume} />}
     </section>
   );
 }

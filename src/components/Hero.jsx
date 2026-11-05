@@ -5,6 +5,7 @@ import ArtifactSlot from "./ArtifactSlot.jsx";
 import ThreatHunt from "./hunt/ThreatHunt.jsx";
 import DoodlePad from "./doodle/DoodlePad.jsx";
 import EmailLink from "./EmailLink.jsx";
+import { track } from "../track.js";
 import "./Hero.css";
 
 // Photographic artifacts that float around the word. Empty for now: add
@@ -40,6 +41,7 @@ export default function Hero() {
   const pin = (src) => {
     setPinned(src);
     try { localStorage.setItem(PIN_KEY, src); } catch { /* storage blocked */ }
+    track("leave-your-trace-pinned", "Leave your trace: doodle pinned");
     setTimeout(closePad, 700); // slide away so the sticker shows
   };
   const unpin = () => {
@@ -66,7 +68,7 @@ export default function Hero() {
       )}
 
       <div className="hero__player" onPointerDown={(e) => e.stopPropagation()}>
-        <button type="button" className="hero__pen" onClick={() => setPadOpen(true)} aria-expanded={padOpen} aria-haspopup="dialog">
+        <button type="button" className="hero__pen" onClick={() => { setPadOpen(true); track("leave-your-trace-opened", "Leave your trace: pad opened"); }} aria-expanded={padOpen} aria-haspopup="dialog">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 16l1-4 8.5-8.5a2.1 2.1 0 0 1 3 3L8 15l-4 1zM12 5l3 3" /></svg>
           leave your trace
         </button>

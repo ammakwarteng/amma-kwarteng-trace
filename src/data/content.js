@@ -103,7 +103,7 @@ export const projects = [
     year: "2026",
     status: "live",
     summary:
-      "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero and an employer-only, encrypted resume.",
+      "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero, an employer-only encrypted resume and an access-badge sign-out that ends in a locked virtual machine.",
     points: [
       "Designed the concept and look of an interactive cybersecurity portfolio",
       "Designed the full visual identity: layout, interactions and logo",
@@ -111,6 +111,11 @@ export const projects = [
       "Locked my resume behind an access code using AES-256 encryption, so only employers I share it with can open it",
       "Set up privacy-friendly analytics with the dashboard restricted to me only",
       "Verified domain ownership and set up automatic publishing on every update",
+      "Designed an interactive threat hunt: a tracking reticle follows the mouse or finger to detect and quarantine a fragment of malware",
+      "Designed a \"leave your trace\" doodle pad where visitors draw and pin their own doodle",
+      "Designed an access-badge sign-out: visitors swipe a badge through a card reader to end their visit",
+      "Designed TRACE-VM, a locked virtual-machine screen after sign-out, with a guest login, a sign-out sequence and power on",
+      "Added private event counts for doodles, resume unlocks and badge swipes, so I can see how visitors use the site without collecting personal data",
     ],
     image: { src: "projects/logo.svg", alt: "My logo: a tracking reticle", caption: "my logo" },
     tags: ["DNS", "HTTPS", "encryption", "access control", "GitHub", "UX/UI"],

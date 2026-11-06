@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { owner, communities, links } from "../data/site.js";
+import { owner, links } from "../data/site.js";
 import ArtifactSlot from "./ArtifactSlot.jsx";
 import ThreatHunt from "./hunt/ThreatHunt.jsx";
 import DoodlePad from "./doodle/DoodlePad.jsx";
@@ -50,7 +50,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title" style={{ "--communities": communities.length }}>
+    <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title">
       {artifacts.map((a, i) => (
         <ArtifactSlot key={a.id} index={i + 1} {...a} />
       ))}
@@ -88,14 +88,6 @@ export default function Hero() {
       <div className="hero__intro">
         <p className="hero__headline">{owner.headline}</p>
         <p className="hero__subline">{owner.subline}</p>
-        <ul className="hero__communities">
-          {communities.map((c) => (
-            <li key={c.name}>
-              <span className="hero__badge">{c.role.toLowerCase()}</span>
-              <a href={c.url} target="_blank" rel="noopener noreferrer">{c.name.toLowerCase()}{c.short ? ` (${c.short.toLowerCase()})` : ""}</a>
-            </li>
-          ))}
-        </ul>
         <ul className="hero__links">
           {links.map((l) => (
             <li key={l.label}>

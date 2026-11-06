@@ -180,3 +180,9 @@
   .hero__intro { bottom: calc(7vh + env(safe-area-inset-bottom, 0px)); }
   .hero__scroll { display: none; }
 }
+
+/* Shorter laptop screens: sit the intro a little lower so the membership
+   rows don't push "an evolving archive" into the big word */
+@media (min-width: 761px) and (max-height: 860px) {
+  .hero__intro { bottom: calc(4vh + env(safe-area-inset-bottom, 0px)); }
+}

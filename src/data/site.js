@@ -22,6 +22,7 @@ export const links = [
 export const communities = [
   { name: "Women in CyberSecurity", short: "WiCyS", role: "Member", url: "https://www.wicys.org/" },
   { name: "Rewriting the Code", role: "Member", url: "https://rewritingthecode.org/" },
+  { name: "Women in Security and Privacy", short: "WISP", role: "Member", url: "https://www.wisporg.com/" },
 ];
 
 // Sections in the menu and on the page. Set ready: true once a section has

@@ -18,11 +18,15 @@ export const links = [
   { label: "github", url: "https://github.com/ammakwarteng" },
 ];
 
-// Professional communities, shown in the hero.
+// Professional communities, shown in the community section. Add one only
+// once joined; add events under a community only once attended.
 export const communities = [
-  { name: "Women in CyberSecurity", short: "WiCyS", role: "Member", url: "https://www.wicys.org/" },
-  { name: "Rewriting the Code", role: "Member", url: "https://rewritingthecode.org/" },
-  { name: "Women in Security and Privacy", short: "WISP", role: "Member", url: "https://www.wisp.org/" },
+  { name: "Women in CyberSecurity", short: "WiCyS", role: "Member", url: "https://www.wicys.org/",
+    about: "a nonprofit dedicated to recruiting, retaining and advancing women in cybersecurity" },
+  { name: "Women in Security and Privacy", short: "WISP", role: "Member", note: "toronto local group", url: "https://www.wisp.org/",
+    about: "advancing women and underrepresented communities to lead the future of privacy and security" },
+  { name: "Rewriting the Code", role: "Member", url: "https://rewritingthecode.org/",
+    about: "a community supporting women in tech, from students to early career" },
 ];
 
 // Sections in the menu and on the page. Set ready: true once a section has
@@ -33,6 +37,7 @@ export const navItems = [
   { id: "projects", label: "projects", ready: true },
   { id: "skills", label: "skills", ready: true },
   { id: "certifications", label: "certifications", ready: true },
+  { id: "community", label: "community", ready: true },
   { id: "resume", label: "resume", ready: true },
   { id: "contact", label: "contact", ready: true },
 ].filter((item) => item.ready);

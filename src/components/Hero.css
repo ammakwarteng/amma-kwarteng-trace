@@ -171,8 +171,7 @@
 @media (max-width: 760px) {
   .hero { min-height: 700px; }
   .hero__word { font-size: 31vw; left: 50%; top: 22%; transform: translate(-50%, -50%); }
-  /* sits above the intro; moves up one row for each community listed */
-  .hero__player { left: 16px; top: auto; bottom: calc(7vh + 170px + var(--communities, 1) * 30px + env(safe-area-inset-bottom, 0px)); }
+  .hero__player { left: 16px; top: auto; bottom: calc(7vh + 160px + env(safe-area-inset-bottom, 0px)); }
   .sheet__card { margin-top: calc(12vh + env(safe-area-inset-top, 0px)); }
   .hero__intro { left: 16px; right: 16px; bottom: calc(9vh + env(safe-area-inset-bottom, 0px)); }
   .hero__communities li { font-size: 13px; }

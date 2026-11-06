@@ -15,7 +15,7 @@
 
 // Black and white, plus two signal colours: red for the threat (malware, lock-on,
 // detection) and green once it is quarantined (resolved).
-// The trace web stays white.
+// The light trail stays white.
 const C = {
   threat: "#ff2b2b",
   secure: "#57e389",
@@ -30,7 +30,8 @@ const C = {
   grey: "#6b6b6b",
 };
 const MONO = '500 11px "JetBrains Mono", ui-monospace, monospace';
-const TRACE_MAX = 70;
+const TRAIL_LIFE = 5;    // seconds a stretch of the light trail takes to fade
+const CATCH_LIFE = 8;    // seconds a catch marker stays
 const SIGNATURES = ["Trojan.Gen.TR4", "Dropper.Win32.k", "PUA.Keylogger.x", "Backdoor.Agent.7", "Worm.Net.Relay", "Spyware.Clip.b"];
 
 // Tuned in the prototype review.
@@ -54,7 +55,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
   const mal = { x: 0, y: 0, vx: 0, vy: 0, seed: Math.random() * 100, evadeT: 0, cool: 0, dartT: 0, frags: [], glitchT: 0, scale: 1, sig: SIGNATURES[0] };
   const ghosts = [];
   const thread = { x: 0 };
-  let nodes = [], edges = [], lastNodeT = 0;
+  let trail = [], catches = [];
   let phase = "hunt", phaseT = 0, huntT = 0, lockT = 0, count = 0, ghostT = 0, now = 0;
   let status = "";
   let raf = 0, running = false, visible = true, lastTs = 0;
@@ -259,7 +260,7 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
       else lockT = Math.max(0, lockT - dt * 2);
       if (lockT > 0.22) {
         lockT = 0; huntT = 0; phase = "detect"; phaseT = 0; mal.vx = mal.vy = 0;
-        addNode(mal.x, mal.y, true);
+        catches.push({ x: mal.x, y: mal.y, t: now });
         setStatus("Threat detected", "threat");
       }
     } else {
@@ -316,51 +317,39 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     ctx.globalAlpha = 1;
   }
 
-  // ---------- the trace: a web of thin lines the hunter leaves behind ----------
-  function addNode(x, y, isCatch = false) {
-    const node = { x, y, isCatch };
-    const prev = nodes[nodes.length - 1];
-    if (prev) edges.push([prev, node]);
-    // sometimes tie back to a nearby older node, which builds a web
-    let best = null, bestD = 160 * S;
-    for (let i = 0; i < nodes.length - 2; i++) {
-      const d = len(nodes[i].x - x, nodes[i].y - y);
-      if (d < bestD) { bestD = d; best = nodes[i]; }
-    }
-    if (best && Math.random() < 0.55) edges.push([best, node]);
-    nodes.push(node);
-    if (nodes.length > TRACE_MAX) {
-      const gone = nodes.shift();
-      edges = edges.filter(([a, b]) => a !== gone && b !== gone);
-    }
-  }
+  // ---------- the trace: a smooth light trail that fades behind the hunter ----------
   function recordTrace() {
     if (phase !== "hunt") return;
-    const last = nodes[nodes.length - 1];
-    if (now - lastNodeT < 0.22) return;
-    if (last && len(last.x - hunter.x, last.y - hunter.y) < 70 * S) return;
-    lastNodeT = now;
-    addNode(hunter.x, hunter.y);
+    const last = trail[trail.length - 1];
+    if (last && len(last.x - hunter.x, last.y - hunter.y) < 4) return;
+    trail.push({ x: hunter.x, y: hunter.y, t: now });
+    if (trail.length > 900) trail.shift();
   }
-  function clearTrace() { nodes = []; edges = []; }
+  function clearTrace() { trail = []; catches = []; }
 
   function drawTrace() {
-    if (!edges.length && !nodes.length) return;
+    while (trail.length && now - trail[0].t > TRAIL_LIFE) trail.shift();
+    while (catches.length && now - catches[0].t > CATCH_LIFE) catches.shift();
     ctx.save();
-    ctx.strokeStyle = "rgba(255,255,255,0.45)";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (const [a, b] of edges) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); }
-    ctx.stroke();
-    for (const n of nodes) {
-      if (n.isCatch) {
-        ctx.fillStyle = C.secure;
-        ctx.fillRect(n.x - 3.5, n.y - 3.5, 7, 7);
-      } else {
-        ctx.fillStyle = C.wall;
-        ctx.strokeStyle = "rgba(255,255,255,0.8)";
-        ctx.beginPath(); ctx.arc(n.x, n.y, 2.6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      }
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = 1.5;
+    // a smooth curve through the points, each piece fading with its age
+    const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+    for (let i = 1; i < trail.length - 1; i++) {
+      const a = mid(trail[i - 1], trail[i]), b = mid(trail[i], trail[i + 1]);
+      const life = 1 - (now - trail[i].t) / TRAIL_LIFE;
+      ctx.strokeStyle = `rgba(255,255,255,${(life * life * 0.7).toFixed(3)})`;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.quadraticCurveTo(trail[i].x, trail[i].y, b.x, b.y);
+      ctx.stroke();
+    }
+    // where a threat was caught: a small green square that fades away
+    for (const c of catches) {
+      ctx.globalAlpha = clamp(1 - (now - c.t) / CATCH_LIFE, 0, 1);
+      ctx.fillStyle = C.secure;
+      ctx.fillRect(c.x - 3.5, c.y - 3.5, 7, 7);
     }
     ctx.restore();
   }

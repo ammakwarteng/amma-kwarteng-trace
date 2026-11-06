@@ -50,7 +50,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title">
+    <section className="hero" id="top" ref={heroRef} aria-labelledby="hero-title" style={{ "--communities": communities.length }}>
       {artifacts.map((a, i) => (
         <ArtifactSlot key={a.id} index={i + 1} {...a} />
       ))}
@@ -90,9 +90,9 @@ export default function Hero() {
         <p className="hero__subline">{owner.subline}</p>
         <ul className="hero__communities">
           {communities.map((c) => (
-            <li key={c.short}>
+            <li key={c.name}>
               <span className="hero__badge">{c.role.toLowerCase()}</span>
-              <a href={c.url} target="_blank" rel="noopener noreferrer">{c.name.toLowerCase()} ({c.short.toLowerCase()})</a>
+              <a href={c.url} target="_blank" rel="noopener noreferrer">{c.name.toLowerCase()}{c.short ? ` (${c.short.toLowerCase()})` : ""}</a>
             </li>
           ))}
         </ul>

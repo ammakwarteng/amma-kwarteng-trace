@@ -105,11 +105,16 @@ export default function AuditLog({ onResume }) {
           </span>
         </header>
 
-        {/* filters, as an event viewer shows them */}
+        {/* search bar with the query, and filter chips, as a log viewer shows them */}
+        <div className="audit__query">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" /><path d="M13 13l4 4" /></svg>
+          <code>source=&quot;access-control&quot; session=&quot;{log.session}&quot;</code>
+          <span className="audit__count">{shown} {shown === 1 ? "event" : "events"}</span>
+        </div>
         <div className="audit__filters">
           <span>source: <b>access-control</b></span>
           <span>range: <b>this session</b></span>
-          <span>session: <b>{log.session}</b></span>
+          <span>level: <b>all</b></span>
           <span className="audit__corr">correlation id: <b>{log.corr}</b></span>
         </div>
 
@@ -127,10 +132,10 @@ export default function AuditLog({ onResume }) {
             <div key={e.id} className="audit__row" role="row">
               <span className="audit__t" role="cell" title={iso(e.t)}>{clock(e.t)}</span>
               <span className="audit__id" role="cell">{e.id}</span>
-              <span className="audit__lvl" role="cell">INFO</span>
+              <span className="audit__lvl" role="cell"><span className="audit__pill audit__pill--info">INFO</span></span>
               <span className="audit__ev" role="cell">{e.ev}</span>
               <span className="audit__detail" role="cell">{e.detail}</span>
-              <span className="audit__res" role="cell">{e.res}</span>
+              <span className="audit__res" role="cell"><span className="audit__pill audit__pill--ok">{e.res}</span></span>
             </div>
           ))}
           {!done && <div className="audit__cursor" aria-hidden="true" />}
@@ -139,7 +144,10 @@ export default function AuditLog({ onResume }) {
         {/* summary + raw record of the sign-out */}
         <div className={`audit__after ${done ? "is-done" : ""}`}>
           <p className="audit__summary">
-            {log.events.length} events · 0 warnings · 0 errors · access closed
+            <span className="audit__pill audit__pill--ok">{log.events.length} events</span>
+            <span className="audit__pill">0 warnings</span>
+            <span className="audit__pill">0 errors</span>
+            <span>access closed</span>
           </p>
           <details className="audit__raw">
             <summary>raw event · AC-4634 authn.sign_out</summary>

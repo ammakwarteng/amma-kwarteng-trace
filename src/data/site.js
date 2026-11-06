@@ -21,6 +21,7 @@ export const links = [
 // Professional communities, shown in the hero.
 export const communities = [
   { name: "Women in CyberSecurity", short: "WiCyS", role: "Member", url: "https://www.wicys.org/" },
+  { name: "Rewriting the Code", role: "Member", url: "https://rewritingthecode.org/" },
 ];
 
 // Sections in the menu and on the page. Set ready: true once a section has

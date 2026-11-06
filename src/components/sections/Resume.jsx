@@ -78,7 +78,7 @@ export default function Resume() {
   return (
     <div className="resume">
       <p className="resume__label mono"><i className="resume__dot" aria-hidden="true" />restricted · employer access</p>
-      <p className="resume__lead">my resume is encrypted. employers can unlock it with the access code I share.</p>
+      <p className="resume__lead">My resume is encrypted. Employers can unlock it with the access code I share.</p>
       <form className="resume__form" onSubmit={submit}>
         <label className="resume__field">
           <span className="mono">access code</span>

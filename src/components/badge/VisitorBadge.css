@@ -249,3 +249,13 @@
   .badge__light { width: 8px; height: 8px; }
   .badge__screws i { width: 6px; height: 6px; }
 }
+
+/* the two small lights on the right flash with the main light:
+   white while the card is reading (one after the other), green on access */
+.badge__screws i { transition: background 0.3s, box-shadow 0.3s; }
+.badge.is-reading .badge__screws i { background: rgba(255, 255, 255, 0.6); animation: badge-blink 0.5s steps(2) infinite; }
+.badge.is-reading .badge__screws i:last-child { animation-delay: 0.25s; }
+.badge.is-granted .badge__screws i { background: var(--secure); box-shadow: 0 0 0 2px rgba(87, 227, 137, 0.2), 0 0 10px rgba(87, 227, 137, 0.8); }
+@media (prefers-reduced-motion: reduce) {
+  .badge.is-reading .badge__screws i { animation: none; }
+}

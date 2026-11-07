@@ -5,10 +5,10 @@ import "./sections.css";
 export default function Community() {
   return (
     <div className="community">
-      {communities.map((c) => (
+      {communities.map((c, n) => (
         <section key={c.name} className="community__row" aria-label={c.name}>
           <div className="community__head">
-            <span className="community__badge mono">{c.role.toLowerCase()}</span>
+            <span className="community__badge idl"><b>MBR-{String(n + 1).padStart(2, "0")}</b> · <span className="st">{c.role.toLowerCase()}</span></span>
             <h3 className="community__name">
               <a href={c.url} target="_blank" rel="noopener noreferrer">
                 {c.name.toLowerCase()}{c.short ? ` (${c.short.toLowerCase()})` : ""}

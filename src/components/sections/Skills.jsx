@@ -5,9 +5,10 @@ import "./sections.css";
 export default function Skills() {
   return (
     <div className="skills">
-      {skills.map((s) => (
+      {skills.map((s, n) => (
         <section key={s.group} className="skills__group" aria-label={s.group}>
           <div className="skills__head">
+            <span className="idl"><b>SKL-{String(n + 1).padStart(2, "0")}</b> · <span className="st">proven</span></span>
             <h3 className="skills__name">{s.group}</h3>
             <p className="skills__proof mono">proof · {s.proof}</p>
           </div>

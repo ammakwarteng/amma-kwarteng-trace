@@ -42,15 +42,17 @@ export default function Projects() {
       <p className="projects-hint mono" aria-hidden="true">{projects.length} projects · scroll sideways for more</p>
     )}
     <div className="projects" aria-label="Projects">
-      {projects.map((p) => {
+      {projects.map((p, n) => {
         const isOpen = openCards.has(p.name);
         const detailsId = `project-details-${p.name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
         return (
-        <article key={p.name} className={`project ${isOpen ? "is-open" : ""}`}>
+        <article key={p.name} className={`project tf tf-hover ${isOpen ? "is-open" : ""}`}>
           <p className="project__meta mono">
-            <span className="project__status">
-              {p.type && <span className="project__type">{p.type}</span>}
-              <i className={`project__dot is-${p.status.replace(/\s+/g, "-")}`} aria-hidden="true" />{p.status}
+            <span className="project__status idl">
+              <b>PRJ-{String(n + 1).padStart(2, "0")}</b>
+              {p.type && <span>· {p.type} ·</span>}
+              <i className={`project__dot is-${p.status.replace(/\s+/g, "-")}`} aria-hidden="true" />
+              <span className={`st ${p.status === "live" ? "is-secure" : ""}`}>{p.status}</span>
             </span>
             <span>{p.year}</span>
           </p>

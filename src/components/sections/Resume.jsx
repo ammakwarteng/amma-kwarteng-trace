@@ -59,7 +59,7 @@ export default function Resume() {
   if (state === "granted") {
     return (
       <div className="resume">
-        <p className="resume__label mono"><i className="resume__dot is-open" aria-hidden="true" />access granted</p>
+        <p className="resume__label idl"><i className="resume__dot is-open" aria-hidden="true" /><b>RES</b> · employer access · <span className="st is-secure">access granted</span></p>
         <p className="resume__lead">thanks for your interest. my resume is ready.</p>
         <div className="resume__actions">
           <a className="resume__btn" href={url} target="_blank" rel="noopener">view resume</a>
@@ -77,11 +77,17 @@ export default function Resume() {
 
   return (
     <div className="resume">
-      <p className="resume__label mono"><i className="resume__dot" aria-hidden="true" />restricted · employer access</p>
+      <p className="resume__label idl">
+        <i className="resume__dot" aria-hidden="true" /><b>RES</b> · employer access ·{" "}
+        <span className={`st ${state === "denied" ? "is-threat" : ""}`}>
+          {{ checking: "verifying…", denied: "access denied", unavailable: "unavailable" }[state] || "restricted"}
+        </span>
+      </p>
       <p className="resume__lead">My resume is encrypted. Employers can unlock it with the access code I share.</p>
       <form className="resume__form" onSubmit={submit}>
         <label className="resume__field">
           <span className="mono">access code</span>
+          <span className={`resume__box tf tf-scan ${state === "checking" ? "is-scanning" : ""} ${state === "denied" ? "tf--threat" : ""}`}>
           <input
             ref={inputRef}
             id="resume-code"
@@ -93,6 +99,7 @@ export default function Resume() {
             onChange={(e) => { setCode(e.target.value); if (state === "denied") setState("locked"); }}
             aria-describedby="resume-msg"
           />
+          </span>
         </label>
         <button className="resume__btn" type="submit" disabled={!code.trim() || state === "checking"}>unlock</button>
       </form>

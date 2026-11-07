@@ -159,9 +159,9 @@ export default function Trail({ sections }) {
           >
             <div className="trail__head-row">
               <span className="trail__node" data-node aria-hidden="true" />
-              <span className="trail__hop mono">hop {String(i + 1).padStart(2, "0")} · {s.id}</span>
+              <span className="trail__hop mono">{String(i + 1).padStart(2, "0")} · {s.label}{i <= reached && <span className="st"> · verified</span>}</span>
             </div>
-            <h2 className="trail__h" id={`${s.id}-title`}>
+            <h2 className="trail__h tf tf-lock" id={`${s.id}-title`}>
               <button
                 type="button"
                 className="trail__toggle"

@@ -428,7 +428,17 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     const tone = phase === "detect" ? C.threat : C.secure;
     ctx.strokeStyle = tone; ctx.lineWidth = 1.2;
     ctx.globalAlpha = phase === "detect" ? (Math.floor(phaseT * 14) % 2 ? 1 : 0.55) : fade;
-    ctx.strokeRect(Math.round(x - size / 2) + 0.5, Math.round(y - size / 2) + 0.5, Math.round(size), Math.round(size));
+    // TRACE frame: four corner brackets instead of a full box
+    {
+      const l = Math.round(x - size / 2) + 0.5, t = Math.round(y - size / 2) + 0.5, r = l + Math.round(size), b = t + Math.round(size);
+      const k = Math.max(6, size * 0.28);
+      ctx.beginPath();
+      ctx.moveTo(l, t + k); ctx.lineTo(l, t); ctx.lineTo(l + k, t);
+      ctx.moveTo(r - k, t); ctx.lineTo(r, t); ctx.lineTo(r, t + k);
+      ctx.moveTo(l, b - k); ctx.lineTo(l, b); ctx.lineTo(l + k, b);
+      ctx.moveTo(r - k, b); ctx.lineTo(r, b); ctx.lineTo(r, b - k);
+      ctx.stroke();
+    }
     if (phase === "quarantine") {
       ctx.beginPath();
       for (let i = -size; i < size; i += 5) {
@@ -440,7 +450,8 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     ctx.restore();
 
     ctx.font = MONO; ctx.textBaseline = "top";
-    const text = phase === "detect" ? "THREAT DETECTED" : "QUARANTINED · 1 FILE ISOLATED";
+    const rec = `Q-${String(count + 1).padStart(2, "0")} · ${mal.sig.toUpperCase()}`;
+    const text = phase === "detect" ? `${rec} · THREAT DETECTED` : `${rec} · QUARANTINED`;
     const tw = ctx.measureText(text).width + 14;
     const lx = clamp(x - tw / 2, 8, W - tw - 8), ly = y + 48 * S;
     ctx.globalAlpha = fade;

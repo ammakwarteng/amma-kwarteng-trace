@@ -11,6 +11,7 @@ import Resume from "./components/sections/Resume.jsx";
 import Projects from "./components/sections/Projects.jsx";
 import Skills from "./components/sections/Skills.jsx";
 import Community from "./components/sections/Community.jsx";
+import Volunteer from "./components/sections/Volunteer.jsx";
 import { navItems, links } from "./data/site.js";
 
 // Each section that is ready (see navItems in site.js) is a hop on the trace.
@@ -27,6 +28,8 @@ const sections = navItems.map((item) => ({
       <Certifications />
     ) : item.id === "community" ? (
       <Community />
+    ) : item.id === "volunteer" ? (
+      <Volunteer />
     ) : item.id === "resume" ? (
       <Resume />
     ) : item.id === "contact" ? (

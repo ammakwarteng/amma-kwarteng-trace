@@ -181,13 +181,13 @@ a.btn { text-decoration: none; }
       <button class="btn" type="button" id="sumWalk">free walk</button>
       <a class="btn" href="../">back to portfolio</a>
     </div>
-    <p class="summary__credit">"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified · "Rigged hand" by <a href="https://sketchfab.com/elenaferfor" target="_blank" rel="noopener">Elena FF</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> · recoloured<br>all identities and biometrics are simulated</p>
+    <p class="summary__credit">"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified<br>all identities and biometrics are simulated</p>
   </div>
 </div>
 
 <div class="info" id="info" role="dialog" aria-label="Credits" hidden>
-  <span class="info__id">CREDITS · 3D MODELS</span>
-  <p>"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified<br>"Rigged hand" by <a href="https://sketchfab.com/elenaferfor" target="_blank" rel="noopener">Elena FF</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> · recoloured<br>all identities and biometrics are simulated</p>
+  <span class="info__id">CREDITS · 3D MODEL</span>
+  <p>"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified<br>all identities and biometrics are simulated</p>
   <button class="btn" type="button" id="infoClose">close</button>
 </div>
 
@@ -708,48 +708,26 @@ const cardTex = textTex(512, 324, (x, w, h) => {
   x.fillStyle = "#050505"; x.fillRect(0, h - 64, w, 42);
 });
 const card = new THREE.Mesh(new THREE.BoxGeometry(0.0856, 0.054, 0.0012), [M.silver, M.silver, M.silver, M.silver, std(0xffffff, 0.35, 0.4, { map: cardTex }), M.silver]);
-hand.add(card);
-// the hand: "Rigged hand" by Elena FF (CC BY-SA 4.0), tinted to a darker brown and posed with its own
-// finger animation so it grips the card; a shirt cuff and suit sleeve are attached at the wrist
-const HAND = { pos: [0.048, -0.052, 0.012], rot: [0, -1.57, 0.5], scale: 0.09, pose: 0.8, tint: 0x6a5e52, cuffOffset: 0.006, cuffScale: 0.9 };
-const holdG = new THREE.Group(); hand.add(holdG);
-let handMixer = null, wristBone = null;
-const sleeveG = new THREE.Group();
-{
-  const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.016, 28), std(0xf3f1ec, 0.7)); cuff.position.y = -0.008; sleeveG.add(cuff);
-  const slv = new THREE.Mesh(new THREE.CylinderGeometry(0.031, 0.034, 0.16, 28), std(0x2b2f34, 0.85)); slv.position.y = -0.09; sleeveG.add(slv);
+// badge reel: the TRACE card sits in a clear holder on a retractable cord. It's pulled up to the
+// reader, tapped, and snaps back down. No hand, so nothing looks fake or clips through the card.
+const badgeG = new THREE.Group(); hand.add(badgeG);
+badgeG.add(card);
+const holderGeo = new THREE.BoxGeometry(0.094, 0.064, 0.004);
+badgeG.add(new THREE.Mesh(holderGeo, new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.06, metalness: 0, transparent: true, opacity: 0.16, envMapIntensity: 1.3, depthWrite: false })));
+badgeG.add(new THREE.LineSegments(new THREE.EdgesGeometry(holderGeo), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35 })));
+box(0.03, 0.004, 0.0045, std(0x0d0e10, 0.5), 0, 0.026, 0, badgeG, { cast: false });   // slot in the holder
+box(0.011, 0.02, 0.0018, std(0x15171a, 0.6), 0, 0.041, 0, badgeG, { cast: false });   // vinyl strap
+box(0.016, 0.006, 0.006, M.silver, 0, 0.052, 0, badgeG, { cast: false });            // metal clip
+const reel = new THREE.Group(); reel.position.set(0.1, -0.3, -0.3); hand.add(reel);
+const reelBody = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.012, 40), M.charcoal); reelBody.rotation.x = Math.PI / 2; reel.add(reelBody);
+const reelRim = new THREE.Mesh(new THREE.TorusGeometry(0.022, 0.0016, 8, 40), M.silver); reel.add(reelRim);
+const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.0009, 0.0009, 1, 8), std(0x111214, 0.5)); hand.add(cord);
+const _ca = new THREE.Vector3(), _cb = new THREE.Vector3(), _cu = new THREE.Vector3(0, 1, 0);
+function updateCord() {
+  badgeG.updateMatrix(); _cb.set(0, 0.055, 0).applyMatrix4(badgeG.matrix); _ca.copy(reel.position);
+  const d = _cb.sub(_ca), L = d.length(); cord.position.copy(_ca).addScaledVector(d, 0.5);
+  cord.scale.set(1, L, 1); cord.quaternion.setFromUnitVectors(_cu, d.normalize());
 }
-function applyHand() {
-  holdG.position.set(...HAND.pos); holdG.rotation.set(...HAND.rot); holdG.scale.setScalar(HAND.scale);
-  if (handMixer) handMixer.setTime(HAND.pose);
-  handMeshes.forEach((o) => o.material.color.set(HAND.tint));
-  // line the cuff and sleeve up with the forearm: from the hand bone back through the wrist bone
-  if (wristBone && handBone) {
-    holdG.updateMatrixWorld(true); hand.updateMatrixWorld(true);
-    const w = hand.worldToLocal(wristBone.getWorldPosition(new THREE.Vector3()));
-    const h = hand.worldToLocal(handBone.getWorldPosition(new THREE.Vector3()));
-    const d = w.clone().sub(h).normalize();
-    sleeveG.position.copy(w).addScaledVector(d, HAND.cuffOffset);
-    sleeveG.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), d);
-    sleeveG.scale.setScalar(HAND.cuffScale);
-    if (!sleeveG.parent) hand.add(sleeveG);
-  }
-}
-let handBone = null;
-const handMeshes = [];
-new GLTFLoader().load("rigged_hand.glb", (g) => {
-  const m = g.scene;
-  m.traverse((o) => {
-    if (o.isLight || o.isCamera) o.visible = false;
-    if (o.isMesh) { handMeshes.push(o); o.material.color.set(HAND.tint); o.frustumCulled = false; o.castShadow = false; o.receiveShadow = false; }
-    if (o.isBone && /^pulse\.?R/.test(o.name)) wristBone = o;
-    if (o.isBone && /^hand\.?R_02/.test(o.name)) handBone = o;
-  });
-  handMixer = new THREE.AnimationMixer(m); handMixer.clipAction(g.animations[0]).play();
-  holdG.add(m); applyHand();
-});
-window.handDebug = () => ({ wrist: wristBone?.name, hand: handBone?.name, sleeve: !!sleeveG.parent, at: sleeveG.position.toArray().map((v) => +v.toFixed(3)) });
-window.tuneHand = (cfg) => { Object.assign(HAND, cfg); applyHand(); };
 
 /* ===================== screens ===================== */
 const GREEN = "#3ddc84", RED = "#ff4d4d";
@@ -995,14 +973,16 @@ function applyWorld(t, cine) {
   if (rState + "" !== lastReaderKey) { drawReader(rState); lastReaderKey = rState + ""; }
   ledMat.color.set(rState === 2 ? 0x3ddc84 : rState === 1 ? 0xffffff : 0xff3b30); ledMat.emissive.copy(ledMat.color);
   if (rState === 1) ledMat.emissiveIntensity = Math.floor(t * 8) % 2 ? 2.4 : 0.4; else ledMat.emissiveIntensity = 2.2;
-  hand.visible = cine && t > 27.2 && t < 31.4;
+  hand.visible = cine && t > 27.0 && t < 31.6;
   if (hand.visible) {
-    const up = smooth(27.2, 27.9, t) * (1 - smooth(30.7, 31.4, t)), sw = smooth(28.3, 28.9, t) - smooth(29.6, 30.2, t);
-    hand.position.set(-0.02 + 0.05 * (1 - up), -0.24 + 0.19 * up - 0.02 * sw, -0.27 - 0.03 * sw);
-    hand.rotation.set(-0.35 - 0.2 * sw, 0.15, 0.08);
+    // pull up on the cord, tap the reader, then let go: the reel snaps it back quickly
+    const up = smooth(27.0, 27.8, t) * (1 - smooth(30.9, 31.3, t)), tap = smooth(28.2, 28.6, t) - smooth(29.4, 29.9, t);
+    badgeG.position.set(-0.015 + 0.08 * (1 - up), -0.29 + 0.24 * up, -0.3 - 0.05 * tap);
+    badgeG.rotation.set(-0.12 - 0.2 * tap, 0.12 * (1 - up), 0.05 * Math.sin(t * 2.6) * (1 - tap));
     const narrow = camera.aspect < 0.8;                 // phones: smaller and closer to the middle
     hand.scale.setScalar(narrow ? 0.62 : 1);
-    if (narrow) hand.position.x -= 0.012;
+    hand.position.set(narrow ? -0.012 : 0, 0, 0);
+    updateCord();
   }
   // scanner
   const sState = !cine ? 2 : t < 32.6 ? 0 : t < 39.4 ? 1 : 2, sp = smooth(32.8, 39.2, t);

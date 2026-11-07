@@ -106,7 +106,7 @@ export default function Projects() {
           {p.links?.length > 0 && (
             <p className="project__links">
               {p.links.map((l) => (
-                <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a>
+                <a key={l.url} href={l.url} {...(/^https?:/.test(l.url) ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{l.label}</a>
               ))}
             </p>
           )}

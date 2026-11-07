@@ -60,6 +60,34 @@ export const certifications = [
 // project; the section shows them in this order.
 export const projects = [
   {
+    name: "TRACE HQ — an IAM engineer's workday",
+    type: "simulation",
+    year: "2026",
+    status: "in progress",
+    summary:
+      "A first-person 3D walkthrough of an IAM engineer's day at a fictional headquarters: arrive, prove who you are, get in, and process joiner, mover and leaver requests.",
+    points: [
+      "Designed a first-person walkthrough of an IAM engineer's workday, from the building entrance to the end of the shift",
+      "Built the scenes in 3D: exterior, revolving door, lobby, security checkpoint, secured corridor, elevator and an IAM workstation",
+      "Used a licensed 3D revolving-door model (CC BY 4.0, credited on the page) and turned its painted glass into real see-through glass",
+      "Modelled two-factor entry: an access-card check, then a simulated 68-point facial verification with no camera and no biometric data",
+      "Kept authentication and authorization separate: the verified employee gets the secure area but is still denied the server room because it's not in their role",
+      "Walked through joiner, mover and leaver workflows step by step, with access granted, removed and revoked, and every action recorded in an audit log",
+      "Added a cinematic mode with play, pause and replay, plus a free-walk mode for keyboard, mouse and touch",
+    ],
+    next: "Next: make each step playable in free-walk mode: present the card, face the scanner, call the elevator and click through the requests yourself.",
+    links: [{ label: "enter the simulation", url: "hq/" }],
+    gallery: [
+      { src: "projects/hq/01.webp", caption: "Arriving at TRACE headquarters" },
+      { src: "projects/hq/02.webp", caption: "Walking through the revolving door into the lobby" },
+      { src: "projects/hq/03.webp", caption: "Presenting the access credential at the card reader" },
+      { src: "projects/hq/04.webp", caption: "Simulated facial verification: 68 / 68 landmarks, access granted" },
+      { src: "projects/hq/05.webp", caption: "The elevator to the IAM floor" },
+      { src: "projects/hq/06.webp", caption: "The IAM console: a mover request removing outdated access" },
+    ],
+    tags: ["IAM", "joiner / mover / leaver", "RBAC", "least privilege", "authentication", "audit logging", "3D", "UX/UI"],
+  },
+  {
     name: "Active Directory home lab",
     type: "lab",
     year: "2026",
@@ -103,7 +131,7 @@ export const projects = [
     year: "2026",
     status: "live",
     summary:
-      "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero, an employer-only encrypted resume and an access-card sign-out that ends in a virtual machine.",
+      "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero, an employer-only encrypted resume and an access-card sign-out that ends in a session audit log.",
     points: [
       "Designed the concept and look of an interactive cybersecurity portfolio",
       "Designed the full visual identity: layout, interactions and logo",

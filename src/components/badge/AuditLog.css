@@ -34,6 +34,7 @@ html.is-locked, html.is-locked body { overflow: hidden; }
 .audit__panel {
   width: min(100%, 1060px);
   margin: auto 0; /* centred, but scrolls from the top when taller than the screen */
+  flex-shrink: 0; /* never squash the window to the screen height: let the page scroll instead */
   font-size: 12px;
   line-height: 1.55;
   border-radius: 3px;

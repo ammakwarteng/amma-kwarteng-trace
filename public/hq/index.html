@@ -463,10 +463,7 @@ for (const [x, z] of [[-16, 10], [16, 10], [-22, 24], [22, 24], [-12, 34], [12, 
 /* building shell: ground-floor lobby is 6 m tall; two office floors above */
 const BW = 48, BD = 44, BH = 14;
 box(BW, BH, 0.6, M.ivory, 0, BH / 2, -BD - 0.3);                 // back
-box(0.6, BH, BD, M.ivory, -(BW / 2 + 0.3), BH / 2, -BD / 2);                       // left side (the trace logo wall is inside)
-// right side: a glass wall for the lobby (ground floor, z 0 to -16), solid everywhere else
-box(0.6, BH - 6.2, 16, M.ivory, BW / 2 + 0.3, 6.2 + (BH - 6.2) / 2, -8);
-box(0.6, BH, BD - 16, M.ivory, BW / 2 + 0.3, BH / 2, -16 - (BD - 16) / 2);
+for (const sx of [-1, 1]) box(0.6, BH, BD, M.ivory, sx * (BW / 2 + 0.3), BH / 2, -BD / 2); // sides
 box(BW + 1.2, 0.8, BD + 1.2, M.ivoryStone, 0, BH + 0.4, -BD / 2);   // roof slab
 box(BW + 0.6, 0.45, 1.0, M.ivoryStone, 0, 6.2, -0.2);              // floor band at 6 m
 box(BW + 0.6, 0.35, 1.0, M.ivoryStone, 0, 10.1, -0.2);             // floor band at 10 m
@@ -560,16 +557,7 @@ plane(BW - 1.2, 16, M.ivory, 0, 6.0, -8, Math.PI / 2);
 // ceiling light slots
 for (let z = -2; z >= -14; z -= 3) box(30, 0.04, 0.22, M.soft, 0, 5.97, z, scene, { cast: false });
 // side walls inside, with stone wainscot
-box(0.2, 6, 16, M.ivory, -(BW / 2 - 0.7), 3, -8); box(0.24, 1.0, 16, M.stone, -(BW / 2 - 0.72), 0.5, -8);
-// lobby windows on the right: floor-to-ceiling glass in silver frames, on a low stone sill
-{
-  const wx = BW / 2 - 0.3;
-  box(0.5, 0.35, 16, M.stone, wx, 0.175, -8);                                  // sill
-  plane(16, 5.6, M.glass, wx, 3.15, -8, 0, -Math.PI / 2);                       // glass
-  for (let z = 0; z >= -16; z -= 2.0) box(0.12, 6, 0.1, M.silver, wx, 3, z);    // mullions
-  for (const y of [0.36, 5.96]) box(0.14, 0.08, 16, M.silver, wx, y, -8);      // top and bottom rails
-  box(0.6, 0.3, 16, M.ivory, wx, 6.0, -8);                                     // head
-}
+for (const sx of [-1, 1]) { box(0.2, 6, 16, M.ivory, sx * (BW / 2 - 0.7), 3, -8); box(0.24, 1.0, 16, M.stone, sx * (BW / 2 - 0.72), 0.5, -8); }
 // brushed silver columns
 for (const x of [-7.5, 7.5]) for (const z of [-4.5, -11]) box(0.6, 6, 0.6, M.silver, x, 3, z);
 // reception desk: stone body, polished top, silver kick, with a charcoal monitor
@@ -747,7 +735,22 @@ for (let z = SZ; z >= CZ1; z -= 2) box(0.08, 3, 0.08, M.silver, 2.2, 1.5, z);
 box(0.1, 0.06, 16, M.silver, 2.2, 2.97, (SZ + CZ1) / 2);
 plane(6, 16, M.floor, 5.2, 0.012, (SZ + CZ1) / 2, -Math.PI / 2);
 plane(6, 16, M.ivory, 5.2, 3, (SZ + CZ1) / 2, Math.PI / 2);
-box(0.2, 3, 16, M.ivory, 8.2, 1.5, (SZ + CZ1) / 2);
+// office windows: the outer wall of the workspace is glass, looking out over the grounds at golden hour
+{
+  const mz = (SZ + CZ1) / 2;
+  box(0.3, 0.45, 16, M.stone, 8.2, 0.225, mz);                                   // sill
+  plane(16, 2.45, M.glass, 8.2, 1.7, mz, 0, -Math.PI / 2);                        // glass
+  for (let z = SZ; z >= CZ1; z -= 2) box(0.1, 3, 0.08, M.silver, 8.2, 1.5, z);  // mullions
+  for (const y of [0.46, 2.94]) box(0.12, 0.06, 16, M.silver, 8.2, y, mz);       // rails
+  const viewTex = canvasTex(2048, 512, (x, w, h) => {                            // the view outside
+    const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, "#6f8db6"); g.addColorStop(0.55, "#f0c08e"); g.addColorStop(0.72, "#e9b48a"); g.addColorStop(0.73, "#7d8a64"); g.addColorStop(1, "#68744f");
+    x.fillStyle = g; x.fillRect(0, 0, w, h);
+    for (let i = 0; i < 14; i++) { const bx = Math.random() * w, bw = 60 + Math.random() * 120, bh = 40 + Math.random() * 120; x.fillStyle = `rgba(${150 + Math.random() * 30},${140 + Math.random() * 30},${150 + Math.random() * 30},0.7)`; x.fillRect(bx, h * 0.72 - bh, bw, bh); }
+    for (let i = 0; i < 22; i++) { const tx = Math.random() * w, ty = h * 0.72 + Math.random() * 20, r = 26 + Math.random() * 34; x.fillStyle = "#4a5836"; x.beginPath(); x.ellipse(tx, ty - r, r, r * 1.2, 0, 0, 7); x.fill(); x.fillStyle = "#5b5047"; x.fillRect(tx - 3, ty - 4, 6, 26); }
+  });
+  plane(30, 7.5, new THREE.MeshBasicMaterial({ map: viewTex, fog: false }), 11.5, 2.2, mz, 0, -Math.PI / 2);
+  const ws = new THREE.DirectionalLight(0xffc488, 1.1); ws.position.set(30, 6, mz + 4); ws.target.position.set(5, 0, mz); scene.add(ws, ws.target);   // sunlight through the windows
+}
 let deskNo = 0;
 const corridorDeskZ = [];
 for (let z = SZ - 3; z > CZ1; z -= 4) {

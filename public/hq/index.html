@@ -42,6 +42,8 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--d
 }
 .hud__top b { font-weight: 500; }
 .hud__top span:last-child { text-align: right; }
+.hud__top > span { white-space: nowrap; }
+@media (max-width: 560px) { .hud__top { font-size: 10px; letter-spacing: 0.1em; } }
 .sq { display: inline-block; width: 7px; height: 7px; margin-right: 8px; vertical-align: 0; background: var(--deny); }
 .sq.is-ok { background: var(--ok); }
 
@@ -1012,9 +1014,12 @@ function applyWorld(t, cine) {
   ui.fade.style.opacity = cine ? Math.max(smooth(64.4, 65.0, t) * (1 - smooth(65.2, 65.9, t)), smooth(0, 0.01, -1)) : 0;
   // HUD
   const loc = t < 12.5 ? "TRACE · EXTERIOR" : t < 25 ? "TRACE · LOBBY" : t < 45 ? "TRACE · SECURITY CHECKPOINT" : t < 54.5 ? "TRACE · SECURED CORRIDOR" : t < 65.2 ? "TRACE · ELEVATOR" : "TRACE · FLOOR 4 · IAM";
-  setText(ui.scene, cine ? loc : "TRACE · FREE WALK");
+  const narrowHud = innerWidth < 560;   // phones: shorter labels so each stays on one line
+  const sceneLabel = cine ? loc : "TRACE · FREE WALK";
+  setText(ui.scene, narrowHud ? sceneLabel.replace(/^TRACE · /, "") : sceneLabel);
   const verified = !cine || t > 40.2;
-  setText(ui.sess, verified ? (t > 65.2 ? "SESSION · ACTIVE · EMP-0147" : "SESSION · AUTHORIZED") : t > 29.8 ? "SESSION · VERIFYING" : "SESSION · LOCKED");
+  const sessLabel = verified ? (t > 65.2 ? "SESSION · ACTIVE · EMP-0147" : "SESSION · AUTHORIZED") : t > 29.8 ? "SESSION · VERIFYING" : "SESSION · LOCKED";
+  setText(ui.sess, narrowHud ? sessLabel.replace(/^SESSION · /, "") : sessLabel);
   ui.sessSq.classList.toggle("is-ok", verified);
   const pr = !cine ? null : t > 9.6 && t < 12.6 ? ["ENTER BUILDING", 11.9] : t > 26.2 && t < 28.6 ? ["PRESENT CREDENTIAL", 27.6] : t > 31.6 && t < 33 ? ["BEGIN FACE VERIFICATION", 32.5] : t > 54.6 && t < 56.4 ? ["CALL ELEVATOR", 55.6] : t > 68.6 && t < 70.8 ? ["ACCESS WORKSTATION", 70.2] : null;
   ui.prompt.classList.toggle("is-on", !!pr);

@@ -36,7 +36,7 @@ export default function ThreatHunt({ surfaceRef }) {
           <i />
           {status.text.toLowerCase()} · quarantined {String(count).padStart(2, "0")}
         </span>
-        <span className="hunt__hint">del / backspace — clear trace · double-click — lunge</span>
+        <span className="hunt__hint">double-click — lunge</span>
       </div>
       <p className="visually-hidden">
         Interactive background: moving the pointer steers a tracking reticle that hunts a fragment of

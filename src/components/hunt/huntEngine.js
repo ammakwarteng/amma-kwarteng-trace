@@ -172,7 +172,6 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     hunter.spin += dt * (phase === "hunt" ? 0.6 : 3);
 
     thread.x = lerp(thread.x || hunter.x, hunter.x, 1 - Math.pow(0.04, dt));
-    recordTrace();
 
     const dx = mal.x - hunter.x, dy = mal.y - hunter.y, d = len(dx, dy);
     hunter.lock = lerp(hunter.lock, phase !== "hunt" && phase !== "respawn" ? 1 : clamp(1 - (d - 30) / 120, 0, 1), 1 - Math.pow(0.001, dt));
@@ -334,17 +333,6 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.lineWidth = 1.5;
-    // a smooth curve through the points, each piece fading with its age
-    const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
-    for (let i = 1; i < trail.length - 1; i++) {
-      const a = mid(trail[i - 1], trail[i]), b = mid(trail[i], trail[i + 1]);
-      const life = 1 - (now - trail[i].t) / TRAIL_LIFE;
-      ctx.strokeStyle = `rgba(255,255,255,${(life * life * 0.7).toFixed(3)})`;
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
-      ctx.quadraticCurveTo(trail[i].x, trail[i].y, b.x, b.y);
-      ctx.stroke();
-    }
     // where a threat was caught: a small green square that fades away
     for (const c of catches) {
       ctx.globalAlpha = clamp(1 - (now - c.t) / CATCH_LIFE, 0, 1);

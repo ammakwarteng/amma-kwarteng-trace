@@ -703,7 +703,9 @@ plane(6, 16, M.floor, 5.2, 0.012, (SZ + CZ1) / 2, -Math.PI / 2);
 plane(6, 16, M.ivory, 5.2, 3, (SZ + CZ1) / 2, Math.PI / 2);
 box(0.2, 3, 16, M.ivory, 8.2, 1.5, (SZ + CZ1) / 2);
 let deskNo = 0;
+const corridorDeskZ = [];
 for (let z = SZ - 3; z > CZ1; z -= 4) {
+  corridorDeskZ.push(z);
   box(0.1, 3, 0.1, M.silver, 2.2, 1.5, z - 0.5);
   box(1.6, 0.04, 0.8, M.ivoryStone, 5.2, 0.74, z); box(0.06, 0.72, 0.7, M.silverDark, 4.5, 0.37, z); box(0.06, 0.72, 0.7, M.silverDark, 5.9, 0.37, z);
   deskMonitor(scene, 5.2, 0.81, z - 0.18, deskNo++);   // screen faces the chair
@@ -798,7 +800,18 @@ new GLTFLoader().load("keyboard_mouse.glb", (gl) => {
   const inner = new THREE.Group(); inner.add(m); inner.scale.setScalar(k); kbHolder.add(inner);
   kbHolder.position.set(...KB.pos); kbHolder.rotation.y = KB.rotY;
   kbFallback.forEach((b) => (b.visible = false));
+  // the corridor desks get the same model (shared geometry, so no extra download)
+  for (const z of corridorDeskZ) {
+    const h = new THREE.Group(); h.position.set(5.2, 0.762, z + 0.12); h.rotation.y = 0;   // keys toward the chair, mouse on the right
+    const c2 = inner.clone(true); h.add(c2); scene.add(h); corridorKB.push(h);
+  }
 });
+// only draw the corridor keyboards while the camera is near that corridor (they're very detailed)
+const corridorKB = [];
+function updateCorridorKB() {
+  const p = camera.position, near = p.x < 12 && p.z < -14 && p.z > -37;
+  for (const h of corridorKB) h.visible = near;
+}
 window.tuneKB = (cfg) => { Object.assign(KB, cfg); kbHolder.position.set(...KB.pos); kbHolder.rotation.y = KB.rotY; };
 officeChair(office, 0.75, 7.2, -Math.PI / 2);   // your chair at the IAM workstation, facing the monitor
 // a second desk row so the floor feels occupied
@@ -1444,7 +1457,7 @@ function renderAt(t) {
   }
   camera.position.copy(p); camera.up.set(0, 1, 0); camera.lookAt(l);
   applyWorld(t, true);
-  updateLamps(FRAMES); updateShadows(FRAMES);
+  updateLamps(FRAMES); updateShadows(FRAMES); updateCorridorKB();
   ui.seek.value = String(t); setText(ui.clock, `${fmt(t)} / ${fmt(TOTAL)}`);
   let c = chapters[0][1]; for (const [ct, cn] of chapters) if (t >= ct) c = cn; setText(ui.chapter, c);
   renderer.render(scene, camera);
@@ -1456,7 +1469,7 @@ function loop(now) {
     if (playing) { T += dt; if (T >= TOTAL) { T = TOTAL; setPlaying(false); } }
     for (const [at, fn] of SFX) if (prevT < at && T >= at && playing) fn();
     prevT = T; renderAt(T);
-  } else { updateWalk(dt); applyWorld(0, false); updateLamps(); updateShadows(); renderer.render(scene, camera); }
+  } else { updateWalk(dt); applyWorld(0, false); updateLamps(); updateShadows(); updateCorridorKB(); renderer.render(scene, camera); }
   adaptResolution(dt);
   setMusic(wantMusic());
   requestAnimationFrame(loop);

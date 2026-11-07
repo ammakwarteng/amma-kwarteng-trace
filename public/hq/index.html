@@ -54,7 +54,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--d
   padding: 10px 16px; background: var(--panel); border: 1px solid var(--line);
   font-size: 12px; letter-spacing: 0.12em; white-space: nowrap; backdrop-filter: blur(6px);
 }
-.prompt.is-on { opacity: 1; transform: translate(-50%, 0); }
+.prompt.is-on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; cursor: pointer; }
 .prompt kbd { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 6px; border: 1px solid var(--ink); font: inherit; font-size: 12px; transition: background 0.15s, color 0.15s; }
 .prompt.is-press kbd { background: var(--ink); color: #0a0a0a; }
 
@@ -161,7 +161,7 @@ a.btn { text-decoration: none; }
   <div class="status" id="status"></div>
   <div class="prompt" id="prompt"><kbd>E</kbd><span id="promptText">ENTER BUILDING</span></div>
   <div class="cross" id="cross"></div>
-  <div class="help" id="help">WASD / ARROWS · MOVE<br>MOUSE · LOOK (CLICK TO CAPTURE · ESC TO RELEASE)<br>TOUCH · LEFT SIDE MOVE · RIGHT SIDE LOOK</div>
+  <div class="help" id="help">WASD / ARROWS · MOVE · E · INTERACT<br>MOUSE · LOOK (CLICK TO CAPTURE · ESC TO RELEASE)<br>TOUCH · LEFT SIDE MOVE · RIGHT SIDE LOOK · TAP THE PROMPT</div>
 </div>
 <div class="fade" id="fade"></div>
 
@@ -973,15 +973,19 @@ const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(
 let lastScannerKey = "", lastStripKey = "", lastReaderKey = "", lastInd = "";
 function setText(el, s) { if (el.textContent !== s) el.textContent = s; }
 function applyWorld(t, cine) {
+  const wt = performance.now() / 1000;
+  // free walk: each step has its own little timeline, started when you press E
+  const bt = cine ? t : W.card >= 0 ? 27.0 + (wt - W.card) : -1;      // badge
+  const st = cine ? t : W.scan >= 0 ? 32.6 + (wt - W.scan) : -1;      // face scan
   // revolving door
   if (doorWings) doorWings.rotation.y = cine ? doorAngleAt(t) : -(performance.now() / 1000) * 0.55;
   // card reader + hand
-  const rState = !cine ? 2 : t < 28.6 ? 0 : t < 29.8 ? 1 : 2;
+  const rState = bt < 28.6 ? 0 : bt < 29.8 ? 1 : 2;
   if (rState + "" !== lastReaderKey) { drawReader(rState); lastReaderKey = rState + ""; }
   ledMat.color.set(rState === 2 ? 0x3ddc84 : rState === 1 ? 0xffffff : 0xff3b30); ledMat.emissive.copy(ledMat.color);
-  if (rState === 1) ledMat.emissiveIntensity = Math.floor(t * 8) % 2 ? 2.4 : 0.4; else ledMat.emissiveIntensity = 2.2;
-  hand.visible = cine && t > 27.0 && t < 31.6;
-  if (hand.visible) {
+  if (rState === 1) ledMat.emissiveIntensity = Math.floor(bt * 8) % 2 ? 2.4 : 0.4; else ledMat.emissiveIntensity = 2.2;
+  hand.visible = bt > 27.0 && bt < 31.6;
+  if (hand.visible) { const t = bt;
     // pull up on the cord, tap the reader, then let go: the reel snaps it back quickly
     const up = smooth(27.0, 27.8, t) * (1 - smooth(30.9, 31.3, t)), tap = smooth(28.2, 28.6, t) - smooth(29.4, 29.9, t);
     badgeG.position.set(-0.015 + 0.08 * (1 - up), -0.29 + 0.24 * up, -0.3 - 0.05 * tap);
@@ -992,42 +996,53 @@ function applyWorld(t, cine) {
     updateCord();
   }
   // scanner
-  const sState = !cine ? 2 : t < 32.6 ? 0 : t < 39.4 ? 1 : 2, sp = smooth(32.8, 39.2, t);
-  const sKey = sState === 1 ? "1" + Math.round(t * 30) : sState + (sState === 2 ? Math.round(t * 4) : "");
-  if (sKey !== lastScannerKey) { drawScanner(t, sState, sp); lastScannerKey = sKey; }
+  const sState = st < 32.6 ? 0 : st < 39.4 ? 1 : 2, sp = smooth(32.8, 39.2, st);
+  const sKey = sState === 1 ? "1" + Math.round(st * 30) : sState + (sState === 2 ? Math.round(st * 4) : "");
+  if (sKey !== lastScannerKey) { drawScanner(st, sState, sp); lastScannerKey = sKey; }
+  if (!cine && rState === 2 && sState === 2 && W.door < 0) { W.door = wt + 0.4; sfxAt("granted"); }
   if (sState + "" !== lastStripKey) { drawStrip(sState); lastStripKey = sState + ""; }
   // secure door
-  const so = cine ? smooth(42.6, 44.2, t) * (1 - smooth(47, 48.6, t)) : 1;
+  const so = cine ? smooth(42.6, 44.2, t) * (1 - smooth(47, 48.6, t)) : W.door >= 0 ? smooth(W.door, W.door + 1.6, wt) : 0;
+  W.secureOpen = so > 0.9;
   sDoorL.position.x = -0.55 - so * 1.05; sDoorR.position.x = 0.55 + so * 1.05;
   // elevators
-  const callOn = cine && t > 55.6 && t < 57.2;
+  const callOn = cine ? t > 55.6 && t < 57.2 : W.callAt >= 0 && wt - W.callAt < 1.6;
   callMat.emissiveIntensity = callOn ? 1.8 : 0;
-  const ao = cine ? smooth(56.6, 58.0, t) * (1 - smooth(61.0, 62.4, t)) : 0;
+  const doorVal = (d) => (d.open < 0 ? 0 : smooth(d.open, d.open + 1.4, wt) * (1 - (d.close < 0 ? 0 : smooth(d.close, d.close + 1.4, wt))));
+  const ao = cine ? smooth(56.6, 58.0, t) * (1 - smooth(61.0, 62.4, t)) : doorVal(W.dA);
   elevA.dl.position.x = -0.33 - ao * 0.62; elevA.dr.position.x = 0.33 + ao * 0.62;
-  const oo = cine ? smooth(65.6, 67.0, t) : 1;
+  const oo = cine ? smooth(65.6, 67.0, t) : doorVal(W.dO);
   elevO.dl.position.x = -0.33 - oo * 0.62; elevO.dr.position.x = 0.33 + oo * 0.62;
-  let fl = 1, dir = ""; if (cine && t > 62.4 && t < 65.2) { fl = 1 + Math.min(3, Math.floor((t - 62.4) / 0.7)); dir = "▲"; } else if (cine && t >= 65.2) fl = 4;
-  const ik = fl + dir; if (ik !== lastInd) { drawIndicator(elevA, fl, dir); drawIndicator(elevB, 3, ""); drawIndicator(elevO, 4, ""); lastInd = ik; }
+  W.aOpen = ao > 0.9; W.oOpen = oo > 0.9;
+  let fl = 1, dir = "";
+  if (cine) { if (t > 62.4 && t < 65.2) { fl = 1 + Math.min(3, Math.floor((t - 62.4) / 0.7)); dir = "▲"; } else if (t >= 65.2) fl = 4; }
+  else if (W.ride >= 0 && wt - W.ride < 3.6) { const k = Math.min(3, Math.floor(Math.max(0, wt - W.ride - 1.2) / 0.6)); fl = W.rideTo === 4 ? 1 + k : 4 - k; dir = W.rideTo === 4 ? "▲" : "▼"; }
+  else fl = W.floor;
+  const ik = fl + dir; if (ik !== lastInd) { drawIndicator(elevA, fl, dir); drawIndicator(elevB, 3, ""); drawIndicator(elevO, fl, dir); lastInd = ik; }
   // workstation
-  if (cine ? (t > 64 && t < TOTAL + 1) : !wsStill) { drawWorkstation(cine ? t : 90); wsStill = !cine; }
+  const seated = !cine && W.desk >= 0;
+  if (cine ? (t > 64 && t < TOTAL + 1) : (seated || !wsStill)) { drawWorkstation(cine ? t : seated ? WS0 + Math.max(0, wt - W.desk - 1.2) : W.jmlDone ? 90 : 0); wsStill = !cine && !seated; }
+  if (seated && wt - W.desk > 1.2 + 8.8 + 0.6) W.jmlDone = true;
   // fade between elevator cars
-  ui.fade.style.opacity = cine ? Math.max(smooth(64.4, 65.0, t) * (1 - smooth(65.2, 65.9, t)), smooth(0, 0.01, -1)) : 0;
+  ui.fade.style.opacity = cine ? Math.max(smooth(64.4, 65.0, t) * (1 - smooth(65.2, 65.9, t)), smooth(0, 0.01, -1))
+    : W.ride >= 0 ? smooth(W.ride + 1.5, W.ride + 2.0, wt) * (1 - smooth(W.ride + 2.3, W.ride + 2.9, wt)) : 0;
   // HUD
   const loc = t < 12.5 ? "TRACE · EXTERIOR" : t < 25 ? "TRACE · LOBBY" : t < 45 ? "TRACE · SECURITY CHECKPOINT" : t < 54.5 ? "TRACE · SECURED CORRIDOR" : t < 65.2 ? "TRACE · ELEVATOR" : "TRACE · FLOOR 4 · IAM";
   const narrowHud = innerWidth < 560;   // phones: shorter labels so each stays on one line
-  const sceneLabel = cine ? loc : "TRACE · FREE WALK";
+  const sceneLabel = cine ? loc : walkLocation();
   setText(ui.scene, narrowHud ? sceneLabel.replace(/^TRACE · /, "") : sceneLabel);
-  const verified = !cine || t > 40.2;
-  const sessLabel = verified ? (t > 65.2 ? "SESSION · ACTIVE · EMP-0147" : "SESSION · AUTHORIZED") : t > 29.8 ? "SESSION · VERIFYING" : "SESSION · LOCKED";
+  const verified = cine ? t > 40.2 : sState === 2 && rState === 2;
+  const onFloor4 = cine ? t > 65.2 : W.floor === 4;
+  const sessLabel = verified ? (onFloor4 ? "SESSION · ACTIVE · EMP-0147" : "SESSION · AUTHORIZED") : (cine ? t > 29.8 : rState === 2) ? "SESSION · VERIFYING" : "SESSION · LOCKED";
   setText(ui.sess, narrowHud ? sessLabel.replace(/^SESSION · /, "") : sessLabel);
   ui.sessSq.classList.toggle("is-ok", verified);
-  const pr = !cine ? null : t > 9.6 && t < 12.6 ? ["ENTER BUILDING", 11.9] : t > 26.2 && t < 28.6 ? ["PRESENT CREDENTIAL", 27.6] : t > 31.6 && t < 33 ? ["BEGIN FACE VERIFICATION", 32.5] : t > 54.6 && t < 56.4 ? ["CALL ELEVATOR", 55.6] : t > 68.6 && t < 70.8 ? ["ACCESS WORKSTATION", 70.2] : null;
+  const pr = !cine ? (W.prompt ? [W.prompt, -9] : null) : t > 9.6 && t < 12.6 ? ["ENTER BUILDING", 11.9] : t > 26.2 && t < 28.6 ? ["PRESENT CREDENTIAL", 27.6] : t > 31.6 && t < 33 ? ["BEGIN FACE VERIFICATION", 32.5] : t > 54.6 && t < 56.4 ? ["CALL ELEVATOR", 55.6] : t > 68.6 && t < 70.8 ? ["ACCESS WORKSTATION", 70.2] : null;
   ui.prompt.classList.toggle("is-on", !!pr);
-  if (pr) { setText(ui.promptText, pr[0]); ui.prompt.classList.toggle("is-press", t > pr[1] && t < pr[1] + 0.35); }
-  const st = !cine ? "" : t > 28.6 && t < 29.8 ? ["CREDENTIAL DETECTED", 0] : t >= 29.8 && t < 31.6 ? ["CREDENTIAL VERIFIED", 1] : t > 39.4 && t < 44 ? ["ACCESS GRANTED · SECURE AREA", 1] : t > 63.6 && t < 65 ? ["FLOOR 4 · ACCESS AUTHORIZED", 1] : "";
-  ui.status.classList.toggle("is-on", !!st);
-  if (st) { setText(ui.status, st[0]); ui.status.classList.toggle("is-ok", !!st[1]); }
-  const sum = cine && t >= 79.5;
+  if (pr) { setText(ui.promptText, pr[0]); ui.prompt.classList.toggle("is-press", cine ? t > pr[1] && t < pr[1] + 0.35 : wt - W.pressAt < 0.3); }
+  const msg = !cine ? walkStatus(wt, bt, sState) : t > 28.6 && t < 29.8 ? ["CREDENTIAL DETECTED", 0] : t >= 29.8 && t < 31.6 ? ["CREDENTIAL VERIFIED", 1] : t > 39.4 && t < 44 ? ["ACCESS GRANTED · SECURE AREA", 1] : t > 63.6 && t < 65 ? ["FLOOR 4 · ACCESS AUTHORIZED", 1] : "";
+  ui.status.classList.toggle("is-on", !!msg);
+  if (msg) { setText(ui.status, msg[0]); ui.status.classList.toggle("is-ok", !!msg[1]); }
+  const sum = cine ? t >= 79.5 : seated && W.jmlDone && !W.sumClosed;
   ui.summary.classList.toggle("is-on", sum); ui.summary.setAttribute("aria-hidden", String(!sum));
   if (sum) ui.sumAudit.textContent = String(window.__audit || 0);
 }
@@ -1046,6 +1061,17 @@ function whoosh(dur = 1.2, gain = 0.05) {
   const s = actx.createBufferSource(), f = actx.createBiquadFilter(), g = actx.createGain(); s.buffer = b; f.type = "lowpass"; f.frequency.value = 700;
   const t0 = actx.currentTime; g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + dur * 0.4); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
   s.connect(f).connect(g).connect(actx.destination); s.start();
+}
+function sfxAt(kind, delay = 0) {
+  const go = () => {
+    if (kind === "badge") { setTimeout(() => { tone(1760, 0.08, "square", 0.04); tone(1760, 0.08, "square", 0.04, 0.12); }, 1600); setTimeout(() => { tone(880, 0.12, "sine", 0.05); tone(1320, 0.18, "sine", 0.05, 0.1); }, 2800); }
+    else if (kind === "granted") { tone(660, 0.14, "sine", 0.05); tone(990, 0.24, "sine", 0.05, 0.12); whoosh(1.6, 0.04); }
+    else if (kind === "call") tone(1200, 0.05, "square", 0.03);
+    else if (kind === "ding") { tone(1046, 0.5, "sine", 0.05); tone(784, 0.6, "sine", 0.04, 0.35); }
+    else if (kind === "whoosh") whoosh(2.4, 0.03);
+  };
+  if (!actx && soundOn) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }
+  delay ? setTimeout(go, delay * 1000) : go();
 }
 const SFX = [
   [11.9, () => whoosh(5, 0.035)],
@@ -1088,15 +1114,17 @@ function setMode(m) {
   mode = m; mCine.setAttribute("aria-pressed", String(m === "cine")); mWalk.setAttribute("aria-pressed", String(m === "walk"));
   cross.classList.toggle("is-on", m === "walk");
   if (m === "walk") {
-    setPlaying(false); hand.visible = false; wsStill = false;
-    const p = camera.position; walk.pos.set(p.x > 100 ? 0 : p.x, 1.7, p.x > 100 ? -20 : p.z);
-    const dir = new THREE.Vector3(); camera.getWorldDirection(dir); walk.yaw = Math.atan2(-dir.x, -dir.z); walk.pitch = 0;
+    setPlaying(false); hand.visible = false;
+    resetWalk(false); walk.pos.set(0, 1.7, 13); walk.yaw = 0; walk.pitch = 0;   // start outside, facing the entrance
     help.classList.add("is-on"); setTimeout(() => help.classList.remove("is-on"), 3800);
   } else if (document.pointerLockElement) document.exitPointerLock();
 }
 mCine.addEventListener("click", () => setMode("cine"));
 mWalk.addEventListener("click", () => setMode("walk"));
-document.getElementById("sumWalk").addEventListener("click", () => { setMode("walk"); walk.pos.set(0, 1.7, -24); walk.yaw = Math.PI; });
+document.getElementById("sumWalk").addEventListener("click", () => {
+  if (mode === "walk") { W.sumClosed = true; W.desk = -1; return; }      // already walking: close the summary and stand up
+  setMode("walk"); resetWalk(true); walk.pos.set(OX + 0.3, 1.7, 7.2); walk.yaw = -Math.PI / 2;
+});
 addEventListener("keydown", (e) => { walk.keys[e.code] = true; if (e.code === "Space" && mode === "cine") { e.preventDefault(); setPlaying(!playing); } });
 addEventListener("keyup", (e) => { walk.keys[e.code] = false; });
 const cv = renderer.domElement;
@@ -1113,10 +1141,99 @@ cv.addEventListener("pointermove", (e) => {
 });
 const endTouch = (e) => { if (walk.joy?.id === e.pointerId) walk.joy = null; if (walk.look?.id === e.pointerId) walk.look = null; };
 cv.addEventListener("pointerup", endTouch); cv.addEventListener("pointercancel", endTouch);
-// walkable areas (simple, so you can't walk through walls)
-const AREAS = [[-34, 34, 0.35, 48], [-1.45, 1.45, -1.2, 1.2], [-23, 23, -15.7, -0.35], [-1.0, 1.0, -16.6, -15.4], [-2.0, 2.0, -32.2, -16.2], [-4.0, 4.0, -35.6, -32]];
-const inside = (x, z) => AREAS.some(([a, b, c, d]) => x >= a && x <= b && z >= c && z <= d);
+// walkable areas (simple, so you can't walk through walls). Some only open once you're allowed through.
+const AREAS = [[-34, 34, 0.35, 48], [-1.45, 1.45, -1.2, 1.2], [-23, 23, -15.7, -0.35], [-2.0, 2.0, -32.2, -16.2], [-4.0, 4.0, -35.6, -32],
+  [-2.25, -0.95, -38.1, -36.15], [OX - 6.7, OX + 6.7, 0.3, 13.7], [OX - 0.65, OX + 0.65, -2.2, -0.15]];
+const GATED = [
+  [() => W.secureOpen, [-1.0, 1.0, -16.6, -15.4]],                 // security door, after card + face
+  [() => W.aOpen, [-2.2, -1.0, -36.4, -35.4]],                     // floor 1 elevator doorway
+  [() => W.oOpen, [OX - 0.6, OX + 0.6, -0.4, 0.45]],               // floor 4 elevator doorway
+];
+const inBox = (x, z, [a, b, c, d]) => x >= a && x <= b && z >= c && z <= d;
+const inside = (x, z) => AREAS.some((r) => inBox(x, z, r)) || GATED.some(([ok, r]) => ok() && inBox(x, z, r));
+
+/* free-walk state: every step is unlocked by the one before, like the real checkpoint */
+const W = {};
+function resetWalk(done = false) {
+  Object.assign(W, { card: done ? 0 : -1, scan: done ? 0 : -1, door: done ? 0 : -1, secureOpen: done, callAt: -1,
+    dA: { open: -1, close: -1 }, dO: { open: -1, close: -1 }, aOpen: false, oOpen: false, ride: -1, rideTo: 0, floor: done ? 4 : 1,
+    desk: -1, jmlDone: done, sumClosed: false, prompt: "", action: null, pressAt: -9, note: "", noteAt: -9 });
+  wsStill = false; lastReaderKey = ""; lastScannerKey = ""; lastStripKey = ""; lastInd = "";
+}
+const near = (x, z, r) => Math.hypot(walk.pos.x - x, walk.pos.z - z) < r;
+const inCabA = () => inBox(walk.pos.x, walk.pos.z, [-2.25, -0.95, -38.1, -36.1]);
+const inCabO = () => inBox(walk.pos.x, walk.pos.z, [OX - 0.65, OX + 0.65, -2.2, -0.2]);
+function note(text) { W.note = text; W.noteAt = performance.now() / 1000; }
+function walkLocation() {
+  const { x, z } = walk.pos;
+  if (x > 100) return W.desk >= 0 ? "TRACE · FLOOR 4 · IAM WORKSTATION" : "TRACE · FLOOR 4 · IAM";
+  if (z > 1.2) return "TRACE · EXTERIOR";
+  if (z > -14) return "TRACE · LOBBY";
+  if (z > -17) return "TRACE · SECURITY CHECKPOINT";
+  if (z > -32.2) return "TRACE · SECURED CORRIDOR";
+  return "TRACE · ELEVATOR";
+}
+function walkStatus(wt, bt, sState) {
+  if (wt - W.noteAt < 2.2) return [W.note, 0];
+  if (bt > 28.6 && bt < 29.8) return ["CREDENTIAL DETECTED", 0];
+  if (bt >= 29.8 && bt < 31.6) return ["CREDENTIAL VERIFIED", 1];
+  if (W.door >= 0 && wt - W.door < 3.5 && W.floor === 1) return ["ACCESS GRANTED · SECURE AREA", 1];
+  if (W.ride >= 0 && wt - W.ride > 1.2 && wt - W.ride < 4.2) return [W.rideTo === 4 ? "FLOOR 4 · ACCESS AUTHORIZED" : "FLOOR 1 · LOBBY", 1];
+  return "";
+}
+// what can you do from where you're standing? sets the on-screen "E" prompt
+function findAction(wt) {
+  const busy = W.ride >= 0 && wt - W.ride < 3.6;
+  if (busy) return null;
+  if (W.desk >= 0) return ["STAND UP", () => { W.desk = -1; W.sumClosed = false; }];
+  const { z } = walk.pos;
+  if (W.floor === 1) {
+    if (W.card < 0 && near(-1.75, -15.45, 1.6) && z > -15.7) return ["PRESENT CREDENTIAL", () => { W.card = wt; sfxAt("badge"); }];
+    if (near(1.85, -15.4, 1.6) && z > -15.7 && W.scan < 0) {
+      if (W.card < 0 || wt - W.card < 2.8) return ["BEGIN FACE VERIFICATION", () => note("PRESENT YOUR CREDENTIAL FIRST")];
+      return ["BEGIN FACE VERIFICATION", () => { W.scan = wt; }];
+    }
+    if (!W.secureOpen && near(0, -15.6, 1.3) && z > -15.7) return null;
+    if (near(0, -35.4, 2.2) && z > -35.7 && W.dA.open < 0) return ["CALL ELEVATOR", () => { W.callAt = wt; W.dA = { open: wt + 1.2, close: -1 }; sfxAt("call"); sfxAt("ding", 1.2); }];
+    if (inCabA() && W.aOpen) return ["FLOOR 4 · IAM", () => startRide(4, wt)];
+  } else {
+    if (near(OX + 1.6, 7.2, 1.7) && W.desk < 0) return ["ACCESS WORKSTATION", () => { W.desk = wt; W.sumClosed = false; }];
+    if (inCabO() && W.oOpen) return ["FLOOR 1 · LOBBY", () => startRide(1, wt)];
+    if (near(OX, 0.4, 1.8) && walk.pos.z > 0.3 && W.dO.open < 0) return ["CALL ELEVATOR", () => { W.callAt = wt; W.dO = { open: wt + 1.0, close: -1 }; sfxAt("call"); sfxAt("ding", 1.0); }];
+  }
+  return null;
+}
+function startRide(to, wt) {
+  W.ride = wt; W.rideTo = to;
+  const from = to === 4 ? W.dA : W.dO; from.close = wt;
+  sfxAt("whoosh", 0.4);
+  setTimeout(() => {                                     // in the dark: arrive in the other car, facing out
+    if (to === 4) { walk.pos.set(OX, 1.7, -1.3); walk.yaw = Math.PI; W.floor = 4; W.dA = { open: -1, close: -1 }; W.dO = { open: W.ride + 2.9, close: -1 }; }
+    else { walk.pos.set(-1.6, 1.7, -37.2); walk.yaw = Math.PI; W.floor = 1; W.dO = { open: -1, close: -1 }; W.dA = { open: W.ride + 2.9, close: -1 }; }
+    walk.pitch = 0; sfxAt("ding", 0.6);
+  }, 2150);
+}
+function interact() {
+  if (mode !== "walk" || !W.action) return;
+  W.pressAt = performance.now() / 1000; W.action();
+}
+addEventListener("keydown", (e) => { if (e.code === "KeyE" && mode === "walk") interact(); });
+ui.prompt.addEventListener("click", interact);
+window.__walk = { walk, W, interact, setMode: (m) => setMode(m) };   // used by automated tests
+function seatPose() {
+  const p = V(OX + 0.97, 1.22, 7.2), l = V(OX + 1.82, 1.18, 7.2);
+  if (camera.aspect < 0.8) { const fit = 0.62 / Math.tan(Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect)); p.set(OX + 1.8 - fit, 1.19, 7.2); }
+  return [p, l];
+}
 function updateWalk(dt) {
+  const wt = performance.now() / 1000;
+  const act = findAction(wt); W.prompt = act ? act[0] : ""; W.action = act ? act[1] : null;
+  if (W.desk >= 0) {                                      // seated: ease into the chair, look at the screen
+    const k = smooth(W.desk, W.desk + 1.1, wt), [sp, sl] = seatPose();
+    const fp = V(walk.pos.x, 1.7, walk.pos.z), fl = fp.clone().add(V(-Math.sin(walk.yaw), 0, -Math.cos(walk.yaw)));
+    camera.position.copy(fp.lerp(sp, k)); camera.lookAt(fl.lerp(sl, k)); return;
+  }
+  if (W.ride >= 0 && wt - W.ride < 3.4) { camera.position.set(walk.pos.x, 1.7, walk.pos.z); camera.rotation.set(walk.pitch, walk.yaw, 0, "YXZ"); return; }
   const k = walk.keys, f = (k.KeyW || k.ArrowUp ? 1 : 0) - (k.KeyS || k.ArrowDown ? 1 : 0) - (walk.joy ? Math.max(-1, Math.min(1, walk.joy.dy)) : 0);
   const s = (k.KeyD || k.ArrowRight ? 1 : 0) - (k.KeyA || k.ArrowLeft ? 1 : 0) + (walk.joy ? Math.max(-1, Math.min(1, walk.joy.dx)) : 0);
   const sp = (k.ShiftLeft ? 2.4 : 1.4) * dt;

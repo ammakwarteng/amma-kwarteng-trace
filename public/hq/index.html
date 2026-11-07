@@ -788,7 +788,31 @@ ws.tex = new THREE.CanvasTexture(ws.canvas); ws.tex.colorSpace = THREE.SRGBColor
 plane(1.1, 0.4675, new THREE.MeshBasicMaterial({ map: ws.tex, toneMapped: false }), -0.0215, 0, 0, 0, -Math.PI / 2, mon);
 // keyboard and mouse: "Mouse and Keyboard" by gorzi (CC BY 4.0), placed on your desk; simple blocks until it loads
 const kbFallback = [box(0.16, 0.015, 0.46, M.charcoal, -0.12, 0.76, 0, desk), box(0.1, 0.02, 0.06, M.charcoal, -0.12, 0.76, 0.38, desk)];
-const KB = { width: 0.45, rotY: -Math.PI / 2, pos: [-0.16, 0.762, 0.06] };
+// your desk only: notepad and pen, a pencil cup, a tissue box (the other desks are empty - you're in early)
+{
+  const top = 0.762, paper = std(0xf7f5ef, 0.9), ink = std(0x1d2a44, 0.5);
+  const pad = new THREE.Group(); pad.position.set(-0.13, top, -0.42); pad.rotation.y = 0.18; desk.add(pad);
+  box(0.21, 0.012, 0.15, paper, 0, 0.006, 0, pad);                                     // notepad
+  box(0.212, 0.004, 0.02, std(0x2b2f34, 0.6), 0, 0.012, -0.075, pad);                  // binding strip
+  const lines = canvasTex(256, 192, (x, W, H) => { x.fillStyle = "#f7f5ef"; x.fillRect(0, 0, W, H); x.strokeStyle = "rgba(90,130,190,0.45)"; x.lineWidth = 2;
+    for (let y = 30; y < H; y += 18) { x.beginPath(); x.moveTo(10, y); x.lineTo(W - 10, y); x.stroke(); }
+    x.strokeStyle = "rgba(200,80,80,0.5)"; x.beginPath(); x.moveTo(36, 0); x.lineTo(36, H); x.stroke();
+    x.fillStyle = "#2a3550"; x.font = "15px 'JetBrains Mono',monospace"; x.fillText("today:", 44, 26); x.fillText("- JML queue (3)", 44, 62); x.fillText("- access review Fri", 44, 80); x.fillText("- MFA reset INC-1183", 44, 98); });
+  plane(0.2, 0.13, new THREE.MeshStandardMaterial({ map: lines, roughness: 0.9 }), 0, 0.0125, 0.005, -Math.PI / 2, 0, pad);
+  const pen = new THREE.Mesh(new THREE.CylinderGeometry(0.0045, 0.0045, 0.14, 12), ink); pen.rotation.set(0, 0, Math.PI / 2); pen.position.set(0.02, 0.018, 0.06); pen.rotation.y = 0.4; pad.add(pen);
+  const cup = new THREE.Group(); cup.position.set(0.22, top, -0.72); desk.add(cup);
+  const cupMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.034, 0.1, 24, 1, true), M.charcoal); cupMesh.position.y = 0.05; cupMesh.material = cupMesh.material.clone(); cupMesh.material.side = THREE.DoubleSide; cup.add(cupMesh);
+  cyl(0.034, 0.004, M.charcoal, 0, 0.002, 0, cup, 24);
+  [[0xf2c230, 0.01, 0.008, 0.12], [0xf2c230, -0.012, 0.004, -0.15], [0x2d6cdf, 0.004, -0.014, 0.05], [0x1b1d20, -0.008, 0.012, -0.05]].forEach(([c, x, z, tilt]) => {
+    const pcl = new THREE.Mesh(new THREE.CylinderGeometry(0.0038, 0.0038, 0.17, 6), std(c, 0.6)); pcl.position.set(x, 0.1, z); pcl.rotation.set(tilt, 0, -tilt * 0.6); cup.add(pcl);
+  });
+  const tissue = new THREE.Group(); tissue.position.set(0.2, top, 0.74); tissue.rotation.y = -0.15; desk.add(tissue);
+  const tbTex = canvasTex(256, 128, (x, W, H) => { x.fillStyle = "#e9eef0"; x.fillRect(0, 0, W, H); x.fillStyle = "#9fb4bf"; for (let i = 0; i < 9; i++) { x.beginPath(); x.arc(20 + i * 28, H * 0.55 + Math.sin(i) * 12, 10, 0, 7); x.fill(); } });
+  const tbMat = std(0xffffff, 0.8, 0, { map: tbTex });
+  box(0.12, 0.1, 0.12, tbMat, 0, 0.05, 0, tissue);
+  const tis = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.06, 5, 1, true), std(0xfdfdfb, 0.95)); tis.material.side = THREE.DoubleSide; tis.position.set(0, 0.12, 0); tis.rotation.y = 0.4; tis.scale.set(1.2, 1, 0.6); tissue.add(tis);
+}
+const KB = { width: 0.45, rotY: -Math.PI / 2, pos: [-0.16, 0.762, 0.0] };   // centred in front of the monitor
 const kbHolder = new THREE.Group(); desk.add(kbHolder);
 new GLTFLoader().load("keyboard_mouse.glb", (gl) => {
   const m = gl.scene; m.updateMatrixWorld(true);
@@ -801,16 +825,21 @@ new GLTFLoader().load("keyboard_mouse.glb", (gl) => {
   kbHolder.position.set(...KB.pos); kbHolder.rotation.y = KB.rotY;
   kbFallback.forEach((b) => (b.visible = false));
   // the corridor desks get the same model (shared geometry, so no extra download)
+  for (const z of [3, 11]) {                                   // the two other floor-4 desks
+    const h = new THREE.Group(); h.position.set(1.44, 0.762, z); h.rotation.y = -Math.PI / 2;
+    h.add(inner.clone(true)); office.add(h); floor4KB.push(h);
+  }
   for (const z of corridorDeskZ) {
     const h = new THREE.Group(); h.position.set(5.2, 0.762, z + 0.12); h.rotation.y = 0;   // keys toward the chair, mouse on the right
     const c2 = inner.clone(true); h.add(c2); scene.add(h); corridorKB.push(h);
   }
 });
 // only draw the corridor keyboards while the camera is near that corridor (they're very detailed)
-const corridorKB = [];
+const corridorKB = [], floor4KB = [];
 function updateCorridorKB() {
   const p = camera.position, near = p.x < 12 && p.z < -14 && p.z > -37;
   for (const h of corridorKB) h.visible = near;
+  for (const h of floor4KB) h.visible = p.x > 100;               // only on floor 4
 }
 window.tuneKB = (cfg) => { Object.assign(KB, cfg); kbHolder.position.set(...KB.pos); kbHolder.rotation.y = KB.rotY; };
 officeChair(office, 0.75, 7.2, -Math.PI / 2);   // your chair at the IAM workstation, facing the monitor
@@ -1115,7 +1144,7 @@ function applyWorld(t, cine) {
     // pull up on the cord, tap the reader, then let go: the reel snaps it back quickly
     const up = smooth(27.0, 27.8, t) * (1 - smooth(30.9, 31.3, t)), tap = smooth(28.2, 28.6, t) - smooth(29.4, 29.9, t);
     badgeG.position.set(-0.005 + 0.07 * (1 - up), -0.24 + 0.2 * up, -0.2 - 0.04 * tap);   // held close, like you're looking at it
-    badgeG.rotation.set(-0.12 - 0.2 * tap, 0.12 * (1 - up), 0.05 * Math.sin(t * 2.6) * (1 - tap));
+    badgeG.rotation.set(-0.12 + 0.06 * tap, 0.12 * (1 - up) + 0.95 * tap, 0.05 * Math.sin(t * 2.6) * (1 - tap));   // turn the card's face toward the reader to tap it
     const narrow = camera.aspect < 0.8;                 // phones: smaller and closer to the middle
     hand.scale.setScalar(narrow ? 0.9 : 1);
     hand.position.set(narrow ? -0.012 : 0, 0, 0);

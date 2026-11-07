@@ -174,7 +174,7 @@ a.btn { text-decoration: none; }
   </div>
 </div>
 
-<div class="credit">"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified<br>all identities and biometrics are simulated</div>
+<div class="credit">"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified<br>"Rigged hand" by <a href="https://sketchfab.com/elenaferfor" target="_blank" rel="noopener">Elena FF</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> · recoloured<br>all identities and biometrics are simulated</div>
 
 <div class="bar">
   <button class="btn" type="button" id="play" aria-label="Play"><svg viewBox="0 0 16 16" id="playIcon"><path d="M4 2l10 6-10 6z"/></svg></button>
@@ -654,22 +654,47 @@ const cardTex = textTex(512, 324, (x, w, h) => {
 });
 const card = new THREE.Mesh(new THREE.BoxGeometry(0.0856, 0.054, 0.0012), [M.silver, M.silver, M.silver, M.silver, std(0xffffff, 0.35, 0.4, { map: cardTex }), M.silver]);
 hand.add(card);
-// a rounded hand: thumb on the front of the card, fingers behind it, palm and wrist into a shirt cuff and sleeve
-const skin = new THREE.MeshPhysicalMaterial({ color: 0x4f3021, roughness: 0.5, sheen: 0.45, sheenColor: new THREE.Color(0x8a5a40) });
-const grip = new THREE.Group(); hand.add(grip);
-const part = (geo, mat, x, y, z, rx = 0, ry = 0, rz = 0, sc) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); if (sc) m.scale.set(...sc); m.castShadow = false; grip.add(m); return m; };
-const ball = new THREE.SphereGeometry(1, 28, 18);
-part(ball, skin, 0.05, -0.026, -0.011, 0, 0, 0.35, [0.031, 0.04, 0.015]);                       // palm, behind the card edge
-for (let i = 0; i < 4; i++)                                                                       // fingers behind the card
-  part(new THREE.CapsuleGeometry(0.0072 - i * 0.0004, 0.03 - i * 0.003, 6, 14), skin, 0.026 + i * 0.0105, -0.002 - i * 0.004, -0.0085, 0, 0, 0.35);
-part(ball, skin, 0.047, -0.03, 0.004, 0, 0, 0.6, [0.016, 0.022, 0.011]);                          // thumb base
-part(new THREE.CapsuleGeometry(0.0082, 0.024, 6, 14), skin, 0.034, -0.012, 0.0055, 0, 0, 0.75);   // thumb, on the front
-part(ball, skin, 0.027, -0.0005, 0.0055, 0, 0, 0, [0.0072, 0.0072, 0.006]);                       // thumb tip
-const arm = new THREE.Group(); arm.position.set(0.058, -0.052, -0.004); arm.rotation.set(-0.95, 0, 0.5); grip.add(arm);
-const armPart = (r0, r1, len, mat, y) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r0, r1, len, 28), mat); m.position.y = y; m.castShadow = false; arm.add(m); };
-armPart(0.019, 0.02, 0.05, skin, -0.012);                                     // wrist
-armPart(0.026, 0.026, 0.016, std(0xf3f1ec, 0.7), -0.042);                     // shirt cuff
-armPart(0.031, 0.034, 0.16, std(0x2b2f34, 0.85), -0.126);                     // jacket sleeve
+// the hand: "Rigged hand" by Elena FF (CC BY-SA 4.0), tinted to a darker brown and posed with its own
+// finger animation so it grips the card; a shirt cuff and suit sleeve are attached at the wrist
+const HAND = { pos: [0.042, -0.058, -0.004], rot: [0, 1.35, -0.8], scale: 0.09, pose: 0.7, tint: 0x6a5e52, cuffOffset: 0.006, cuffScale: 0.9 };
+const holdG = new THREE.Group(); hand.add(holdG);
+let handMixer = null, wristBone = null;
+const sleeveG = new THREE.Group();
+{
+  const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.016, 28), std(0xf3f1ec, 0.7)); cuff.position.y = -0.008; sleeveG.add(cuff);
+  const slv = new THREE.Mesh(new THREE.CylinderGeometry(0.031, 0.034, 0.16, 28), std(0x2b2f34, 0.85)); slv.position.y = -0.09; sleeveG.add(slv);
+}
+function applyHand() {
+  holdG.position.set(...HAND.pos); holdG.rotation.set(...HAND.rot); holdG.scale.setScalar(HAND.scale);
+  if (handMixer) handMixer.setTime(HAND.pose);
+  handMeshes.forEach((o) => o.material.color.set(HAND.tint));
+  // line the cuff and sleeve up with the forearm: from the hand bone back through the wrist bone
+  if (wristBone && handBone) {
+    holdG.updateMatrixWorld(true); hand.updateMatrixWorld(true);
+    const w = hand.worldToLocal(wristBone.getWorldPosition(new THREE.Vector3()));
+    const h = hand.worldToLocal(handBone.getWorldPosition(new THREE.Vector3()));
+    const d = w.clone().sub(h).normalize();
+    sleeveG.position.copy(w).addScaledVector(d, HAND.cuffOffset);
+    sleeveG.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), d);
+    sleeveG.scale.setScalar(HAND.cuffScale);
+    if (!sleeveG.parent) hand.add(sleeveG);
+  }
+}
+let handBone = null;
+const handMeshes = [];
+new GLTFLoader().load("rigged_hand.glb", (g) => {
+  const m = g.scene;
+  m.traverse((o) => {
+    if (o.isLight || o.isCamera) o.visible = false;
+    if (o.isMesh) { handMeshes.push(o); o.material.color.set(HAND.tint); o.frustumCulled = false; o.castShadow = false; o.receiveShadow = false; }
+    if (o.isBone && /^pulse\.?R/.test(o.name)) wristBone = o;
+    if (o.isBone && /^hand\.?R_02/.test(o.name)) handBone = o;
+  });
+  handMixer = new THREE.AnimationMixer(m); handMixer.clipAction(g.animations[0]).play();
+  holdG.add(m); applyHand();
+});
+window.handDebug = () => ({ wrist: wristBone?.name, hand: handBone?.name, sleeve: !!sleeveG.parent, at: sleeveG.position.toArray().map((v) => +v.toFixed(3)) });
+window.tuneHand = (cfg) => { Object.assign(HAND, cfg); applyHand(); };
 
 /* ===================== screens ===================== */
 const GREEN = "#3ddc84", RED = "#ff4d4d";

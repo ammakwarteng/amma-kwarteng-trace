@@ -155,9 +155,19 @@ export default function AuditLog({ onResume }) {
           </details>
           <div className="audit__foot">
             <p>Thanks for visiting.</p>
-            <button ref={btnRef} type="button" onClick={restart} disabled={!done}>
-              start a new session
-            </button>
+            <div className="audit__actions">
+              <a
+                className="audit__hq"
+                href="hq/"
+                tabIndex={done ? 0 : -1}
+                onClick={() => track("session-audit-enter-hq", "Entered TRACE HQ from the audit log")}
+              >
+                enter TRACE HQ
+              </a>
+              <button ref={btnRef} type="button" onClick={restart} disabled={!done}>
+                start a new session
+              </button>
+            </div>
           </div>
         </div>
       </div>

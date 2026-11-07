@@ -183,13 +183,13 @@ a.btn { text-decoration: none; }
       <button class="btn" type="button" id="sumWalk">free walk</button>
       <a class="btn" href="../">back to portfolio</a>
     </div>
-    <p class="summary__credit">"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified · "Low Poly Office Chair" by <a href="https://sketchfab.com/NoodleBaguette" target="_blank" rel="noopener">NoodleBaguette</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · textures resized<br>all identities and biometrics are simulated</p>
+    <p class="summary__credit">"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified · "Low Poly Office Chair" by <a href="https://sketchfab.com/NoodleBaguette" target="_blank" rel="noopener">NoodleBaguette</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · textures resized · "Mouse and Keyboard" by <a href="https://sketchfab.com/gorzi90" target="_blank" rel="noopener">gorzi</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · optimized<br>all identities and biometrics are simulated</p>
   </div>
 </div>
 
 <div class="info" id="info" role="dialog" aria-label="Credits" hidden>
   <span class="info__id">CREDITS · 3D MODELS</span>
-  <p>"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified · "Low Poly Office Chair" by <a href="https://sketchfab.com/NoodleBaguette" target="_blank" rel="noopener">NoodleBaguette</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · textures resized<br>all identities and biometrics are simulated</p>
+  <p>"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified · "Low Poly Office Chair" by <a href="https://sketchfab.com/NoodleBaguette" target="_blank" rel="noopener">NoodleBaguette</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · textures resized · "Mouse and Keyboard" by <a href="https://sketchfab.com/gorzi90" target="_blank" rel="noopener">gorzi</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · optimized<br>all identities and biometrics are simulated</p>
   <button class="btn" type="button" id="infoClose">close</button>
 </div>
 
@@ -784,8 +784,22 @@ box(0.04, 0.5, 1.14, M.charcoal, 0, 0, 0, mon);
 const ws = { canvas: document.createElement("canvas") }; ws.canvas.width = 1600; ws.canvas.height = 680;
 ws.tex = new THREE.CanvasTexture(ws.canvas); ws.tex.colorSpace = THREE.SRGBColorSpace; ws.tex.anisotropy = 8;
 plane(1.1, 0.4675, new THREE.MeshBasicMaterial({ map: ws.tex, toneMapped: false }), -0.0215, 0, 0, 0, -Math.PI / 2, mon);
-box(0.16, 0.015, 0.46, M.charcoal, -0.12, 0.76, 0, desk);
-box(0.1, 0.02, 0.06, M.charcoal, -0.12, 0.76, 0.38, desk);
+// keyboard and mouse: "Mouse and Keyboard" by gorzi (CC BY 4.0), placed on your desk; simple blocks until it loads
+const kbFallback = [box(0.16, 0.015, 0.46, M.charcoal, -0.12, 0.76, 0, desk), box(0.1, 0.02, 0.06, M.charcoal, -0.12, 0.76, 0.38, desk)];
+const KB = { width: 0.45, rotY: -Math.PI / 2, pos: [-0.16, 0.762, 0.06] };
+const kbHolder = new THREE.Group(); desk.add(kbHolder);
+new GLTFLoader().load("keyboard_mouse.glb", (gl) => {
+  const m = gl.scene; m.updateMatrixWorld(true);
+  let kb = null; m.traverse((o) => { if (o.isMesh && /klawiatura/.test(o.material.name) && !kb) kb = o; });
+  const all = new THREE.Box3().setFromObject(m), kbBox = kb ? new THREE.Box3().setFromObject(kb) : all;
+  const k = KB.width / kbBox.getSize(new THREE.Vector3()).x, c = kbBox.getCenter(new THREE.Vector3());
+  m.position.set(-c.x, -all.min.y, -c.z);
+  m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  const inner = new THREE.Group(); inner.add(m); inner.scale.setScalar(k); kbHolder.add(inner);
+  kbHolder.position.set(...KB.pos); kbHolder.rotation.y = KB.rotY;
+  kbFallback.forEach((b) => (b.visible = false));
+});
+window.tuneKB = (cfg) => { Object.assign(KB, cfg); kbHolder.position.set(...KB.pos); kbHolder.rotation.y = KB.rotY; };
 officeChair(office, 0.75, 7.2, -Math.PI / 2);   // your chair at the IAM workstation, facing the monitor
 // a second desk row so the floor feels occupied
 for (const [z, k] of [[3, 2], [11, 1]]) {

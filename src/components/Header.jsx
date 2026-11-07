@@ -43,16 +43,6 @@ export default function Header() {
         <span>{owner.brand}</span>
       </a>
 
-      <nav className="header__nav" aria-label="Main">
-        <ul>
-          {navItems.map((item) => (
-            <li key={item.id}>
-              <a href={`#${item.id}`}>{item.label}</a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
       <SystemStatus className="header__status" />
 
       <button
@@ -60,7 +50,7 @@ export default function Header() {
         className="header__toggle"
         type="button"
         aria-expanded={open}
-        aria-controls="mobile-menu"
+        aria-controls="site-menu"
         aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((v) => !v)}
       >
@@ -68,12 +58,18 @@ export default function Header() {
         <span aria-hidden="true" />
       </button>
 
-      <div id="mobile-menu" ref={panelRef} className="menu" hidden={!open}>
-        <nav aria-label="Main mobile">
+      {/* sections menu: a full-screen sheet on phones, a side panel on laptops */}
+      <div className="menu-scrim" hidden={!open} onClick={() => setOpen(false)} aria-hidden="true" />
+      <div id="site-menu" ref={panelRef} className="menu" hidden={!open}>
+        <p className="menu__label mono" aria-hidden="true">sections · {String(navItems.length).padStart(2, "0")}</p>
+        <nav aria-label="Main">
           <ol>
-            {navItems.map((item) => (
+            {navItems.map((item, i) => (
               <li key={item.id}>
-                <a href={`#${item.id}`} onClick={() => setOpen(false)}>{item.label}</a>
+                <a href={`#${item.id}`} onClick={() => setOpen(false)}>
+                  <span className="menu__no mono" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  {item.label}
+                </a>
               </li>
             ))}
           </ol>

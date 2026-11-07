@@ -1071,6 +1071,73 @@ function whoosh(dur = 1.2, gain = 0.05) {
   const t0 = actx.currentTime; g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + dur * 0.4); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
   s.connect(f).connect(g).connect(actx.destination); s.start();
 }
+/* elevator music: an original little bossa-style loop, made in code (no recorded or copyrighted music).
+   Electric-piano chords, a soft bass line and a sparse melody. Plays only inside the elevator. */
+const ELEV = {
+  bpm: 96,
+  chords: [ // Cmaj9, Am9, Dm9, G13 (one bar each)
+    { bass: 65.41, notes: [261.63, 329.63, 392.0, 493.88, 587.33] },
+    { bass: 55.0, notes: [220.0, 261.63, 329.63, 392.0, 493.88] },
+    { bass: 73.42, notes: [261.63, 349.23, 440.0, 523.25, 659.25] },
+    { bass: 49.0, notes: [246.94, 349.23, 392.0, 493.88, 659.25] },
+  ],
+  melody: [ // [beat in the 4-bar loop, frequency, length in beats]
+    [0, 659.25, 1.5], [1.5, 587.33, 0.5], [2, 523.25, 1], [3, 493.88, 1],
+    [4.5, 523.25, 0.5], [5, 659.25, 1.5], [7, 587.33, 1],
+    [8, 698.46, 1.5], [9.5, 659.25, 0.5], [10, 587.33, 1], [11, 523.25, 1],
+    [12, 493.88, 1], [13, 587.33, 1], [14, 783.99, 2],
+  ],
+};
+const muz = { on: false, out: null, timer: null, start: 0, scheduled: 0 };
+function epiano(at, f, dur, vel) {             // soft electric piano: a sine with a bell-like overtone
+  const o1 = actx.createOscillator(), o2 = actx.createOscillator(), g = actx.createGain(), g2 = actx.createGain();
+  o1.type = "sine"; o1.frequency.value = f; o2.type = "sine"; o2.frequency.value = f * 4; g2.gain.value = 0.18;
+  g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(vel, at + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+  o2.connect(g2).connect(g); o1.connect(g).connect(muz.out);
+  o1.start(at); o2.start(at); o1.stop(at + dur + 0.05); o2.stop(at + dur + 0.05);
+}
+function bass(at, f, dur) {
+  const o = actx.createOscillator(), g = actx.createGain(); o.type = "triangle"; o.frequency.value = f;
+  g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(0.5, at + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+  o.connect(g).connect(muz.out); o.start(at); o.stop(at + dur + 0.05);
+}
+function scheduleMusic() {                    // look ahead and queue the next beats
+  const beat = 60 / ELEV.bpm, horizon = actx.currentTime + 0.6;
+  while (muz.start + muz.scheduled * beat < horizon) {
+    const b = muz.scheduled, at = muz.start + b * beat, inLoop = b % 16, bar = Math.floor(inLoop / 4), c = ELEV.chords[bar], beatInBar = inLoop % 4;
+    // bossa comping: chord on 1 and the "and" of 2; bass on 1 and 3 (root then fifth)
+    if (beatInBar === 0) { c.notes.forEach((f, i) => epiano(at + i * 0.012, f, beat * 1.4, 0.05)); bass(at, c.bass, beat * 1.6); }
+    if (beatInBar === 1) c.notes.slice(1).forEach((f, i) => epiano(at + beat * 0.5 + i * 0.01, f, beat * 0.9, 0.035));
+    if (beatInBar === 2) bass(at, c.bass * 1.5, beat * 1.4);
+    if (beatInBar === 3) c.notes.slice(0, 3).forEach((f) => epiano(at + beat * 0.5, f, beat * 0.6, 0.03));
+    ELEV.melody.forEach(([mb, f, len]) => { if (mb >= inLoop && mb < inLoop + 1) epiano(at + (mb - inLoop) * beat, f, len * beat * 1.2, 0.07); });
+    muz.scheduled++;
+  }
+}
+function setMusic(on) {
+  if (on === muz.on || !actx) return;
+  muz.on = on;
+  if (on) {
+    muz.out = actx.createGain(); muz.out.gain.value = 0.0001;
+    const lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2400;   // a little muffled, like ceiling speakers
+    muz.out.connect(lp).connect(actx.destination);
+    muz.out.gain.exponentialRampToValueAtTime(0.32, actx.currentTime + 1.2);
+    muz.start = actx.currentTime + 0.1; muz.scheduled = 0; scheduleMusic();
+    muz.timer = setInterval(scheduleMusic, 150);
+  } else {
+    const out = muz.out; clearInterval(muz.timer);
+    out.gain.cancelScheduledValues(actx.currentTime); out.gain.setValueAtTime(Math.max(out.gain.value, 0.0001), actx.currentTime);
+    out.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.9);
+    setTimeout(() => out.disconnect(), 1200);
+  }
+}
+function wantMusic() {
+  if (!soundOn || !actx || FRAMES) return false;
+  if (mode === "cine") return playing && T > 57.2 && T < 66.4;
+  const wt = performance.now() / 1000;
+  return inCabA() || inCabO() || (W.ride >= 0 && wt - W.ride < 3.8);
+}
+
 function sfxAt(kind, delay = 0) {
   const go = () => {
     if (kind === "badge") { setTimeout(() => { tone(1760, 0.08, "square", 0.04); tone(1760, 0.08, "square", 0.04, 0.12); }, 1600); setTimeout(() => { tone(880, 0.12, "sine", 0.05); tone(1320, 0.18, "sine", 0.05, 0.1); }, 2800); }
@@ -1228,7 +1295,7 @@ function interact() {
 }
 addEventListener("keydown", (e) => { if (e.code === "KeyE" && mode === "walk") interact(); });
 ui.prompt.addEventListener("click", interact);
-window.__walk = { walk, W, interact, setMode: (m) => setMode(m) };   // used by automated tests
+window.__walk = { walk, W, interact, setMode: (m) => setMode(m), music: () => muz.on };   // used by automated tests
 function seatPose() {
   const p = V(OX + 0.97, 1.22, 7.2), l = V(OX + 1.82, 1.18, 7.2);
   if (camera.aspect < 0.8) { const fit = 0.62 / Math.tan(Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect)); p.set(OX + 1.8 - fit, 1.19, 7.2); }
@@ -1287,6 +1354,7 @@ function loop(now) {
     prevT = T; renderAt(T);
   } else { updateWalk(dt); applyWorld(0, false); updateLamps(); updateShadows(); renderer.render(scene, camera); }
   adaptResolution(dt);
+  setMusic(wantMusic());
   requestAnimationFrame(loop);
 }
 

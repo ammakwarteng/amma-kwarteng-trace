@@ -288,12 +288,46 @@ function lamp(parent, x, y, z, intensity, distance, decay) {
 }
 const lightPool = Array.from({ length: 5 }, () => { const l = new THREE.PointLight(0xffe0bd, 0, 10, 1.6); scene.add(l); return l; });
 let lampTick = 0;
+/* motion-sensor lighting: the building is dark before the shift. Each zone's lights switch on when you
+   arrive, one fixture after another. Cinematic uses fixed times; free walk uses when you first enter. */
+const ZONE_CINE = { lobby: 17.4, corr: 44.0, elev: 53.4, f4: 65.9 };
+const lightClock = { cine: true, t: 0 };
+const zoneMats = {};
+function zoneAt(x, z) { return x > 100 ? "f4" : z > 0.5 ? "ext" : z > -16.2 ? "lobby" : z > -32.2 ? "corr" : "elev"; }
+function zoneEntryDelay(zone, x, z) {          // further from where you walk in = switches on a beat later
+  return zone === "lobby" ? -z * 0.11 : zone === "corr" ? (-16 - z) * 0.11 : zone === "f4" ? Math.max(0, z) * 0.11 : 0;
+}
+function zoneFactor(zone, delay = 0) {
+  if (zone === "ext" || zone === "cab") return 1;
+  const st = lightClock.cine ? ZONE_CINE[zone] : W.zoneSeen?.[zone];
+  if (st == null) return 0;
+  return smooth(st + delay, st + delay + 0.7, lightClock.t);
+}
+let zonesReady = false;
+function prepareZones() {                       // give each zone its own ceiling-strip material
+  scene.updateMatrixWorld(true);
+  const v = new THREE.Vector3();
+  scene.traverse((o) => {
+    if (!o.isMesh || o.material !== M.soft || o.userData.cab) return;
+    o.getWorldPosition(v); const zn = zoneAt(v.x, v.z); if (zn === "ext") return;
+    const d = Math.round(zoneEntryDelay(zn, v.x, v.z) * 4) / 4, key = zn + ":" + d;
+    if (!zoneMats[key]) zoneMats[key] = { m: M.soft.clone(), zn, d };
+    o.material = zoneMats[key].m;
+  });
+  for (const L of lamps) { L.m.getWorldPosition(L.w); if (!L.zone) L.zone = zoneAt(L.w.x, L.w.z); L.delay = zoneEntryDelay(L.zone, L.w.x, L.w.z); }
+  zonesReady = true;
+}
+const SOFT_ON = new THREE.Color(0xfafaf8), SOFT_OFF = new THREE.Color(0x77746f);
 function updateLamps(force) {
-  if (!force && (lampTick++ % 6)) return;
+  if (!zonesReady) prepareZones();
   const c = camera.getWorldPosition(new THREE.Vector3());
-  for (const L of lamps) { L.m.getWorldPosition(L.w); L.d = L.w.distanceToSquared(c); }
-  const near = lamps.slice().sort((a, b) => a.d - b.d);
-  lightPool.forEach((l, i) => { const L = near[i]; if (!L) { l.intensity = 0; return; } l.position.copy(L.w); l.intensity = L.intensity; l.distance = L.distance; l.decay = L.decay; });
+  for (const L of lamps) { L.m.getWorldPosition(L.w); L.d = L.w.distanceToSquared(c); L.f = zoneFactor(L.zone, L.delay); }
+  const near = lamps.filter((L) => L.f > 0.01).sort((a, b) => a.d - b.d);
+  lightPool.forEach((l, i) => { const L = near[i]; if (!L) { l.intensity = 0; return; } l.position.copy(L.w); l.intensity = L.intensity * L.f; l.distance = L.distance; l.decay = L.decay; });
+  for (const k in zoneMats) { const z = zoneMats[k], f = zoneFactor(z.zn, z.d); z.m.emissiveIntensity = 1.6 * f; z.m.color.copy(SOFT_OFF).lerp(SOFT_ON, f); }
+  // inside an unlit zone the whole view is darker; it brightens as the lights come on
+  const cz = zoneAt(c.x, c.z), inCab = elevators.some((e) => e.g.getWorldPosition(new THREE.Vector3()).distanceTo(c) < 1.6 && c.z < e.g.getWorldPosition(new THREE.Vector3()).z);
+  renderer.toneMappingExposure = 0.74 * (cz === "ext" || inCab ? 1 : 0.55 + 0.45 * zoneFactor(cz));
 }
 let shadowTick = 0;
 function updateShadows(force) { if (force || !(shadowTick++ % 8)) renderer.shadowMap.needsUpdate = true; }
@@ -738,11 +772,11 @@ function elevatorFront(x, z, parent) {
   const cab = new THREE.Group(); cab.position.set(0, 0, -1.25); g.add(cab);
   box(1.6, 0.05, 2.3, M.stone, 0, 0.0, 0, cab);
   box(1.6, 0.05, 2.3, M.ivory, 0, 2.6, 0, cab);
-  box(1.0, 0.02, 1.4, M.soft, 0, 2.57, 0, cab, { cast: false });
+  box(1.0, 0.02, 1.4, M.soft, 0, 2.57, 0, cab, { cast: false }).userData.cab = true;
   box(0.05, 2.6, 2.3, M.silver, -0.8, 1.3, 0, cab); box(0.05, 2.6, 2.3, M.silver, 0.8, 1.3, 0, cab);
   box(1.6, 2.6, 0.05, M.silver, 0, 1.3, -1.15, cab);
   box(1.5, 0.04, 0.05, M.silverDark, 0, 0.95, -1.1, cab);
-  lamp(cab, 0, 2.4, 0, 6, 4, 1.6);
+  lamp(cab, 0, 2.4, 0, 6, 4, 1.6); lamps[lamps.length - 1].zone = "cab";   // elevator cabs are always lit
   const e = { g, dl, dr, ind, open: 0, floor: 1, dir: "" }; elevators.push(e); return e;
 }
 const elevA = elevatorFront(-1.6, EZ + 0.1, scene);
@@ -783,7 +817,7 @@ box(0.06, 0.4, 0.06, M.silverDark, 0.25, 0.95, 0, desk);
 box(0.18, 0.02, 0.24, M.silverDark, 0.25, 0.77, 0, desk);
 const mon = new THREE.Group(); mon.position.set(0.22, 1.18, 0); desk.add(mon);
 box(0.04, 0.5, 1.14, M.charcoal, 0, 0, 0, mon);
-const ws = { canvas: document.createElement("canvas") }; ws.canvas.width = 1600; ws.canvas.height = 680;
+const ws = { canvas: document.createElement("canvas") }; ws.canvas.width = 2400; ws.canvas.height = 1020;   // drawn at 1.5x for a sharp screen
 ws.tex = new THREE.CanvasTexture(ws.canvas); ws.tex.colorSpace = THREE.SRGBColorSpace; ws.tex.anisotropy = 8;
 plane(1.1, 0.4675, new THREE.MeshBasicMaterial({ map: ws.tex, toneMapped: false }), -0.0215, 0, 0, 0, -Math.PI / 2, mon);
 // keyboard and mouse: "Mouse and Keyboard" by gorzi (CC BY 4.0), placed on your desk; simple blocks until it loads
@@ -968,7 +1002,7 @@ const REQS = [
 ];
 const WS0 = 70.6, WSD = [3.0, 2.8, 3.0];
 function drawWorkstation(t) {
-  const x = ws.canvas.getContext("2d"), W = 1600, H = 680;
+  const x = ws.canvas.getContext("2d"), W = 1600, H = 680; x.setTransform(1.5, 0, 0, 1.5, 0, 0);
   x.fillStyle = "#0b0d10"; x.fillRect(0, 0, W, H); x.textBaseline = "alphabetic"; x.textAlign = "left";
   const mono = (s) => `${s}px 'JetBrains Mono',monospace`;
   // nav
@@ -1066,8 +1100,10 @@ const K2 = [ // floor 4 (office), in office-local x offset by OX
   [67.4, V(OX, 1.7, -0.6), V(OX + 0.6, 1.5, 6)],
   [69.2, V(OX - 0.4, 1.7, 4.6), V(OX + 1.6, 1.2, 7.2)],
   [70.6, V(OX + 0.95, 1.22, 7.2), V(OX + 1.82, 1.18, 7.2)],
-  [79, V(OX + 0.97, 1.22, 7.2), V(OX + 1.82, 1.18, 7.2)],
-  [84, V(OX + 0.3, 1.5, 7.0), V(OX + 1.82, 1.2, 7.2)],
+  [71.8, V(OX + 1.24, 1.185, 7.2), V(OX + 1.82, 1.18, 7.2)],
+  [79.5, V(OX + 1.24, 1.185, 7.2), V(OX + 1.82, 1.18, 7.2)],
+  [81.4, V(OX + 0.2, 1.55, 6.9), V(OX + 1.82, 1.15, 7.2)],
+  [84, V(OX - 0.4, 1.62, 6.6), V(OX + 1.82, 1.12, 7.2)],
 ];
 const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 function pathAt(keys, t) {
@@ -1117,7 +1153,7 @@ const TURN0 = 59.7, TURN1 = 62.6;
 const walking = (t) => (t < 12.5) || (t > 17.5 && t < 26.5) || (t > 42.8 && t < 55) || (t > 65.6 && t < 70.2);
 
 /* ===================== world state at time t ===================== */
-const chapters = [[0, "arrival"], [12, "revolving door"], [17.5, "lobby"], [25, "credential"], [32, "biometric verification"], [42, "access granted"], [45, "secured corridor"], [54.5, "elevator"], [65.2, "floor 4 · iam workstation"], [70.6, "joiner · mover · leaver"], [79.5, "shift summary"]];
+const chapters = [[0, "arrival"], [12, "revolving door"], [17.5, "lobby"], [25, "credential"], [32, "biometric verification"], [42, "access granted"], [45, "secured corridor"], [54.5, "elevator"], [65.2, "floor 4 · iam workstation"], [70.6, "joiner · mover · leaver"], [79.6, "signing out"], [81.2, "shift summary"]];
 const ui = {
   scene: document.getElementById("scene"), sess: document.getElementById("sess"), sessSq: document.getElementById("sessSq"),
   status: document.getElementById("status"), prompt: document.getElementById("prompt"), promptText: document.getElementById("promptText"),
@@ -1197,7 +1233,7 @@ function applyWorld(t, cine) {
   const msg = !cine ? walkStatus(wt, bt, sState) : t > 28.6 && t < 29.8 ? ["CREDENTIAL DETECTED", 0] : t >= 29.8 && t < 31.6 ? ["CREDENTIAL VERIFIED", 1] : t > 39.4 && t < 44 ? ["ACCESS GRANTED · SECURE AREA", 1] : t > 63.6 && t < 65 ? ["FLOOR 4 · ACCESS AUTHORIZED", 1] : "";
   ui.status.classList.toggle("is-on", !!msg);
   if (msg) { setText(ui.status, msg[0]); ui.status.classList.toggle("is-ok", !!msg[1]); }
-  const sum = cine ? t >= 79.5 : seated && W.jmlDone && !W.sumClosed;
+  const sum = cine ? t >= 81.2 : seated && W.jmlDone && !W.sumClosed;
   ui.summary.classList.toggle("is-on", sum); ui.summary.setAttribute("aria-hidden", String(!sum));
   if (sum) ui.sumAudit.textContent = String(window.__audit || 0);
 }
@@ -1304,7 +1340,7 @@ const SFX = [
   [55.6, () => tone(1200, 0.05, "square", 0.03)],
   [56.5, () => { tone(1046, 0.5, "sine", 0.05); tone(784, 0.6, "sine", 0.04, 0.35); }],
   [65.5, () => { tone(1046, 0.5, "sine", 0.05); tone(784, 0.6, "sine", 0.04, 0.35); }],
-  [79.6, () => { tone(523, 0.3, "sine", 0.04); tone(659, 0.3, "sine", 0.04, 0.12); tone(784, 0.5, "sine", 0.04, 0.24); }],
+  [81.3, () => { tone(523, 0.3, "sine", 0.04); tone(659, 0.3, "sine", 0.04, 0.12); tone(784, 0.5, "sine", 0.04, 0.24); }],
 ];
 
 /* ===================== modes and playback ===================== */
@@ -1379,7 +1415,7 @@ const W = {};
 function resetWalk(done = false) {
   Object.assign(W, { card: done ? 0 : -1, scan: done ? 0 : -1, door: done ? 0 : -1, secureOpen: done, callAt: -1,
     dA: { open: -1, close: -1 }, dO: { open: -1, close: -1 }, aOpen: false, oOpen: false, ride: -1, rideTo: 0, floor: done ? 4 : 1,
-    desk: -1, jmlDone: done, sumClosed: false, prompt: "", action: null, pressAt: -9, note: "", noteAt: -9 });
+    desk: -1, jmlDone: done, sumClosed: false, zoneSeen: done ? { lobby: 0, corr: 0, elev: 0, f4: 0 } : {}, prompt: "", action: null, pressAt: -9, note: "", noteAt: -9 });
   wsStill = false; lastReaderKey = ""; lastScannerKey = ""; lastStripKey = ""; lastInd = "";
 }
 const near = (x, z, r) => Math.hypot(walk.pos.x - x, walk.pos.z - z) < r;
@@ -1443,9 +1479,14 @@ addEventListener("keydown", (e) => { if (e.code === "KeyE" && mode === "walk") i
 ui.prompt.addEventListener("click", interact);
 window.__walk = { walk, W, interact, setMode: (m) => setMode(m), music: () => muz.on };   // used by automated tests
 function seatPose() {
-  const p = V(OX + 0.97, 1.22, 7.2), l = V(OX + 1.82, 1.18, 7.2);
+  const p = V(OX + 1.24, 1.185, 7.2), l = V(OX + 1.82, 1.18, 7.2);   // lean in: the screen fills the view
   if (camera.aspect < 0.8) { const fit = 0.62 / Math.tan(Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect)); p.set(OX + 1.8 - fit, 1.19, 7.2); }
   return [p, l];
+}
+function noteZone() {                          // free walk: remember when you first enter each zone
+  if (!W.zoneSeen) W.zoneSeen = {};
+  const p = walk.pos, zn = zoneAt(p.x, p.z);
+  if (zn !== "ext" && W.zoneSeen[zn] == null) W.zoneSeen[zn] = performance.now() / 1000;
 }
 function updateWalk(dt) {
   const wt = performance.now() / 1000;
@@ -1475,11 +1516,12 @@ function resize() {
 }
 addEventListener("resize", resize); resize();
 function renderAt(t) {
+  lightClock.cine = true; lightClock.t = t;
   const [p, l] = cinematicCamera(t);
   if (walking(t)) p.y += Math.sin(t * 7.6) * 0.022;
   // phones (tall, narrow screens): step back from the monitor so all of it fits, centred, with no empty ceiling
   if (camera.aspect < 0.8 && t > 68.6) {
-    const k = smooth(68.6, 70.6, t);
+    const k = smooth(68.6, 70.6, t) * (1 - smooth(79.6, 81.4, t));
     const fitDist = 0.62 / Math.tan(Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
     p.lerp(V(OX + 1.8 - fitDist, 1.19, 7.2), k);
     l.lerp(V(OX + 1.82, 1.18, 7.2), k);
@@ -1498,7 +1540,7 @@ function loop(now) {
     if (playing) { T += dt; if (T >= TOTAL) { T = TOTAL; setPlaying(false); } }
     for (const [at, fn] of SFX) if (prevT < at && T >= at && playing) fn();
     prevT = T; renderAt(T);
-  } else { updateWalk(dt); applyWorld(0, false); updateLamps(); updateShadows(); updateCorridorKB(); renderer.render(scene, camera); }
+  } else { lightClock.cine = false; lightClock.t = now / 1000; noteZone(); updateWalk(dt); applyWorld(0, false); updateLamps(); updateShadows(); updateCorridorKB(); renderer.render(scene, camera); }
   adaptResolution(dt);
   setMusic(wantMusic());
   requestAnimationFrame(loop);

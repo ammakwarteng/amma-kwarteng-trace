@@ -233,7 +233,7 @@ let dpr = FRAMES ? 1 : Math.max(1, Math.min(DPR_MAX, 1.5));
 renderer.setPixelRatio(dpr);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.82;
+renderer.toneMappingExposure = 0.74;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.autoUpdate = false; // refreshed a few times a second instead of every frame
@@ -246,19 +246,19 @@ scene.add(camera);
 /* sky dome */
 const skyMat = new THREE.ShaderMaterial({
   side: THREE.BackSide, depthWrite: false,
-  uniforms: { top: { value: new THREE.Color(0x8fb4d8) }, mid: { value: new THREE.Color(0xd9e5ee) }, bot: { value: new THREE.Color(0xeeebe5) } },
+  uniforms: { top: { value: new THREE.Color(0x5f7fae) }, mid: { value: new THREE.Color(0xf2c595) }, bot: { value: new THREE.Color(0xe4cdb4) } }, // golden hour
   vertexShader: "varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }",
   fragmentShader: "uniform vec3 top; uniform vec3 mid; uniform vec3 bot; varying vec3 vP; void main(){ float h=vP.y; vec3 c = h>0.0 ? mix(mid, top, pow(clamp(h,0.0,1.0),0.6)) : mix(mid, bot, clamp(-h*4.0,0.0,1.0)); gl_FragColor=vec4(c,1.0); }",
 });
 const sky = new THREE.Mesh(new THREE.SphereGeometry(300, 32, 16), skyMat);
 scene.add(sky);
-scene.fog = new THREE.Fog(0xdfe7ee, 70, 260);
+scene.fog = new THREE.Fog(0xe8c9a6, 60, 240);
 
 /* reflections: an environment made from the sky and a stone ground, so glass and metal reflect daylight */
 {
   const env = new THREE.Scene();
   env.add(new THREE.Mesh(new THREE.SphereGeometry(50, 32, 16), skyMat.clone()));
-  const g = new THREE.Mesh(new THREE.CircleGeometry(49, 32), new THREE.MeshBasicMaterial({ color: 0xbdb5a9 }));
+  const g = new THREE.Mesh(new THREE.CircleGeometry(49, 32), new THREE.MeshBasicMaterial({ color: 0xb59c86 }));
   g.rotation.x = -Math.PI / 2; g.position.y = -2; env.add(g);
   const b = new THREE.Mesh(new THREE.BoxGeometry(30, 14, 2), new THREE.MeshBasicMaterial({ color: 0xf5f2ec }));
   b.position.set(0, 4, -30); env.add(b);
@@ -267,12 +267,12 @@ scene.fog = new THREE.Fog(0xdfe7ee, 70, 260);
 }
 
 /* light */
-scene.add(new THREE.HemisphereLight(0xe6eef6, 0xb9b0a2, 0.7));
-const sun = new THREE.DirectionalLight(0xfff3e2, 3.0);
-sun.position.set(-34, 48, 42); sun.target.position.set(0, 0, -12);
+scene.add(new THREE.HemisphereLight(0xc9d4e6, 0xa8927c, 0.55));
+const sun = new THREE.DirectionalLight(0xffc488, 3.4); // low, warm late-afternoon sun
+sun.position.set(-62, 20, 34); sun.target.position.set(0, 0, -12);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, { left: -48, right: 48, top: 48, bottom: -48, near: 1, far: 160 });
+Object.assign(sun.shadow.camera, { left: -55, right: 55, top: 40, bottom: -40, near: 1, far: 180 });
 sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03;
 scene.add(sun, sun.target);
 
@@ -283,7 +283,7 @@ function lamp(parent, x, y, z, intensity, distance, decay) {
   const m = new THREE.Object3D(); m.position.set(x, y, z); parent.add(m);
   lamps.push({ m, intensity, distance, decay, w: new THREE.Vector3(), d: 0 });
 }
-const lightPool = Array.from({ length: 5 }, () => { const l = new THREE.PointLight(0xfff6ea, 0, 10, 1.6); scene.add(l); return l; });
+const lightPool = Array.from({ length: 5 }, () => { const l = new THREE.PointLight(0xffe0bd, 0, 10, 1.6); scene.add(l); return l; });
 let lampTick = 0;
 function updateLamps(force) {
   if (!force && (lampTick++ % 6)) return;
@@ -669,13 +669,13 @@ box(14, 3, 0.2, M.ivory, 0, 1.5, 14, office);
 plane(14, 2.9, M.glass, 7, 1.5, 7, 0, -Math.PI / 2, office);
 for (let z = 0; z <= 14; z += 1.75) box(0.08, 3, 0.1, M.silver, 7, 1.5, z, office);
 const cityTex = textTex(2048, 512, (x, w, h) => {
-  const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, "#9cbcdc"); g.addColorStop(0.7, "#e3ebf0"); g.addColorStop(1, "#d8d2c8"); x.fillStyle = g; x.fillRect(0, 0, w, h);
+  const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, "#6f8db6"); g.addColorStop(0.62, "#f0c08e"); g.addColorStop(1, "#cdb59c"); x.fillStyle = g; x.fillRect(0, 0, w, h);
   for (let i = 0; i < 40; i++) { const bw = 40 + Math.random() * 90, bh = 80 + Math.random() * 260, bx = Math.random() * w; x.fillStyle = `rgba(${150 + Math.random() * 40},${160 + Math.random() * 40},${170 + Math.random() * 40},0.85)`; x.fillRect(bx, h * 0.78 - bh, bw, bh); }
 });
 plane(60, 18, new THREE.MeshBasicMaterial({ map: cityTex, fog: false }), 22, 4, 7, 0, -Math.PI / 2, office);
 for (let z = 2; z <= 12; z += 3.4) box(2.2, 0.03, 0.4, M.soft, 0, 2.98, z, office, { cast: false });
 for (const [x, z] of [[-2, 4], [2, 9]]) lamp(office, x, 2.7, z, 22, 12, 1.6);
-const oSun = new THREE.DirectionalLight(0xfff3e2, 1.4); oSun.position.set(OX + 20, 12, 4); oSun.target.position.set(OX, 0, 7); scene.add(oSun, oSun.target);
+const oSun = new THREE.DirectionalLight(0xffc488, 1.8); oSun.position.set(OX + 20, 12, 4); oSun.target.position.set(OX, 0, 7); scene.add(oSun, oSun.target);
 const elevO = elevatorFront(0, 0.1, office);
 // desk with an ultrawide monitor, keyboard, chair
 const desk = new THREE.Group(); desk.position.set(1.6, 0, 7.2); office.add(desk);

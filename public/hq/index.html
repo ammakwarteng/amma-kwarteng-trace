@@ -229,7 +229,7 @@ const TOTAL = 84;
 const params = new URLSearchParams(location.search);
 const FRAMES = params.has("frames");               // deterministic render mode (for recording)
 const view = document.getElementById("view");
-const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance", preserveDrawingBuffer: FRAMES });
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance", preserveDrawingBuffer: FRAMES, logarithmicDepthBuffer: true }); // more depth precision: stops surfaces flickering against each other
 const DPR_MAX = FRAMES ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
 let dpr = FRAMES ? 1 : Math.max(1, Math.min(DPR_MAX, 1.5));
 renderer.setPixelRatio(dpr);
@@ -253,6 +253,7 @@ const skyMat = new THREE.ShaderMaterial({
   fragmentShader: "uniform vec3 top; uniform vec3 mid; uniform vec3 bot; varying vec3 vP; void main(){ float h=vP.y; vec3 c = h>0.0 ? mix(mid, top, pow(clamp(h,0.0,1.0),0.6)) : mix(mid, bot, clamp(-h*4.0,0.0,1.0)); gl_FragColor=vec4(c,1.0); }",
 });
 const sky = new THREE.Mesh(new THREE.SphereGeometry(300, 32, 16), skyMat);
+skyMat.depthTest = false; sky.renderOrder = -1;   // background: always drawn first, behind everything
 scene.add(sky);
 scene.fog = new THREE.Fog(0xe8c9a6, 60, 240);
 
@@ -475,7 +476,7 @@ const signTex = textTex(2048, 360, (x, w, h) => {
   x.fillText("CORPORATE HEADQUARTERS", w / 2 + 9, h * 0.82);
 });
 box(9.4, 1.72, 0.12, M.ivoryStone, 0, 5.25, 0.2);                       // stone sign panel, in front of the mullions
-plane(9.2, 1.62, std(0xffffff, 0.6, 0, { map: signTex }), 0, 5.25, 0.262);
+plane(9.2, 1.62, std(0xffffff, 0.6, 0, { map: signTex }), 0, 5.25, 0.275);
 // a standing monument sign at the walk
 box(0.5, 1.5, 2.6, M.ivoryStone, -5.2, 0.75, 4.4);
 const monTex = textTex(512, 300, (x, w, h) => { x.fillStyle = "#e9e4db"; x.fillRect(0, 0, w, h); x.fillStyle = "#26292c"; x.textAlign = "center"; x.font = "400 96px 'Inter Tight',Arial"; x.letterSpacing = "-7px"; x.fillText("trace", w / 2 - 4, 150); x.font = "22px 'JetBrains Mono',monospace"; x.letterSpacing = "6px"; x.fillText("HQ · 2026", w / 2, 210); });
@@ -529,7 +530,7 @@ for (const x of [-7.5, 7.5]) for (const z of [-4.5, -11]) box(0.6, 6, 0.6, M.sil
 const rec = new THREE.Group(); rec.position.set(-10, 0, -8); rec.rotation.y = 0.35; scene.add(rec);
 box(4.6, 1.05, 1.0, M.stone, 0, 0.55, 0, rec);
 box(4.8, 0.06, 1.15, M.ivoryStone, 0, 1.1, 0.02, rec);
-box(4.6, 0.08, 0.98, M.silver, 0, 0.04, 0, rec);
+box(4.54, 0.08, 1.04, M.silver, 0, 0.04, 0, rec);   // kick plate, set in from the sides so faces never overlap
 box(0.55, 0.36, 0.03, M.charcoal, -1.2, 1.35, -0.3, rec);
 box(0.06, 0.2, 0.06, M.silverDark, -1.2, 1.18, -0.3, rec);
 // feature wall with TRACE logotype on the left
@@ -553,7 +554,7 @@ for (const [x, z] of [[-3.8, -14.6], [15.5, -2.2], [-15.5, -2.2]]) {
 // hanging directional sign
 const dirTex = textTex(1024, 160, (x, w, h) => { x.fillStyle = "#26292c"; x.fillRect(0, 0, w, h); x.fillStyle = "#fafaf8"; x.font = "40px 'JetBrains Mono',monospace"; x.letterSpacing = "8px"; x.textBaseline = "middle"; x.fillText("SECURE AREA · ELEVATORS  →", 46, h / 2); });
 box(4.6, 0.72, 0.06, M.charcoal, 0, 4.6, -12.5);
-plane(4.5, 0.7, std(0xffffff, 0.5, 0, { map: dirTex, emissive: 0xffffff, emissiveMap: dirTex, emissiveIntensity: 0.35 }), 0, 4.6, -12.465);
+plane(4.5, 0.7, std(0xffffff, 0.5, 0, { map: dirTex, emissive: 0xffffff, emissiveMap: dirTex, emissiveIntensity: 0.35 }), 0, 4.6, -12.44);
 for (const sx of [-1, 1]) cyl(0.012, 1.4, M.silver, sx * 2, 5.3, -12.5, scene, 8);
 // interior lights (no shadows, so the lobby stays light without heavy cost)
 for (const [x, z] of [[-8, -4], [8, -4], [-8, -12], [8, -12], [0, -8]]) lamp(scene, x, 5.4, z, 26, 20, 1.8);
@@ -988,10 +989,10 @@ function applyWorld(t, cine) {
   if (hand.visible) { const t = bt;
     // pull up on the cord, tap the reader, then let go: the reel snaps it back quickly
     const up = smooth(27.0, 27.8, t) * (1 - smooth(30.9, 31.3, t)), tap = smooth(28.2, 28.6, t) - smooth(29.4, 29.9, t);
-    badgeG.position.set(-0.015 + 0.08 * (1 - up), -0.29 + 0.24 * up, -0.3 - 0.05 * tap);
+    badgeG.position.set(-0.005 + 0.07 * (1 - up), -0.24 + 0.2 * up, -0.2 - 0.04 * tap);   // held close, like you're looking at it
     badgeG.rotation.set(-0.12 - 0.2 * tap, 0.12 * (1 - up), 0.05 * Math.sin(t * 2.6) * (1 - tap));
     const narrow = camera.aspect < 0.8;                 // phones: smaller and closer to the middle
-    hand.scale.setScalar(narrow ? 0.62 : 1);
+    hand.scale.setScalar(narrow ? 0.9 : 1);
     hand.position.set(narrow ? -0.012 : 0, 0, 0);
     updateCord();
   }

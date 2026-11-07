@@ -463,7 +463,10 @@ for (const [x, z] of [[-16, 10], [16, 10], [-22, 24], [22, 24], [-12, 34], [12, 
 /* building shell: ground-floor lobby is 6 m tall; two office floors above */
 const BW = 48, BD = 44, BH = 14;
 box(BW, BH, 0.6, M.ivory, 0, BH / 2, -BD - 0.3);                 // back
-for (const sx of [-1, 1]) box(0.6, BH, BD, M.ivory, sx * (BW / 2 + 0.3), BH / 2, -BD / 2); // sides
+box(0.6, BH, BD, M.ivory, -(BW / 2 + 0.3), BH / 2, -BD / 2);                       // left side (the trace logo wall is inside)
+// right side: a glass wall for the lobby (ground floor, z 0 to -16), solid everywhere else
+box(0.6, BH - 6.2, 16, M.ivory, BW / 2 + 0.3, 6.2 + (BH - 6.2) / 2, -8);
+box(0.6, BH, BD - 16, M.ivory, BW / 2 + 0.3, BH / 2, -16 - (BD - 16) / 2);
 box(BW + 1.2, 0.8, BD + 1.2, M.ivoryStone, 0, BH + 0.4, -BD / 2);   // roof slab
 box(BW + 0.6, 0.45, 1.0, M.ivoryStone, 0, 6.2, -0.2);              // floor band at 6 m
 box(BW + 0.6, 0.35, 1.0, M.ivoryStone, 0, 10.1, -0.2);             // floor band at 10 m
@@ -557,7 +560,16 @@ plane(BW - 1.2, 16, M.ivory, 0, 6.0, -8, Math.PI / 2);
 // ceiling light slots
 for (let z = -2; z >= -14; z -= 3) box(30, 0.04, 0.22, M.soft, 0, 5.97, z, scene, { cast: false });
 // side walls inside, with stone wainscot
-for (const sx of [-1, 1]) { box(0.2, 6, 16, M.ivory, sx * (BW / 2 - 0.7), 3, -8); box(0.24, 1.0, 16, M.stone, sx * (BW / 2 - 0.72), 0.5, -8); }
+box(0.2, 6, 16, M.ivory, -(BW / 2 - 0.7), 3, -8); box(0.24, 1.0, 16, M.stone, -(BW / 2 - 0.72), 0.5, -8);
+// lobby windows on the right: floor-to-ceiling glass in silver frames, on a low stone sill
+{
+  const wx = BW / 2 - 0.3;
+  box(0.5, 0.35, 16, M.stone, wx, 0.175, -8);                                  // sill
+  plane(16, 5.6, M.glass, wx, 3.15, -8, 0, -Math.PI / 2);                       // glass
+  for (let z = 0; z >= -16; z -= 2.0) box(0.12, 6, 0.1, M.silver, wx, 3, z);    // mullions
+  for (const y of [0.36, 5.96]) box(0.14, 0.08, 16, M.silver, wx, y, -8);      // top and bottom rails
+  box(0.6, 0.3, 16, M.ivory, wx, 6.0, -8);                                     // head
+}
 // brushed silver columns
 for (const x of [-7.5, 7.5]) for (const z of [-4.5, -11]) box(0.6, 6, 0.6, M.silver, x, 3, z);
 // reception desk: stone body, polished top, silver kick, with a charcoal monitor

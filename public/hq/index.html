@@ -183,13 +183,13 @@ a.btn { text-decoration: none; }
       <button class="btn" type="button" id="sumWalk">free walk</button>
       <a class="btn" href="../">back to portfolio</a>
     </div>
-    <p class="summary__credit">"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified<br>all identities and biometrics are simulated</p>
+    <p class="summary__credit">"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified · "Low Poly Office Chair" by <a href="https://sketchfab.com/NoodleBaguette" target="_blank" rel="noopener">NoodleBaguette</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · textures resized<br>all identities and biometrics are simulated</p>
   </div>
 </div>
 
 <div class="info" id="info" role="dialog" aria-label="Credits" hidden>
-  <span class="info__id">CREDITS · 3D MODEL</span>
-  <p>"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified<br>all identities and biometrics are simulated</p>
+  <span class="info__id">CREDITS · 3D MODELS</span>
+  <p>"Revolving Door" by <a href="https://sketchfab.com/Devden" target="_blank" rel="noopener">Devden</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · materials modified · "Low Poly Office Chair" by <a href="https://sketchfab.com/NoodleBaguette" target="_blank" rel="noopener">NoodleBaguette</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · textures resized<br>all identities and biometrics are simulated</p>
   <button class="btn" type="button" id="infoClose">close</button>
 </div>
 
@@ -605,8 +605,11 @@ plane(0.36, 0.064, new THREE.MeshBasicMaterial({ map: strip.tex, toneMapped: fal
 /* office chair: padded seat and back, armrests, gas lift, five-star base with casters.
    Faces -z by default (the person sitting looks toward -z); rotY turns it. */
 const chairFabric = std(0x2a2d31, 0.85), chairMesh = std(0x1b1d20, 0.7);
+const chairs = [];
+const CHAIR = { height: 1.05, rotY: Math.PI };   // the loaded model is scaled to a real chair height
 function officeChair(parent, x, z, rotY = 0) {
-  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rotY; parent.add(g);
+  const outer = new THREE.Group(); outer.position.set(x, 0, z); outer.rotation.y = rotY; parent.add(outer);
+  const g = new THREE.Group(); outer.add(g); chairs.push({ outer, proc: g });
   const seat = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.07, 0.46, 2, 1, 2), chairFabric); seat.position.set(0, 0.47, 0); g.add(seat);
   const cushion = new THREE.Mesh(new THREE.CylinderGeometry(0.235, 0.235, 0.03, 32), chairFabric); cushion.scale.set(1, 1, 0.97); cushion.position.set(0, 0.515, -0.005); g.add(cushion);
   const back = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.52, 0.05), chairMesh); back.position.set(0, 0.86, 0.25); back.rotation.x = -0.1; g.add(back);
@@ -624,8 +627,22 @@ function officeChair(parent, x, z, rotY = 0) {
     const w = new THREE.Mesh(new THREE.SphereGeometry(0.028, 12, 8), M.charcoal); w.position.set(Math.cos(a) * 0.29, 0.03, Math.sin(a) * 0.29); g.add(w);
   }
   g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-  return g;
+  return outer;
 }
+// "Low Poly Office Chair" by NoodleBaguette (CC BY 4.0), textures resized. Replaces the built chairs once loaded.
+new GLTFLoader().load("office_chair.glb", (gl) => {
+  const src = gl.scene; src.updateMatrixWorld(true);
+  const box3 = new THREE.Box3().setFromObject(src), size = box3.getSize(new THREE.Vector3()), c = box3.getCenter(new THREE.Vector3());
+  const k = CHAIR.height / size.y;
+  src.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  for (const ch of chairs) {
+    const m = src.clone(true), holder = new THREE.Group();
+    m.position.set(-c.x, -box3.min.y, -c.z); holder.add(m); holder.scale.setScalar(k); holder.rotation.y = CHAIR.rotY;
+    ch.outer.add(holder); ch.model = holder; ch.proc.visible = false;
+  }
+  window.__chairs = { n: chairs.length, size: size.toArray().map((v) => +v.toFixed(2)), k };
+}, undefined, () => { /* keep the built chairs */ });
+window.tuneChair = (r) => { CHAIR.rotY = r; chairs.forEach((ch) => ch.model && (ch.model.rotation.y = r)); };
 
 /* small desktop screens for the open-plan desks: each shows different, believable work */
 function deskScreenTex(kind) {

@@ -145,7 +145,7 @@ export const projects = [
       "Designed an access-card sign-out: a brushed-silver magnetic-stripe credential that visitors drag through a swipe reader, with a swipe sound, a reader beep and a green access light",
       "Designed a session audit log that closes the visit the way an IAM system records it: credential read, authentication, least-privilege authorization, sign-out and token revocation",
       "Added private event counts for doodles, resume unlocks and badge swipes, so I can see how visitors use the site without collecting personal data",
-      "Designed the TRACE visual identity: corner-bracket frames, record-style labels (PRJ-01, CERT, RES) and a target-lock animation used across the site",
+      "Designed the TRACE visual identity: corner-bracket frames, record-style labels (PRJ-01, CERT, MBR) and a target-lock animation used across the site",
       "Added a loading screen that replays when a visitor starts a new session",
     ],
     gallery: [

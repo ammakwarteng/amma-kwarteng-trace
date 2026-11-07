@@ -27,6 +27,8 @@ export const communities = [
     about: "advancing women and underrepresented communities to lead the future of privacy and security" },
   { name: "Rewriting the Code", role: "Member", url: "https://rewritingthecode.org/",
     about: "a community supporting women in tech, from students to early career" },
+  { name: "Women's Society of Cyberjutsu", short: "WSC", role: "Member", url: "https://www.womenscyberjutsu.org/",
+    about: "a nonprofit helping women advance in cybersecurity through hands-on training, mentoring and community" },
 ];
 
 // Sections in the menu and on the page. Set ready: true once a section has

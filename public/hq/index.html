@@ -229,7 +229,7 @@ const FRAMES = params.has("frames");               // deterministic render mode 
 const view = document.getElementById("view");
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance", preserveDrawingBuffer: FRAMES });
 const DPR_MAX = FRAMES ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
-let dpr = FRAMES ? 1 : Math.min(DPR_MAX, 1.25);
+let dpr = FRAMES ? 1 : Math.max(1, Math.min(DPR_MAX, 1.5));
 renderer.setPixelRatio(dpr);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -295,15 +295,21 @@ function updateLamps(force) {
 let shadowTick = 0;
 function updateShadows(force) { if (force || !(shadowTick++ % 8)) renderer.shadowMap.needsUpdate = true; }
 let wsStill = false;
-// adaptive resolution: lower the pixel ratio when frames are slow, raise it again when there's headroom
-const perf = { acc: 0, n: 0 };
+// adaptive quality: if frames stay slow, step down once at a time and never back up (no flicker).
+// It only ever turns shadows off; sharpness is never lowered, so nothing goes blurry.
+const perf = { acc: 0, n: 0, slow: 0, level: 0 };
 function adaptResolution(dt) {
-  if (FRAMES) return;
+  if (FRAMES || perf.level >= 1) return;
   perf.acc += dt; perf.n++;
-  if (perf.acc < 1.5) return;
+  if (perf.acc < 2) return;
   const ms = (perf.acc / perf.n) * 1000; perf.acc = 0; perf.n = 0;
-  const next = ms > 24 ? Math.max(0.7, dpr - 0.15) : ms < 14 ? Math.min(DPR_MAX, dpr + 0.1) : dpr;
-  if (Math.abs(next - dpr) > 0.01) { dpr = next; renderer.setPixelRatio(dpr); resize(); }
+  perf.slow = ms > 30 ? perf.slow + 1 : 0;
+  if (perf.slow < 2) return;
+  perf.slow = 0; perf.level++;
+  if (perf.level === 1) {
+    sun.castShadow = false; renderer.shadowMap.enabled = false;
+    scene.traverse((o) => { if (o.material) [].concat(o.material).forEach((m) => { m.needsUpdate = true; }); });
+  }
 }
 
 /* ===================== materials ===================== */

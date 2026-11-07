@@ -74,8 +74,9 @@ export const projects = [
       "Kept authentication and authorization separate: the verified employee gets the secure area but is still denied the server room because it's not in their role",
       "Walked through joiner, mover and leaver workflows step by step, with access granted, removed and revoked, and every action recorded in an audit log",
       "Added a cinematic mode with play, pause and replay, plus a free-walk mode for keyboard, mouse and touch",
+      "Made free walk playable: badge in, pass the face scan, and the security door only unlocks after both; then call the elevator, ride to floor 4 and sit at the workstation to work the queue",
     ],
-    next: "Next: make each step playable in free-walk mode: present the card, face the scanner, call the elevator and click through the requests yourself.",
+    next: "Next: let visitors click through each joiner, mover and leaver step themselves instead of watching the queue run.",
     links: [{ label: "enter the simulation", url: "hq/" }],
     gallery: [
       { src: "projects/hq/01.webp", caption: "Arriving at TRACE headquarters" },

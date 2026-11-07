@@ -912,7 +912,7 @@ const K = [ // time, position, look target
   [56.2, V(-0.5, 1.68, -34.4), V(-0.1, 1.15, -36)],
   [58.5, V(-1.2, 1.7, -34.6), V(-1.6, 1.4, -38)],
   [60.2, V(-1.6, 1.7, -36.9), V(-1.6, 1.55, -38.5)],
-  [62, V(-1.6, 1.7, -37.0), V(-1.6, 1.5, -32)],
+  [62.6, V(-1.6, 1.7, -37.0), V(-1.6, 1.5, -32)],
   [65.2, V(-1.6, 1.7, -37.0), V(-1.6, 1.5, -32)],
 ];
 const K2 = [ // floor 4 (office), in office-local x offset by OX
@@ -958,8 +958,16 @@ function cinematicCamera(t) {
     return [p, look];
   }
   if (t >= 65.2) return pathAt(K2, t);
+  // inside the elevator: turn around slowly and evenly (to the left), like a person would,
+  // instead of whipping the view across the cab
+  if (t > TURN0 && t < TURN1) {
+    const [p] = pathAt(K, t);
+    const k = smooth(TURN0, TURN1, t), th = -Math.PI * (0.5 - 0.5 * Math.cos(Math.PI * k));
+    return [p, p.clone().add(V(Math.sin(th) * 3, -0.22, -Math.cos(th) * 3))];
+  }
   return pathAt(K, t);
 }
+const TURN0 = 59.7, TURN1 = 62.6;
 const walking = (t) => (t < 12.5) || (t > 17.5 && t < 26.5) || (t > 42.8 && t < 55) || (t > 65.6 && t < 70.2);
 
 /* ===================== world state at time t ===================== */
@@ -1270,7 +1278,7 @@ function renderAt(t) {
   let c = chapters[0][1]; for (const [ct, cn] of chapters) if (t >= ct) c = cn; setText(ui.chapter, c);
   renderer.render(scene, camera);
 }
-window.renderAt = (t) => { renderAt(t); return true; };
+window.renderAt = (t) => { renderAt(t); const d = camera.getWorldDirection(new THREE.Vector3()); return Math.atan2(d.x, -d.z) * 180 / Math.PI; };   // returns the view heading, used by tests
 function loop(now) {
   const dt = Math.min(0.1, (now - lastNow) / 1000); lastNow = now;
   if (mode === "cine") {

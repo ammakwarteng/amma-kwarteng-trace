@@ -314,13 +314,17 @@ function adaptResolution(dt) {
 
 /* ===================== materials ===================== */
 const std = (color, roughness = 0.6, metalness = 0, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness, metalness, ...extra });
+const textTextures = [];
 function canvasTex(w, h, draw, repeat) {
   const c = document.createElement("canvas"); c.width = w; c.height = h;
   draw(c.getContext("2d"), w, h);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
   if (repeat) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(repeat[0], repeat[1]); }
+  textTextures.push({ c, draw, t });
   return t;
 }
+// signs are drawn before the web fonts finish loading; redraw them in the real fonts when they arrive
+function redrawText() { for (const { c, draw, t } of textTextures) { const x = c.getContext("2d"); x.clearRect(0, 0, c.width, c.height); draw(x, c.width, c.height); t.needsUpdate = true; } }
 function noise(ctx, w, h, amt, alpha) {
   const id = ctx.getImageData(0, 0, w, h), d = id.data;
   for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - 0.5) * amt; d[i] += n; d[i + 1] += n; d[i + 2] += n; d[i + 3] = alpha ?? d[i + 3]; }
@@ -463,15 +467,16 @@ box(8.9, 0.1, 3.4, M.ivoryStone, 0, 4.42, 1.55);
 const signTex = textTex(2048, 360, (x, w, h) => {
   x.fillStyle = "#ebe7df"; x.fillRect(0, 0, w, h);
   x.fillStyle = "#26292c"; x.textAlign = "center"; x.textBaseline = "middle";
-  x.font = "500 168px 'Inter Tight', Helvetica, Arial"; x.letterSpacing = "38px";
-  x.fillText("TRACE", w / 2 + 19, h * 0.42);
+  x.font = "400 220px 'Inter Tight', Helvetica, Arial"; x.letterSpacing = "-16px";
+  x.fillText("trace", w / 2 - 8, h * 0.40);
   x.font = "500 44px 'JetBrains Mono', Menlo, monospace"; x.letterSpacing = "18px";
   x.fillText("CORPORATE HEADQUARTERS", w / 2 + 9, h * 0.82);
 });
-plane(9.2, 1.62, std(0xffffff, 0.6, 0, { map: signTex }), 0, 5.25, 0.06);
+box(9.4, 1.72, 0.12, M.ivoryStone, 0, 5.25, 0.2);                       // stone sign panel, in front of the mullions
+plane(9.2, 1.62, std(0xffffff, 0.6, 0, { map: signTex }), 0, 5.25, 0.262);
 // a standing monument sign at the walk
 box(0.5, 1.5, 2.6, M.ivoryStone, -5.2, 0.75, 4.4);
-const monTex = textTex(512, 300, (x, w, h) => { x.fillStyle = "#e9e4db"; x.fillRect(0, 0, w, h); x.fillStyle = "#26292c"; x.textAlign = "center"; x.font = "500 64px 'Inter Tight',Arial"; x.letterSpacing = "16px"; x.fillText("TRACE", w / 2 + 8, 150); x.font = "22px 'JetBrains Mono',monospace"; x.letterSpacing = "6px"; x.fillText("HQ · 2026", w / 2, 210); });
+const monTex = textTex(512, 300, (x, w, h) => { x.fillStyle = "#e9e4db"; x.fillRect(0, 0, w, h); x.fillStyle = "#26292c"; x.textAlign = "center"; x.font = "400 96px 'Inter Tight',Arial"; x.letterSpacing = "-7px"; x.fillText("trace", w / 2 - 4, 150); x.font = "22px 'JetBrains Mono',monospace"; x.letterSpacing = "6px"; x.fillText("HQ · 2026", w / 2, 210); });
 plane(2.4, 1.4, std(0xffffff, 0.6, 0, { map: monTex }), -4.94, 0.78, 4.4, 0, Math.PI / 2);
 
 /* ===================== revolving door (the provided model) ===================== */
@@ -533,7 +538,7 @@ const wallTex = textTex(1024, 512, (x, w, h) => {
   x.beginPath(); for (const [a, b, c, d] of [[cx, cy - 130, cx, cy - 80], [cx, cy + 80, cx, cy + 130], [cx - 130, cy, cx - 80, cy], [cx + 80, cy, cx + 130, cy]]) { x.moveTo(a, b); x.lineTo(c, d); } x.stroke();
   const k = 40, L = cx - 140, T = cy - 140, R = cx + 140, B = cy + 140;
   x.beginPath(); x.moveTo(L, T + k); x.lineTo(L, T); x.lineTo(L + k, T); x.moveTo(R - k, T); x.lineTo(R, T); x.lineTo(R, T + k); x.moveTo(L, B - k); x.lineTo(L, B); x.lineTo(L + k, B); x.moveTo(R - k, B); x.lineTo(R, B); x.lineTo(R, B - k); x.stroke();
-  x.fillStyle = "#26292c"; x.font = "500 150px 'Inter Tight',Arial"; x.textBaseline = "middle"; x.letterSpacing = "-6px"; x.fillText("trace", 420, cy + 6);
+  x.fillStyle = "#26292c"; x.font = "400 170px 'Inter Tight',Arial"; x.textBaseline = "middle"; x.letterSpacing = "-12px"; x.fillText("trace", 410, cy + 6);
 });
 plane(7, 3.5, std(0xffffff, 0.7, 0, { map: wallTex }), -(BW / 2 - 0.82), 3.4, -8.5, 0, Math.PI / 2);
 // lounge: low charcoal benches and stone planters
@@ -1164,7 +1169,8 @@ loadDoor((g) => {
 }, () => { document.getElementById("loading").textContent = "COULD NOT LOAD THE DOOR MODEL"; start(); });
 function start() {
   drawScanner(0, 0, 0); drawStrip(0); drawReader(0); drawWorkstation(0);
-  document.fonts?.ready.then(() => { lastScannerKey = ""; lastStripKey = ""; lastReaderKey = ""; lastInd = ""; drawWorkstation(0); });
+  const fontsIn = Promise.all(["400 100px 'Inter Tight'", "500 100px 'Inter Tight'", "400 20px 'JetBrains Mono'", "500 20px 'JetBrains Mono'"].map((f) => document.fonts?.load(f))).catch(() => {});
+  fontsIn.then(() => { redrawText(); lastScannerKey = ""; lastStripKey = ""; lastReaderKey = ""; lastInd = ""; drawWorkstation(0); window.__fonts = true; });
   document.getElementById("loading").classList.add("is-done");
   window.__ready = true;
   if (FRAMES) { renderAt(0); return; }

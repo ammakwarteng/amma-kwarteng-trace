@@ -451,7 +451,6 @@ export function createHunt({ canvas, surface, getBounds, onStatus, onCount, redu
   function draw(animated) {
     ctx.clearRect(0, 0, W, H);
     drawTrace();
-    drawThread();
     drawGhosts();
     drawMalware(animated);
     drawQuarantine();

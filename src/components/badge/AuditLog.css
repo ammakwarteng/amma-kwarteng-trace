@@ -183,6 +183,19 @@ html.is-locked, html.is-locked body { overflow: hidden; }
 }
 .audit__foot button:hover { background: transparent; color: #ffffff; }
 .audit__foot button:disabled { opacity: 0.4; cursor: default; }
+.audit__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+/* second action: a quieter outline button into the TRACE HQ simulation */
+.audit__hq {
+  display: inline-flex; align-items: center;
+  padding: 9px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+.audit__hq:hover { border-color: #ffffff; }
+.audit__hq:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
 .audit__foot button:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
 
 /* narrower laptops: drop the level column */
@@ -219,6 +232,9 @@ html.is-locked, html.is-locked body { overflow: hidden; }
     padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
     border-top: 1px solid var(--log-line);
   }
+  .audit__foot p { display: none; }
+  .audit__actions { width: 100%; }
+  .audit__actions > * { flex: 1; justify-content: center; text-align: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

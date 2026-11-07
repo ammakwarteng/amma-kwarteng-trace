@@ -1133,6 +1133,13 @@ addEventListener("resize", resize); resize();
 function renderAt(t) {
   const [p, l] = cinematicCamera(t);
   if (walking(t)) p.y += Math.sin(t * 7.6) * 0.022;
+  // phones (tall, narrow screens): step back from the monitor so all of it fits, centred, with no empty ceiling
+  if (camera.aspect < 0.8 && t > 68.6) {
+    const k = smooth(68.6, 70.6, t);
+    const fitDist = 0.62 / Math.tan(Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
+    p.lerp(V(OX + 1.8 - fitDist, 1.19, 7.2), k);
+    l.lerp(V(OX + 1.82, 1.18, 7.2), k);
+  }
   camera.position.copy(p); camera.up.set(0, 1, 0); camera.lookAt(l);
   applyWorld(t, true);
   updateLamps(FRAMES); updateShadows(FRAMES);

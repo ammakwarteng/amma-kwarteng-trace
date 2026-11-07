@@ -31,6 +31,11 @@ export const communities = [
     about: "a nonprofit helping women advance in cybersecurity through hands-on training, mentoring and community" },
 ];
 
+// Volunteer roles, shown in the volunteer section (hidden until it's switched on in navItems).
+// Add one only once you've actually done it. Example:
+//   { org: "CyberX", role: "Volunteer", when: "2027", url: "https://...", what: "helped run the student CTF" },
+export const volunteering = [];
+
 // Sections in the menu and on the page. Set ready: true once a section has
 // real content; sections that are not ready stay hidden everywhere.
 export const navItems = [
@@ -40,6 +45,7 @@ export const navItems = [
   { id: "skills", label: "skills", ready: true },
   { id: "certifications", label: "certifications", ready: true },
   { id: "community", label: "community", ready: true },
+  { id: "volunteer", label: "volunteer", ready: false }, // switch to true once there's a role in volunteering below
   { id: "resume", label: "resume", ready: true },
   { id: "contact", label: "contact", ready: true },
 ].filter((item) => item.ready);

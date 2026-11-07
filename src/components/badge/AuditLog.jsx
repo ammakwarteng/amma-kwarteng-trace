@@ -96,7 +96,7 @@ export default function AuditLog({ onResume }) {
 
   return createPortal(
     <div className="audit" role="dialog" aria-modal="true" aria-label="Session audit log">
-      <div className="audit__panel mono">
+      <div className="audit__panel mono tf">
         {/* toolbar */}
         <header className="audit__bar">
           <span className="audit__title">trace · <span className="audit__title-long">identity </span>audit log</span>

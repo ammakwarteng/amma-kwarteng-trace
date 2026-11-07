@@ -6,6 +6,7 @@ import "@fontsource/inter-tight/500.css";
 import "@fontsource/jetbrains-mono/400.css";
 import "@fontsource/jetbrains-mono/500.css";
 import "./styles/global.css";
+import "./styles/identity.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

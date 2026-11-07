@@ -90,10 +90,10 @@ export default function Certifications() {
   }, []);
 
   const card = (c, key) => (
-    <article key={key} className={`cert is-${c.status}`}>
-      <div className="cert__top mono">
-        <span>{c.issuer}</span>
-        <span className="cert__status">{LABEL[c.status]}</span>
+    <article key={key} className={`cert is-${c.status} tf ${c.status === "earned" ? "" : "tf-hover"}`}>
+      <div className="cert__top idl">
+        <span><b>CERT</b> · {c.issuer}</span>
+        <span className="cert__status st">{LABEL[c.status]}</span>
       </div>
       <p className="cert__code">{c.code}</p>
       <p className="cert__name">{c.name}</p>

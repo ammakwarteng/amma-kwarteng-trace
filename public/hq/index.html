@@ -601,6 +601,76 @@ const strip = { canvas: document.createElement("canvas") }; strip.canvas.width =
 strip.tex = new THREE.CanvasTexture(strip.canvas); strip.tex.colorSpace = THREE.SRGBColorSpace;
 plane(0.36, 0.064, new THREE.MeshBasicMaterial({ map: strip.tex, toneMapped: false }), 0, 1.3, 0.0365, 0, 0, term);
 
+
+/* office chair: padded seat and back, armrests, gas lift, five-star base with casters.
+   Faces -z by default (the person sitting looks toward -z); rotY turns it. */
+const chairFabric = std(0x2a2d31, 0.85), chairMesh = std(0x1b1d20, 0.7);
+function officeChair(parent, x, z, rotY = 0) {
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rotY; parent.add(g);
+  const seat = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.07, 0.46, 2, 1, 2), chairFabric); seat.position.set(0, 0.47, 0); g.add(seat);
+  const cushion = new THREE.Mesh(new THREE.CylinderGeometry(0.235, 0.235, 0.03, 32), chairFabric); cushion.scale.set(1, 1, 0.97); cushion.position.set(0, 0.515, -0.005); g.add(cushion);
+  const back = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.52, 0.05), chairMesh); back.position.set(0, 0.86, 0.25); back.rotation.x = -0.1; g.add(back);
+  const lumbar = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.08, 0.04), chairFabric); lumbar.position.set(0, 0.72, 0.225); lumbar.rotation.x = -0.1; g.add(lumbar);
+  box(0.06, 0.32, 0.03, M.silverDark, 0, 0.62, 0.25, g);                                        // spine to the backrest
+  for (const sx of [-1, 1]) {                                                                   // armrests
+    box(0.025, 0.2, 0.025, M.silverDark, sx * 0.25, 0.58, 0.02, g);
+    box(0.06, 0.025, 0.26, chairFabric, sx * 0.25, 0.69, 0.0, g);
+  }
+  cyl(0.025, 0.3, M.silver, 0, 0.28, 0, g, 16);                                                 // gas lift
+  cyl(0.04, 0.06, M.charcoal, 0, 0.12, 0, g, 16);
+  for (let i = 0; i < 5; i++) {                                                                 // five-star base + casters
+    const a = (i / 5) * Math.PI * 2, leg = box(0.3, 0.03, 0.045, M.silver, Math.cos(a) * 0.15, 0.09, Math.sin(a) * 0.15, g, { cast: false });
+    leg.rotation.y = -a;
+    const w = new THREE.Mesh(new THREE.SphereGeometry(0.028, 12, 8), M.charcoal); w.position.set(Math.cos(a) * 0.29, 0.03, Math.sin(a) * 0.29); g.add(w);
+  }
+  g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  return g;
+}
+
+/* small desktop screens for the open-plan desks: each shows different, believable work */
+function deskScreenTex(kind) {
+  return canvasTex(512, 320, (x, W, H) => {
+    const mono = (n) => `${n}px 'JetBrains Mono',monospace`, sans = (n) => `500 ${n}px 'Inter Tight',Arial`;
+    const dark = kind !== "mail";
+    x.fillStyle = dark ? "#0e1116" : "#f4f3ef"; x.fillRect(0, 0, W, H);
+    x.fillStyle = dark ? "#171b22" : "#e4e2dc"; x.fillRect(0, 0, W, 26);                     // window bar
+    ["#ff5f57", "#febc2e", "#28c840"].forEach((c, i) => { x.fillStyle = c; x.beginPath(); x.arc(14 + i * 14, 13, 4, 0, 7); x.fill(); });
+    x.fillStyle = dark ? "#8b9198" : "#555"; x.font = mono(11);
+    if (kind === "tickets") {
+      x.fillText("service desk · queue", 64, 17);
+      const rows = [["INC-1182", "password reset · finance", "#3ddc84", "resolved"], ["INC-1183", "mfa device lost", "#f5c26b", "in progress"], ["REQ-0441", "access: sales-share", "#9aa0a6", "awaiting approval"], ["INC-1184", "vpn won't connect", "#f5c26b", "in progress"], ["INC-1185", "new laptop setup", "#9aa0a6", "queued"], ["REQ-0442", "remove contractor access", "#3ddc84", "done"]];
+      rows.forEach(([id, t, c, st], i) => { const y = 52 + i * 42; x.fillStyle = "#151920"; x.fillRect(12, y - 20, W - 24, 34);
+        x.fillStyle = "#e8e8e6"; x.font = mono(12); x.fillText(id, 22, y); x.fillStyle = "#a9aeb4"; x.fillText(t, 112, y); x.fillStyle = c; x.textAlign = "right"; x.fillText(st, W - 22, y); x.textAlign = "left"; });
+    } else if (kind === "dash") {
+      x.fillText("access reviews · Q4", 64, 17);
+      [["reviews done", "86%"], ["open requests", "14"], ["stale accounts", "3"]].forEach(([k, v], i) => { const bx = 14 + i * 166; x.fillStyle = "#151920"; x.fillRect(bx, 38, 152, 70);
+        x.fillStyle = "#8b9198"; x.font = mono(11); x.fillText(k, bx + 12, 60); x.fillStyle = "#f2f2f0"; x.font = sans(30); x.fillText(v, bx + 12, 96); });
+      x.fillStyle = "#151920"; x.fillRect(14, 120, W - 28, 186);
+      for (let i = 0; i < 12; i++) { const h = 30 + ((i * 37) % 110); x.fillStyle = i === 11 ? "#3ddc84" : "#4b5560"; x.fillRect(34 + i * 38, 290 - h, 24, h); }
+    } else if (kind === "code") {
+      x.fillText("provision_user.ps1", 64, 17);
+      const L = [["#c792ea", "param", "#e8e8e6", "($User, $Dept)"], ["#82aaff", "New-ADUser", "#e8e8e6", " -Name $User -Path \"OU=$Dept\""], ["#82aaff", "Add-ADGroupMember", "#e8e8e6", " \"$Dept-Staff\" $User"], ["#546e7a", "# least privilege: role group only", "", ""], ["#82aaff", "Set-ADUser", "#e8e8e6", " $User -ChangePasswordAtLogon $true"], ["#82aaff", "Write-AuditLog", "#c3e88d", " \"joiner: $User\""]];
+      L.forEach(([c1, a, c2, b], i) => { const y = 54 + i * 34; x.font = mono(13); x.fillStyle = "#4a5058"; x.fillText(String(i + 1), 14, y); x.fillStyle = c1; x.fillText(a, 40, y); const w = x.measureText(a).width; x.fillStyle = c2 || c1; x.fillText(b, 40 + w, y); });
+    } else {
+      x.fillText("inbox", 64, 17);
+      const m = [["IT Service Desk", "Your ticket INC-1182 was resolved"], ["Security Team", "Reminder: complete phishing training"], ["Manager", "Access review due Friday"], ["HR", "New hire starting Monday: Maya Chen"], ["IAM Team", "Quarterly certification is open"]];
+      m.forEach(([f, t], i) => { const y = 54 + i * 50; x.fillStyle = i === 0 ? "#ffffff" : "#f4f3ef"; x.fillRect(10, y - 22, W - 20, 44);
+        x.fillStyle = "#1a1a1a"; x.font = sans(14); x.fillText(f, 22, y - 2); x.fillStyle = "#666"; x.font = mono(11); x.fillText(t, 22, y + 15); });
+    }
+  });
+}
+const SCREEN_KINDS = ["tickets", "dash", "code", "mail"];
+const screenMats = SCREEN_KINDS.map((k) => new THREE.MeshBasicMaterial({ map: deskScreenTex(k), toneMapped: false }));
+// a desktop monitor facing +z: bezel, screen, neck and foot. Returns the group so it can be turned.
+function deskMonitor(parent, x, y, z, screenIndex, rotY = 0) {
+  const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rotY; parent.add(g);
+  box(0.58, 0.37, 0.025, M.charcoal, 0, 0.24, 0, g);
+  plane(0.55, 0.344, screenMats[screenIndex % screenMats.length], 0, 0.24, 0.0135, 0, 0, g);
+  box(0.05, 0.16, 0.03, M.silverDark, 0, 0.03, -0.03, g);
+  box(0.2, 0.012, 0.14, M.silverDark, 0, -0.045, -0.02, g);
+  return g;
+}
+
 /* ===================== secured corridor and elevators ===================== */
 const CZ1 = -32;
 plane(4.4, 16, M.floor, 0, 0.012, (SZ + CZ1) / 2, -Math.PI / 2);
@@ -615,11 +685,12 @@ box(0.1, 0.06, 16, M.silver, 2.2, 2.97, (SZ + CZ1) / 2);
 plane(6, 16, M.floor, 5.2, 0.012, (SZ + CZ1) / 2, -Math.PI / 2);
 plane(6, 16, M.ivory, 5.2, 3, (SZ + CZ1) / 2, Math.PI / 2);
 box(0.2, 3, 16, M.ivory, 8.2, 1.5, (SZ + CZ1) / 2);
+let deskNo = 0;
 for (let z = SZ - 3; z > CZ1; z -= 4) {
   box(0.1, 3, 0.1, M.silver, 2.2, 1.5, z - 0.5);
   box(1.6, 0.04, 0.8, M.ivoryStone, 5.2, 0.74, z); box(0.06, 0.72, 0.7, M.silverDark, 4.5, 0.37, z); box(0.06, 0.72, 0.7, M.silverDark, 5.9, 0.37, z);
-  box(0.55, 0.32, 0.03, M.charcoal, 5.2, 1.0, z - 0.3);
-  box(0.5, 0.5, 0.5, M.charcoalMatte, 5.2, 0.45, z + 0.7);
+  deskMonitor(scene, 5.2, 0.81, z - 0.18, deskNo++);   // screen faces the chair
+  officeChair(scene, 5.2, z + 0.62, (deskNo % 2 ? 0.25 : -0.2));
 }
 for (let z = SZ - 2; z > CZ1; z -= 4) lamp(scene, 0.5, 2.6, z, 14, 9, 1.6);
 // elevator lobby
@@ -698,12 +769,14 @@ ws.tex = new THREE.CanvasTexture(ws.canvas); ws.tex.colorSpace = THREE.SRGBColor
 plane(1.1, 0.4675, new THREE.MeshBasicMaterial({ map: ws.tex, toneMapped: false }), -0.0215, 0, 0, 0, -Math.PI / 2, mon);
 box(0.16, 0.015, 0.46, M.charcoal, -0.12, 0.76, 0, desk);
 box(0.1, 0.02, 0.06, M.charcoal, -0.12, 0.76, 0.38, desk);
-const chair = new THREE.Group(); chair.position.set(-0.75, 0, 7.2); office.add(chair);
-box(0.5, 0.08, 0.5, M.charcoalMatte, 0, 0.48, 0, chair); box(0.06, 0.6, 0.48, M.charcoalMatte, -0.26, 0.85, 0, chair);
-cyl(0.03, 0.4, M.silver, 0, 0.24, 0, chair, 12);
-for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2; box(0.3, 0.025, 0.04, M.silver, Math.cos(a) * 0.15, 0.04, Math.sin(a) * 0.15, chair).rotation.y = -a; }
+officeChair(office, 0.75, 7.2, -Math.PI / 2);   // your chair at the IAM workstation, facing the monitor
 // a second desk row so the floor feels occupied
-for (const z of [3, 11]) { box(0.8, 0.04, 1.6, std(0xece8e1, 0.45), 1.6, 0.74, z, office); box(0.04, 0.32, 0.55, M.charcoal, 1.85, 1.0, z, office); }
+for (const [z, k] of [[3, 2], [11, 1]]) {
+  box(0.8, 0.04, 1.6, std(0xece8e1, 0.45), 1.6, 0.74, z, office);
+  for (const dz of [-0.85, 0.85]) box(0.7, 0.72, 0.04, M.silver, 1.6, 0.36, z + dz, office);
+  deskMonitor(office, 1.82, 0.76, z, k, -Math.PI / 2);   // facing the chair, toward -x
+  officeChair(office, 0.95, z, -Math.PI / 2);
+}
 
 /* ===================== first-person hand with the TRACE credential ===================== */
 const hand = new THREE.Group(); camera.add(hand); hand.visible = false;

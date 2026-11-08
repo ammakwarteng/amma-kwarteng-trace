@@ -105,6 +105,50 @@ a.btn { text-decoration: none; }
 .loading.is-done { opacity: 0; pointer-events: none; }
 
 /* shift summary */
+/* the IAM handbook: an open book you can flip through */
+.hb { position: fixed; inset: 0; z-index: 8; display: grid; place-items: center; padding: 20px max(12px, env(safe-area-inset-right, 0px)) 20px max(12px, env(safe-area-inset-left, 0px));
+  background: rgba(6, 7, 9, 0.78); backdrop-filter: blur(6px); }
+.hb[hidden] { display: none; }
+.hb__wrap { display: grid; gap: 16px; justify-items: center; width: min(100%, 980px); animation: hb-zoom 0.55s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes hb-zoom { from { opacity: 0; transform: scale(0.55) translateY(40px); } }
+.hb__book { --u: 1cqw; position: relative; width: 100%; aspect-ratio: 1.42; perspective: 2400px; container-type: inline-size; }
+.hb__book.is-single { --u: 2cqw; aspect-ratio: 0.71; width: min(100%, 460px); }
+.hb__book.is-single .hb__leaf { left: 0; width: 100%; }
+.hb__book.is-single .hb__spine { display: none; }
+.hb__book.is-single .hb__face--front { border-radius: 3px; box-shadow: inset 10px 0 14px -12px rgba(0,0,0,0.3); }
+.hb__board { position: absolute; inset: -1.2% -1.4%; background: #1d1f22; border-radius: 6px; box-shadow: 0 30px 60px -20px rgba(0,0,0,0.9), inset 0 0 0 1px rgba(255,255,255,0.06); }
+.hb__spine { position: absolute; left: 50%; top: -1.2%; bottom: -1.2%; width: 2.4%; transform: translateX(-50%); background: linear-gradient(90deg, #121315, #2b2e32, #121315); border-radius: 2px; }
+.hb__leaf { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; transform-style: preserve-3d; transform-origin: left center; transition: transform 0.9s cubic-bezier(0.45, 0.05, 0.25, 1); cursor: pointer; }
+.hb__leaf.is-turned { transform: rotateY(-180deg); }
+.hb__face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; background: #f4f1ea; color: #1b1c1e; }
+.hb__face--back { transform: rotateY(180deg); }
+.hb__face--front { border-radius: 0 3px 3px 0; box-shadow: inset 12px 0 18px -12px rgba(0,0,0,0.35); }
+.hb__face--back { border-radius: 3px 0 0 3px; box-shadow: inset -12px 0 18px -12px rgba(0,0,0,0.35); }
+.pg { position: absolute; inset: 0; padding: calc(7 * var(--u)) calc(5.5 * var(--u)) calc(5 * var(--u)); display: flex; flex-direction: column; gap: calc(1.6 * var(--u)); font-family: var(--display); }
+.pg__id { font-family: var(--mono); font-size: calc(1.15 * var(--u)); letter-spacing: 0.14em; text-transform: uppercase; color: #8a867e; }
+.pg h3 { margin: 0; font-size: calc(3.6 * var(--u)); font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
+.pg p { margin: 0; font-size: calc(1.55 * var(--u)); line-height: 1.45; color: #3a3b3e; }
+.pg dl { margin: 0; display: grid; gap: calc(1.1 * var(--u)); }
+.pg dt { font-family: var(--mono); font-size: calc(1.2 * var(--u)); letter-spacing: 0.06em; text-transform: uppercase; color: #1b1c1e; }
+.pg dd { margin: calc(0.2 * var(--u)) 0 0; font-size: calc(1.45 * var(--u)); line-height: 1.4; color: #45464a; }
+.pg__note { margin-top: auto !important; padding-top: calc(1.2 * var(--u)); border-top: 1px solid #d9d4ca; font-family: var(--mono); font-size: calc(1.15 * var(--u)) !important; color: #6d6a63 !important; }
+.pg__no { position: absolute; bottom: calc(2.4 * var(--u)); right: calc(3 * var(--u)); font-family: var(--mono); font-size: calc(1.1 * var(--u)); color: #a5a198; }
+.hb__face--back .pg__no { right: auto; left: calc(3 * var(--u)); }
+.pg--cover { background: #1d1f22; color: #f2f2f0; justify-content: center; align-items: flex-start; }
+.pg--cover .pg__id { color: #8b9198; }
+.pg--cover h3 { font-size: calc(6.4 * var(--u)); font-weight: 400; letter-spacing: -0.06em; }
+.pg--cover p { color: #c9cbcf; }
+.pg--cover svg { width: calc(7 * var(--u)); height: calc(7 * var(--u)); fill: none; stroke: #f2f2f0; stroke-width: 1.3; margin-bottom: calc(2 * var(--u)); }
+.pg--end { justify-content: center; align-items: center; text-align: center; }
+.pg--end h3 { font-size: calc(4.6 * var(--u)); }
+.pg ol { margin: 0; padding: 0; list-style: none; display: grid; gap: calc(1.2 * var(--u)); font-size: calc(1.7 * var(--u)); }
+.pg ol li { display: flex; justify-content: space-between; border-bottom: 1px dotted #cfc9be; padding-bottom: calc(0.6 * var(--u)); }
+.pg ol li span:last-child { font-family: var(--mono); color: #8a867e; }
+.hb__ctrl { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; color: var(--dim); }
+.hb__ctrl .btn { min-width: 44px; }
+.hb__hint { font-family: var(--mono); font-size: 11px; color: var(--faint); letter-spacing: 0.06em; }
+@media (max-width: 640px) { .hb__hint { display: none; } }
+@media (prefers-reduced-motion: reduce) { .hb__leaf { transition: none; } .hb__wrap { animation: none; } }
 .summary {
   position: fixed; inset: 0; display: grid; place-items: center; z-index: 4;
   padding: 24px max(16px, env(safe-area-inset-right, 0px)) 120px max(16px, env(safe-area-inset-left, 0px));
@@ -203,11 +247,25 @@ a.btn { text-decoration: none; }
   <div class="modes">
     <button class="btn btn--txt" type="button" id="mCine" aria-pressed="true">cinematic</button>
     <button class="btn btn--txt" type="button" id="mWalk" aria-pressed="false">free walk</button>
+    <button class="btn btn--txt" type="button" id="hbBtn" hidden>handbook</button>
     <button class="btn" type="button" id="infoBtn" aria-label="Credits" aria-expanded="false" aria-controls="info"><svg viewBox="0 0 16 16"><circle cx="8" cy="4" r="1.3"/><path d="M6.6 7h2.2v6H6.6z"/></svg></button>
     <a class="btn" href="../" aria-label="Exit to portfolio">exit</a>
     <button class="btn" type="button" id="snd" aria-pressed="false" aria-label="Sound">
       <svg viewBox="0 0 16 16"><path d="M2 6h3l4-3v10L5 10H2z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
     </button>
+  </div>
+</div>
+
+<div class="hb" id="hb" role="dialog" aria-modal="true" aria-label="IAM handbook" hidden>
+  <div class="hb__wrap">
+    <div class="hb__book" id="hbBook"><div class="hb__board"></div><div class="hb__spine"></div></div>
+    <div class="hb__ctrl">
+      <button class="btn" type="button" id="hbPrev" aria-label="Previous page">‹</button>
+      <span id="hbPage">cover</span>
+      <button class="btn" type="button" id="hbNext" aria-label="Next page">›</button>
+      <button class="btn" type="button" id="hbClose">close</button>
+    </div>
+    <p class="hb__hint">click a page, swipe or use the arrow keys · esc to close</p>
   </div>
 </div>
 
@@ -855,6 +913,85 @@ ws.tex = new THREE.CanvasTexture(ws.canvas); ws.tex.colorSpace = THREE.SRGBColor
 plane(1.1, 0.4675, new THREE.MeshBasicMaterial({ map: ws.tex, toneMapped: false }), -0.0215, 0, 0, 0, -Math.PI / 2, mon);
 // keyboard and mouse: "Mouse and Keyboard" by gorzi (CC BY 4.0), placed on your desk; simple blocks until it loads
 const kbFallback = [box(0.16, 0.015, 0.46, M.charcoal, -0.12, 0.76, 0, desk), box(0.1, 0.02, 0.06, M.charcoal, -0.12, 0.76, 0.38, desk)];
+/* ===================== the IAM handbook ===================== */
+const HB_PAGES = [
+  { kind: "cover", id: "DOC-IAM-01 · v1", title: "the iam handbook", text: "field notes on identity and access · amma kwarteng" },
+  { kind: "contents", id: "contents", title: "inside", list: [["the four pillars", "03"], ["role-based access", "04"], ["joiner · mover · leaver", "05"], ["access policies", "06"], ["access reviews", "07"], ["iam governance", "08"], ["glossary", "09"]] },
+  { id: "01 · foundations", title: "the four pillars", items: [
+    ["authentication", "Who are you? Passwords, MFA and single sign-on prove an identity."],
+    ["authorization", "What can you access? Roles and permissions decide, after you're verified."],
+    ["administration", "Managing accounts over time: create, change and remove access as people move."],
+    ["audit", "Who did what, and when? Logs and reviews prove the rules were followed."]],
+    note: "Verified is not the same as allowed. Authentication and authorization are separate checks." },
+  { id: "02 · authorization", title: "role-based access", items: [
+    ["the idea", "Access follows the role, not the person. People join roles; roles hold permissions."],
+    ["least privilege", "Give each role only what the job needs, nothing \"just in case\"."],
+    ["separation of duties", "No one person controls a whole sensitive process, e.g. requesting and approving a payment."],
+    ["in my lab", "Each department has a group (Sales-Staff, HR-Staff); access is granted to the group, never to one user."]] },
+  { id: "03 · lifecycle", title: "joiner · mover · leaver", items: [
+    ["joiner", "Verify the request and role, create the identity, add role groups, enrol MFA, record it."],
+    ["mover", "Remove the old role's access first, then add the new role's. Have the manager confirm."],
+    ["leaver", "Disable the account, revoke sessions, apps, VPN and the badge, then record it."]],
+    note: "Disable, don't delete: the account and its history are kept for audit." },
+  { id: "04 · authentication", title: "access policies", items: [
+    ["passwords (my AD lab)", "12 characters minimum · history of 24 · complexity on · 90-day maximum age."],
+    ["account lockout", "5 failed attempts locks the account for 30 minutes, which slows down guessing."],
+    ["MFA", "Required for remote and admin access. It stops most password attacks on its own."],
+    ["modern guidance", "Length and MFA matter more than forced rotation. NIST no longer recommends routine password changes."]] },
+  { id: "05 · governance", title: "access reviews", items: [
+    ["what", "Managers confirm, on a schedule, that each person still needs the access they have."],
+    ["how often", "Quarterly for most access; monthly for privileged and admin accounts."],
+    ["outcome", "Keep or revoke. Anything unclaimed or unused is removed."],
+    ["watch for", "Rubber-stamping: approving everything without looking defeats the review."]] },
+  { id: "06 · governance", title: "iam governance", items: [
+    ["ownership", "Every system, role and group has an owner who answers for its access."],
+    ["privileged access", "Admin rights are separate accounts, time-limited and closely logged (PAM)."],
+    ["evidence", "Requests, approvals, changes and reviews all leave an audit trail."],
+    ["ISO/IEC 27001", "Annex A 5.15 access control · 5.16 identity management · 5.17 authentication information · 5.18 access rights · 8.2 privileged access · 8.5 secure authentication."]] },
+  { id: "07 · reference", title: "glossary", items: [
+    ["SSO", "One sign-in for many apps, using standards like SAML and OIDC."],
+    ["SCIM", "A standard for automatically creating and removing accounts in other apps."],
+    ["PAM", "Privileged access management: control and monitoring of admin access."],
+    ["orphaned account", "An account with no current owner, e.g. a leaver missed in offboarding. A common breach path."]] },
+  { kind: "end", id: "end of document", title: "trace the access.", text: "every account has an owner, every permission has a reason, every change leaves a record." },
+];
+const HB_RET = '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="9"/><path d="M16 3v7M16 22v7M3 16h7M22 16h7"/><path d="M4 9V4h5M23 4h5v5M28 23v5h-5M9 28H4v-5"/></svg>';
+// a small canvas version of each page, for the book sitting on the desk
+function wrapText(x, text, maxW) { const words = text.split(" "), lines = []; let line = ""; for (const w of words) { const t = line ? line + " " + w : w; if (x.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; } if (line) lines.push(line); return lines; }
+function drawPageCanvas(x, W, H, p, n) {
+  const dark = p.kind === "cover";
+  x.fillStyle = dark ? "#1d1f22" : "#f4f1ea"; x.fillRect(0, 0, W, H);
+  x.fillStyle = dark ? "#8b9198" : "#8a867e"; x.font = "15px 'JetBrains Mono',monospace"; x.fillText(p.id.toUpperCase(), 36, 60);
+  x.fillStyle = dark ? "#f2f2f0" : "#1b1c1e"; x.font = `500 ${dark ? 60 : 40}px 'Inter Tight',Arial`; x.fillText(p.title, 36, dark ? 330 : 112);
+  let y = dark ? 380 : 160;
+  if (p.text) { x.font = "18px 'Inter Tight',Arial"; x.fillStyle = dark ? "#c9cbcf" : "#45464a"; for (const l of wrapText(x, p.text, W - 72)) { x.fillText(l, 36, y); y += 26; } }
+  for (const [a, b] of p.list || []) { x.font = "20px 'Inter Tight',Arial"; x.fillStyle = "#1b1c1e"; x.fillText(a, 36, y + 10); x.fillStyle = "#8a867e"; x.fillText(b, W - 70, y + 10); y += 46; }
+  for (const [a, b] of p.items || []) {
+    x.font = "15px 'JetBrains Mono',monospace"; x.fillStyle = "#1b1c1e"; x.fillText(a.toUpperCase(), 36, y); y += 24;
+    x.font = "17px 'Inter Tight',Arial"; x.fillStyle = "#55565a"; for (const l of wrapText(x, b, W - 72)) { x.fillText(l, 36, y); y += 23; } y += 18;
+  }
+  if (!dark) { x.fillStyle = "#a5a198"; x.font = "14px 'JetBrains Mono',monospace"; x.fillText(String(n + 1).padStart(2, "0"), n % 2 ? 36 : W - 60, H - 30); }
+}
+const pageMats = HB_PAGES.map((p, n) => new THREE.MeshStandardMaterial({ map: canvasTex(512, 720, (x, W, H) => drawPageCanvas(x, W, H, p, n)), roughness: 0.92 }));
+// the book on your desk: open, pages turning slowly on their own
+const PW = 0.15, PH = 0.21;
+const bookG = new THREE.Group(); bookG.position.set(-0.05, 0.762, 0.52); bookG.rotation.y = -Math.PI / 2; desk.add(bookG);
+box(PW * 2 + 0.012, 0.006, PH + 0.012, M.charcoal, 0, 0.003, 0, bookG);                     // covers
+for (const sx of [-1, 1]) box(PW - 0.004, 0.012, PH - 0.004, std(0xeeeae0, 0.95), sx * (PW / 2 + 0.001), 0.012, 0, bookG);   // page blocks
+const flatPage = (mat, sx) => { const g = new THREE.PlaneGeometry(PW - 0.006, PH - 0.006); g.rotateX(-Math.PI / 2); const m = new THREE.Mesh(g, mat); m.position.set(sx * PW / 2, 0.0185, 0); bookG.add(m); return m; };
+const leftPg = flatPage(pageMats[0], -1), rightPg = flatPage(pageMats[1], 1);
+const leafPivot = new THREE.Group(); leafPivot.position.y = 0.019; bookG.add(leafPivot);
+const lfG = new THREE.PlaneGeometry(PW - 0.006, PH - 0.006); lfG.rotateX(-Math.PI / 2); lfG.translate(PW / 2, 0, 0);
+const lbG = new THREE.PlaneGeometry(PW - 0.006, PH - 0.006); lbG.rotateX(Math.PI / 2); lbG.rotateY(Math.PI); lbG.translate(PW / 2, 0, 0);
+const leafF = new THREE.Mesh(lfG, pageMats[1]), leafB = new THREE.Mesh(lbG, pageMats[2]); leafPivot.add(leafF, leafB);
+bookG.traverse((o) => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = true; } });
+function updateDeskBook(tsec) {
+  const cyc = 6.5, n = Math.floor(tsec / cyc), k = smooth(4.2, 5.8, tsec % cyc), i = (n % 4) * 2;   // spreads 0-1, 2-3, 4-5, 6-7
+  leftPg.material = pageMats[i]; rightPg.material = pageMats[Math.min(i + 3, pageMats.length - 1)];
+  leafF.material = pageMats[i + 1]; leafB.material = pageMats[i + 2];
+  leafPivot.rotation.z = Math.PI * k; leafPivot.position.y = 0.019 + Math.sin(Math.PI * k) * 0.012;
+}
+
 // your desk only: notepad and pen, a pencil cup, a tissue box (the other desks are empty - you're in early)
 {
   const top = 0.762, paper = std(0xf7f5ef, 0.9), ink = std(0x1d2a44, 0.5);
@@ -1418,7 +1555,71 @@ document.getElementById("sumWalk").addEventListener("click", () => {
 });
 addEventListener("keydown", (e) => { walk.keys[e.code] = true; if (e.code === "Space" && mode === "cine") { e.preventDefault(); setPlaying(!playing); } });
 addEventListener("keyup", (e) => { walk.keys[e.code] = false; });
+/* handbook overlay: built from the same pages */
+const HB = { open: false, at: 0, wasPlaying: false };
+const hbEl = document.getElementById("hb"), hbBook = document.getElementById("hbBook"), hbPage = document.getElementById("hbPage"), hbBtn = document.getElementById("hbBtn");
+const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+function pageHTML(p, n) {
+  if (p.kind === "cover") return `<div class="pg pg--cover">${HB_RET}<span class="pg__id">${esc(p.id)}</span><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div>`;
+  if (p.kind === "end") return `<div class="pg pg--end"><span class="pg__id">${esc(p.id)}</span><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p><span class="pg__no">${String(n + 1).padStart(2, "0")}</span></div>`;
+  const body = p.list ? `<ol>${p.list.map(([a, b]) => `<li><span>${esc(a)}</span><span>${b}</span></li>`).join("")}</ol>`
+    : `<dl>${p.items.map(([a, b]) => `<div><dt>${esc(a)}</dt><dd>${esc(b)}</dd></div>`).join("")}</dl>`;
+  return `<div class="pg"><span class="pg__id">${esc(p.id)}</span><h3>${esc(p.title)}</h3>${body}${p.note ? `<p class="pg__note">${esc(p.note)}</p>` : ""}<span class="pg__no">${String(n + 1).padStart(2, "0")}</span></div>`;
+}
+let LEAVES = 0, leafEls = [], hbSingle = null;
+function buildLeaves() {
+  const single = innerWidth < 700;
+  if (single === hbSingle) return;
+  const page = HB.at === 0 ? 0 : hbSingle ? HB.at : HB.at * 2 - 1;   // keep your place when the layout changes
+  hbSingle = single; hbBook.classList.toggle("is-single", single);
+  leafEls.forEach((el) => el.remove());
+  const per = single ? 1 : 2; LEAVES = Math.ceil(HB_PAGES.length / per);
+  for (let i = 0; i < LEAVES; i++) {
+    const leaf = document.createElement("div"); leaf.className = "hb__leaf";
+    const f = i * per, bk = single ? null : f + 1;
+    leaf.innerHTML = `<div class="hb__face hb__face--front">${pageHTML(HB_PAGES[f], f)}</div><div class="hb__face hb__face--back">${bk != null && HB_PAGES[bk] ? pageHTML(HB_PAGES[bk], bk) : ""}</div>`;
+    leaf.addEventListener("click", () => turnTo(leaf.classList.contains("is-turned") ? i : i + 1));
+    hbBook.appendChild(leaf);
+  }
+  leafEls = [...hbBook.querySelectorAll(".hb__leaf")];
+  HB.at = single ? Math.min(page, LEAVES - 1) : Math.ceil(page / 2);
+}
+addEventListener("resize", () => { if (HB.open) { buildLeaves(); turnTo(HB.at); } });
+function turnTo(at) {
+  HB.at = Math.max(0, Math.min(LEAVES, at));
+  leafEls.forEach((el, i) => { const t = i < HB.at; el.classList.toggle("is-turned", t); el.style.zIndex = t ? i + 1 : LEAVES - i; });
+  if (hbSingle) HB.at = Math.min(HB.at, LEAVES - 1);   // one page at a time: never turn the last page away
+  leafEls.forEach((el, i) => { const t = i < HB.at; el.classList.toggle("is-turned", t); el.style.zIndex = t ? i + 1 : LEAVES - i; });
+  hbPage.textContent = hbSingle ? `${HB.at + 1} / ${HB_PAGES.length}` : HB.at === 0 ? "cover" : HB.at === LEAVES ? "back" : `${HB.at * 2 - 1}–${HB.at * 2} / ${HB_PAGES.length}`;
+  if (soundOn) whoosh(0.5, 0.025);
+}
+function openBook() {
+  if (HB.open) return;
+  HB.open = true; HB.wasPlaying = mode === "cine" && playing; if (HB.wasPlaying) setPlaying(false);
+  if (document.pointerLockElement) document.exitPointerLock();
+  buildLeaves(); hbEl.hidden = false; turnTo(HB.at); document.getElementById("hbNext").focus();
+}
+function closeBook() { if (!HB.open) return; HB.open = false; hbEl.hidden = true; if (HB.wasPlaying) setPlaying(true); }
+document.getElementById("hbPrev").addEventListener("click", () => turnTo(HB.at - 1));
+document.getElementById("hbNext").addEventListener("click", () => turnTo(HB.at + 1));
+document.getElementById("hbClose").addEventListener("click", closeBook);
+hbBtn.addEventListener("click", openBook);
+hbEl.addEventListener("click", (e) => { if (e.target === hbEl) closeBook(); });
+addEventListener("keydown", (e) => {
+  if (!HB.open) { if (e.code === "KeyB" && camera.position.x > 100) openBook(); return; }
+  if (e.key === "Escape") closeBook(); else if (e.key === "ArrowRight") turnTo(HB.at + 1); else if (e.key === "ArrowLeft") turnTo(HB.at - 1);
+});
+{ let sx = null; hbBook.addEventListener("touchstart", (e) => { sx = e.touches[0].clientX; }, { passive: true });
+  hbBook.addEventListener("touchend", (e) => { if (sx == null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) turnTo(HB.at + (dx < 0 ? 1 : -1)); sx = null; }); }
+// clicking the book on the desk opens it
+const bookRay = new THREE.Raycaster();
+window.__bookScreen = () => { const v = bookG.getWorldPosition(new THREE.Vector3()).project(camera), r = cv.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; };
 const cv = renderer.domElement;
+cv.addEventListener("click", (e) => {
+  if (document.pointerLockElement) { bookRay.setFromCamera(new THREE.Vector2(0, 0), camera); }
+  else { const r = cv.getBoundingClientRect(); bookRay.setFromCamera(new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1), camera); }
+  if (bookRay.intersectObject(bookG, true).length) openBook();
+});
 cv.addEventListener("click", () => { if (mode === "walk" && matchMedia("(pointer: fine)").matches && !document.pointerLockElement) cv.requestPointerLock?.(); });
 addEventListener("mousemove", (e) => { if (mode === "walk" && document.pointerLockElement === cv) { walk.yaw -= e.movementX * 0.0022; walk.pitch = Math.max(-1.2, Math.min(1.2, walk.pitch - e.movementY * 0.0022)); } });
 cv.addEventListener("pointerdown", (e) => {
@@ -1505,6 +1706,7 @@ function startRide(to, wt) {
   }, 2150);
 }
 function interact() {
+  if (HB.open) return;
   if (mode !== "walk" || !W.action) return;
   W.pressAt = performance.now() / 1000; W.action();
 }
@@ -1522,6 +1724,7 @@ function noteZone() {                          // free walk: remember when you f
   if (zn !== "ext" && W.zoneSeen[zn] == null) W.zoneSeen[zn] = performance.now() / 1000;
 }
 function updateWalk(dt) {
+  if (HB.open) return;
   const wt = performance.now() / 1000;
   const act = findAction(wt); W.prompt = act ? act[0] : ""; W.action = act ? act[1] : null;
   if (W.desk >= 0) {                                      // seated: ease into the chair, look at the screen
@@ -1549,6 +1752,7 @@ function resize() {
 }
 addEventListener("resize", resize); resize();
 function renderAt(t) {
+  updateDeskBook(t);
   lightClock.cine = true; lightClock.t = t;
   const [p, l] = cinematicCamera(t);
   if (walking(t)) p.y += Math.sin(t * 7.6) * 0.022;
@@ -1573,7 +1777,8 @@ function loop(now) {
     if (playing) { T += dt; if (T >= TOTAL) { T = TOTAL; setPlaying(false); } }
     for (const [at, fn] of SFX) if (prevT < at && T >= at && playing) fn();
     prevT = T; renderAt(T);
-  } else { lightClock.cine = false; lightClock.t = now / 1000; noteZone(); updateWalk(dt); applyWorld(0, false); updateLamps(); updateShadows(); updateCorridorKB(); renderer.render(scene, camera); }
+  } else { updateDeskBook(now / 1000); lightClock.cine = false; lightClock.t = now / 1000; noteZone(); updateWalk(dt); applyWorld(0, false); updateLamps(); updateShadows(); updateCorridorKB(); renderer.render(scene, camera); }
+  hbBtn.hidden = !(camera.position.x > 100);
   adaptResolution(dt);
   setMusic(wantMusic());
   requestAnimationFrame(loop);

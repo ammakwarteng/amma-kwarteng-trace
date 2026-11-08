@@ -75,6 +75,7 @@ export const projects = [
       "Walked through joiner, mover and leaver workflows step by step, with access granted, removed and revoked, and every action recorded in an audit log",
       "Added a cinematic mode with play, pause and replay, plus a free-walk mode for keyboard, mouse and touch",
       "Made free walk playable: badge in, pass the face scan, and the security door only unlocks after both; then call the elevator, ride to floor 4 and sit at the workstation to work the queue",
+      "Wrote an IAM handbook that sits on the desk as a 3D book: open it to flip through the four pillars, RBAC, joiner-mover-leaver, access policies, access reviews and IAM governance mapped to ISO/IEC 27001",
     ],
     next: "Next: let visitors click through each joiner, mover and leaver step themselves instead of watching the queue run.",
     links: [{ label: "enter the simulation", url: "hq/" }],

@@ -23,7 +23,7 @@ export const links = [
 export const communities = [
   { name: "Women in CyberSecurity", short: "WiCyS", role: "Member", url: "https://www.wicys.org/",
     about: "a nonprofit dedicated to recruiting, retaining and advancing women in cybersecurity" },
-  { name: "Women in Security and Privacy", short: "WISP", role: "Member", url: "https://www.wisp.org/",
+  { name: "Women in Security and Privacy", short: "WISP", role: "Member", url: "https://www.wisporg.com/",
     about: "advancing women and underrepresented communities to lead the future of privacy and security" },
   { name: "Rewriting the Code", role: "Member", url: "https://rewritingthecode.org/",
     about: "a community supporting women in tech, from students to early career" },

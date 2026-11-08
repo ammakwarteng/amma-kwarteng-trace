@@ -248,8 +248,8 @@ a.btn { text-decoration: none; }
   <button class="btn" type="button" id="play" aria-label="Play"><svg viewBox="0 0 16 16" id="playIcon"><path d="M4 2l10 6-10 6z"/></svg></button>
   <button class="btn" type="button" id="replay" aria-label="Replay"><svg viewBox="0 0 16 16"><path d="M8 3a5 5 0 1 1-4.6 3H1.5l3-3.5 3 3.5H5.6A3 3 0 1 0 8 5z"/></svg></button>
   <div class="track">
-    <div class="track__row"><span id="chapter">arrival</span><span id="clock">0:00 / 1:24</span></div>
-    <input class="seek" id="seek" type="range" min="0" max="84" step="0.05" value="0" aria-label="Seek">
+    <div class="track__row"><span id="chapter">arrival</span><span id="clock">0:00 / 1:30</span></div>
+    <input class="seek" id="seek" type="range" min="0" max="90" step="0.05" value="0" aria-label="Seek">
   </div>
   <div class="modes">
     <button class="btn btn--txt" type="button" id="mCine" aria-pressed="true">cinematic</button>
@@ -290,7 +290,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 /* ===================== setup ===================== */
 const P = { ivory: 0xf1eee8, stone: 0xd6d0c6, silver: 0xa7adb0, charcoal: 0x26292c, soft: 0xfafaf8 };
-const TOTAL = 84;
+const TOTAL = 90;
 const params = new URLSearchParams(location.search);
 const FRAMES = params.has("frames");               // deterministic render mode (for recording)
 const view = document.getElementById("view");
@@ -1007,6 +1007,7 @@ new GLTFLoader().load("keyboard_mouse.glb", (gl) => {
     const h = new THREE.Group(); h.position.set(1.44, 0.762, z); h.rotation.y = -Math.PI / 2;
     h.add(inner.clone(true)); office.add(h); floor4KB.push(h);
   }
+  warmUp = true;   // upload these heavy models to the GPU on the next frame, not when you first see them
   for (const z of corridorDeskZ) {
     const h = new THREE.Group(); h.position.set(5.2, 0.762, z + 0.12); h.rotation.y = 0;   // keys toward the chair, mouse on the right
     const c2 = inner.clone(true); h.add(c2); scene.add(h); corridorKB.push(h);
@@ -1014,7 +1015,16 @@ new GLTFLoader().load("keyboard_mouse.glb", (gl) => {
 });
 // only draw the corridor keyboards while the camera is near that corridor (they're very detailed)
 const corridorKB = [], floor4KB = [];
+let warmUp = false;
+function warmUpGPU() {                     // render once with everything visible and unculled, then restore
+  const hidden = [], culled = [];
+  scene.traverse((o) => { if (!o.visible) { hidden.push(o); o.visible = true; } if (o.isMesh && o.frustumCulled) { culled.push(o); o.frustumCulled = false; } });
+  hand.visible = false;
+  renderer.compile(scene, camera); renderer.render(scene, camera);
+  hidden.forEach((o) => (o.visible = false)); culled.forEach((o) => (o.frustumCulled = true));
+}
 function updateCorridorKB() {
+  if (warmUp) { warmUp = false; warmUpGPU(); }
   const p = camera.position, near = p.x < 12 && p.z < -14 && p.z > -37;
   for (const h of corridorKB) h.visible = near;
   for (const h of floor4KB) h.visible = p.x > 100;               // only on floor 4
@@ -1144,7 +1154,7 @@ const REQS = [
     steps: ["receive offboarding request", "review identity", "review active accounts", "review assigned permissions", "disable identity · emp-3307", "revoke application access", "revoke vpn access", "revoke building access", "confirm offboarding", "record in audit log"],
     access: [["× sso sessions", -1], ["× apps (6)", -1], ["× vpn", -1], ["× badge 7F3A-1190", -1]] },
 ];
-const WS0 = 70.6, WSD = [3.0, 2.8, 3.0];
+const WS0 = 75.0, WSD = [3.0, 2.8, 3.0];
 function drawWorkstation(t) {
   const x = ws.canvas.getContext("2d"), W = 1600, H = 680; x.setTransform(1.5, 0, 0, 1.5, 0, 0);
   x.fillStyle = "#0b0d10"; x.fillRect(0, 0, W, H); x.textBaseline = "alphabetic"; x.textAlign = "left";
@@ -1242,12 +1252,13 @@ const K = [ // time, position, look target
 const K2 = [ // floor 4 (office), in office-local x offset by OX
   [65.2, V(OX, 1.7, -1.15), V(OX, 1.5, 6)],
   [67.4, V(OX, 1.7, -0.6), V(OX + 0.6, 1.5, 6)],
-  [69.2, V(OX - 0.4, 1.7, 4.6), V(OX + 1.6, 1.2, 7.2)],
-  [70.6, V(OX + 0.95, 1.22, 7.2), V(OX + 1.82, 1.18, 7.2)],
-  [71.8, V(OX + 1.24, 1.185, 7.2), V(OX + 1.82, 1.18, 7.2)],
-  [79.5, V(OX + 1.24, 1.185, 7.2), V(OX + 1.82, 1.18, 7.2)],
-  [81.4, V(OX + 0.2, 1.55, 6.9), V(OX + 1.82, 1.15, 7.2)],
-  [84, V(OX - 0.4, 1.62, 6.6), V(OX + 1.82, 1.12, 7.2)],
+  [70.8, V(OX - 0.3, 1.7, 4.3), V(OX + 1.6, 1.3, 7.2)],        // walk over at a normal pace
+  [72.6, V(OX + 0.35, 1.7, 7.0), V(OX + 1.82, 1.25, 7.2)],     // stop beside the chair
+  [74.4, V(OX + 0.95, 1.22, 7.2), V(OX + 1.82, 1.18, 7.2)],    // ease down into it
+  [75.6, V(OX + 1.24, 1.185, 7.2), V(OX + 1.82, 1.18, 7.2)],   // lean in to the screen
+  [84.6, V(OX + 1.24, 1.185, 7.2), V(OX + 1.82, 1.18, 7.2)],   // a beat after the queue clears
+  [87.2, V(OX + 0.2, 1.55, 6.9), V(OX + 1.82, 1.15, 7.2)],     // sit back and sign out
+  [90, V(OX - 0.4, 1.62, 6.6), V(OX + 1.82, 1.12, 7.2)],
 ];
 const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 function pathAt(keys, t) {
@@ -1294,10 +1305,10 @@ function cinematicCamera(t) {
   return pathAt(K, t);
 }
 const TURN0 = 59.7, TURN1 = 62.6;
-const walking = (t) => (t < 12.5) || (t > 17.5 && t < 26.5) || (t > 42.8 && t < 55) || (t > 65.6 && t < 70.2);
+const walking = (t) => (t < 12.5) || (t > 17.5 && t < 26.5) || (t > 42.8 && t < 55) || (t > 65.6 && t < 72.6);
 
 /* ===================== world state at time t ===================== */
-const chapters = [[0, "arrival"], [12, "revolving door"], [17.5, "lobby"], [25, "credential"], [32, "biometric verification"], [42, "access granted"], [45, "secured corridor"], [54.5, "elevator"], [65.2, "floor 4 · iam workstation"], [70.6, "joiner · mover · leaver"], [79.6, "signing out"], [81.2, "shift summary"]];
+const chapters = [[0, "arrival"], [12, "revolving door"], [17.5, "lobby"], [25, "credential"], [32, "biometric verification"], [42, "access granted"], [45, "secured corridor"], [54.5, "elevator"], [65.2, "floor 4 · iam workstation"], [75, "joiner · mover · leaver"], [84.6, "signing out"], [87.2, "shift summary"]];
 const ui = {
   scene: document.getElementById("scene"), sess: document.getElementById("sess"), sessSq: document.getElementById("sessSq"),
   status: document.getElementById("status"), prompt: document.getElementById("prompt"), promptText: document.getElementById("promptText"),
@@ -1332,7 +1343,7 @@ function applyWorld(t, cine) {
   }
   // scanner
   const sState = st < 32.6 ? 0 : st < 39.4 ? 1 : 2, sp = smooth(32.8, 39.2, st);
-  const sKey = sState === 1 ? "1" + Math.round(st * 30) : sState + (sState === 2 ? Math.round(st * 4) : "");
+  const sKey = sState === 1 ? "1" + Math.round(st * 15) : sState + (sState === 2 ? Math.round(st * 4) : "");
   if (sKey !== lastScannerKey) { drawScanner(st, sState, sp); lastScannerKey = sKey; }
   if (!cine && rState === 2 && sState === 2 && W.door < 0) { W.door = wt + 0.4; sfxAt("granted"); }
   if (sState + "" !== lastStripKey) { drawStrip(sState); lastStripKey = sState + ""; }
@@ -1356,8 +1367,8 @@ function applyWorld(t, cine) {
   const ik = fl + dir; if (ik !== lastInd) { drawIndicator(elevA, fl, dir); drawIndicator(elevB, 3, ""); drawIndicator(elevO, fl, dir); lastInd = ik; }
   // workstation
   const seated = !cine && W.desk >= 0;
-  if (cine ? (t > 64 && t < TOTAL + 1) : (seated || !wsStill)) { drawWorkstation(cine ? t : seated ? WS0 + Math.max(0, wt - W.desk - 1.2) : W.jmlDone ? 90 : 0); wsStill = !cine && !seated; }
-  if (seated && wt - W.desk > 1.2 + 8.8 + 0.6) W.jmlDone = true;
+  if (cine ? (t > 64 && t < TOTAL + 1) : (seated || !wsStill)) { drawWorkstation(cine ? t : seated ? WS0 + Math.max(0, wt - W.desk - 2.2) : W.jmlDone ? 90 : 0); wsStill = !cine && !seated; }
+  if (seated && wt - W.desk > 2.2 + 8.8 + 1.5) W.jmlDone = true;
   // fade between elevator cars
   ui.fade.style.opacity = cine ? Math.max(smooth(64.4, 65.0, t) * (1 - smooth(65.2, 65.9, t)), smooth(0, 0.01, -1))
     : W.ride >= 0 ? smooth(W.ride + 1.5, W.ride + 2.0, wt) * (1 - smooth(W.ride + 2.3, W.ride + 2.9, wt)) : 0;
@@ -1371,13 +1382,13 @@ function applyWorld(t, cine) {
   const sessLabel = verified ? (onFloor4 ? "SESSION · ACTIVE · EMP-0147" : "SESSION · AUTHORIZED") : (cine ? t > 29.8 : rState === 2) ? "SESSION · VERIFYING" : "SESSION · LOCKED";
   setText(ui.sess, narrowHud ? sessLabel.replace(/^SESSION · /, "") : sessLabel);
   ui.sessSq.classList.toggle("is-ok", verified);
-  const pr = !cine ? (W.prompt ? [W.prompt, -9] : null) : t > 9.6 && t < 12.6 ? ["ENTER BUILDING", 11.9] : t > 26.2 && t < 28.6 ? ["PRESENT CREDENTIAL", 27.6] : t > 31.6 && t < 33 ? ["BEGIN FACE VERIFICATION", 32.5] : t > 54.6 && t < 56.4 ? ["CALL ELEVATOR", 55.6] : t > 68.6 && t < 70.8 ? ["ACCESS WORKSTATION", 70.2] : null;
+  const pr = !cine ? (W.prompt ? [W.prompt, -9] : null) : t > 9.6 && t < 12.6 ? ["ENTER BUILDING", 11.9] : t > 26.2 && t < 28.6 ? ["PRESENT CREDENTIAL", 27.6] : t > 31.6 && t < 33 ? ["BEGIN FACE VERIFICATION", 32.5] : t > 54.6 && t < 56.4 ? ["CALL ELEVATOR", 55.6] : t > 71.2 && t < 74.4 ? ["ACCESS WORKSTATION", 73.4] : null;
   ui.prompt.classList.toggle("is-on", !!pr);
   if (pr) { setText(ui.promptText, pr[0]); ui.prompt.classList.toggle("is-press", cine ? t > pr[1] && t < pr[1] + 0.35 : wt - W.pressAt < 0.3); }
   const msg = !cine ? walkStatus(wt, bt, sState) : t > 28.6 && t < 29.8 ? ["CREDENTIAL DETECTED", 0] : t >= 29.8 && t < 31.6 ? ["CREDENTIAL VERIFIED", 1] : t > 39.4 && t < 44 ? ["ACCESS GRANTED · SECURE AREA", 1] : t > 63.6 && t < 65 ? ["FLOOR 4 · ACCESS AUTHORIZED", 1] : "";
   ui.status.classList.toggle("is-on", !!msg);
   if (msg) { setText(ui.status, msg[0]); ui.status.classList.toggle("is-ok", !!msg[1]); }
-  const sum = cine ? t >= 81.2 : seated && W.jmlDone && !W.sumClosed;
+  const sum = cine ? t >= 87.2 : seated && W.jmlDone && !W.sumClosed;
   ui.summary.classList.toggle("is-on", sum); ui.summary.setAttribute("aria-hidden", String(!sum));
   if (sum) ui.sumAudit.textContent = String(window.__audit || 0);
 }
@@ -1484,7 +1495,7 @@ const SFX = [
   [55.6, () => tone(1200, 0.05, "square", 0.03)],
   [56.5, () => { tone(1046, 0.5, "sine", 0.05); tone(784, 0.6, "sine", 0.04, 0.35); }],
   [65.5, () => { tone(1046, 0.5, "sine", 0.05); tone(784, 0.6, "sine", 0.04, 0.35); }],
-  [81.3, () => { tone(523, 0.3, "sine", 0.04); tone(659, 0.3, "sine", 0.04, 0.12); tone(784, 0.5, "sine", 0.04, 0.24); }],
+  [87.3, () => { tone(523, 0.3, "sine", 0.04); tone(659, 0.3, "sine", 0.04, 0.12); tone(784, 0.5, "sine", 0.04, 0.24); }],
 ];
 
 /* ===================== modes and playback ===================== */
@@ -1702,7 +1713,7 @@ function updateWalk(dt) {
   const wt = performance.now() / 1000;
   const act = findAction(wt); W.prompt = act ? act[0] : ""; W.action = act ? act[1] : null;
   if (W.desk >= 0) {                                      // seated: ease into the chair, look at the screen
-    const k = smooth(W.desk, W.desk + 1.1, wt), [sp, sl] = seatPose();
+    const k = smooth(W.desk, W.desk + 2.0, wt), [sp, sl] = seatPose();
     const fp = V(walk.pos.x, 1.7, walk.pos.z), fl = fp.clone().add(V(-Math.sin(walk.yaw), 0, -Math.cos(walk.yaw)));
     camera.position.copy(fp.lerp(sp, k)); camera.lookAt(fl.lerp(sl, k)); return;
   }
@@ -1731,8 +1742,8 @@ function renderAt(t) {
   const [p, l] = cinematicCamera(t);
   if (walking(t)) p.y += Math.sin(t * 7.6) * 0.022;
   // phones (tall, narrow screens): step back from the monitor so all of it fits, centred, with no empty ceiling
-  if (camera.aspect < 0.8 && t > 68.6) {
-    const k = smooth(68.6, 70.6, t) * (1 - smooth(79.6, 81.4, t));
+  if (camera.aspect < 0.8 && t > 72.6) {
+    const k = smooth(72.6, 74.4, t) * (1 - smooth(84.6, 87.2, t));
     const fitDist = 0.62 / Math.tan(Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
     p.lerp(V(OX + 1.8 - fitDist, 1.19, 7.2), k);
     l.lerp(V(OX + 1.82, 1.18, 7.2), k);

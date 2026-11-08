@@ -522,11 +522,7 @@ for (const [x, z] of [[-16, 10], [16, 10], [-22, 24], [22, 24], [-12, 34], [12, 
 const BW = 48, BD = 44, BH = 14;
 box(BW, BH, 0.6, M.ivory, 0, BH / 2, -BD - 0.3);                 // back
 for (const sx of [-1, 1]) box(0.6, BH, BD, M.ivory, sx * (BW / 2 + 0.3), BH / 2, -BD / 2); // sides
-// roof slab, open above two small garden light wells beside the elevator room (x ±4.4..8.2, z -32..-36)
-{
-  const L = -BW / 2 - 0.6, R = BW / 2 + 0.6, F = 0.6, Bk = -BD - 0.6, y = BH + 0.4, r = (x0, x1, z0, z1) => box(x1 - x0, 0.8, z0 - z1, M.ivoryStone, (x0 + x1) / 2, y, (z0 + z1) / 2);
-  r(L, R, F, -32); r(L, R, -36, Bk); r(L, -8.2, -32, -36); r(-4.4, 4.4, -32, -36); r(8.2, R, -32, -36);
-}
+box(BW + 1.2, 0.8, BD + 1.2, M.ivoryStone, 0, BH + 0.4, -BD / 2);   // roof slab
 box(BW + 0.6, 0.45, 1.0, M.ivoryStone, 0, 6.2, -0.2);              // floor band at 6 m
 box(BW + 0.6, 0.35, 1.0, M.ivoryStone, 0, 10.1, -0.2);             // floor band at 10 m
 box(BW + 1.2, 0.9, 1.4, M.ivoryStone, 0, BH + 0.15, 0.1);           // parapet
@@ -812,30 +808,7 @@ for (let z = SZ - 2; z > CZ1; z -= 4) lamp(scene, 0.5, 2.6, z, 14, 9, 1.6);
 const EZ = -36;
 plane(8.4, 4, M.floor, 0, 0.012, (CZ1 + EZ) / 2, -Math.PI / 2);
 plane(8.4, 4, M.ivory, 0, 3, (CZ1 + EZ) / 2, Math.PI / 2);
-// elevator room: a real window in each blank side wall, looking out to a small open-air garden
-box(4.0, 3, 0.2, M.ivory, 6.3, 1.5, CZ1 - 0.05); box(4.0, 3, 0.2, M.ivory, -6.3, 1.5, CZ1 - 0.05);   // close the workspace end
-{
-  const mz = (CZ1 + EZ) / 2;
-  for (const sx of [-1, 1]) {
-    const x0 = sx * 4.3, wz = 2.2, wy0 = 0.85, wy1 = 2.45, ry = sx > 0 ? -Math.PI / 2 : Math.PI / 2;
-    box(0.2, wy0, 4, M.ivory, x0, wy0 / 2, mz);                                    // wall below
-    box(0.2, 3 - wy1, 4, M.ivory, x0, (3 + wy1) / 2, mz);                          // wall above
-    for (const dz of [-1, 1]) box(0.2, wy1 - wy0, (4 - wz) / 2, M.ivory, x0, (wy0 + wy1) / 2, mz + dz * (wz / 2 + (4 - wz) / 4));
-    plane(wz, wy1 - wy0, M.glass, x0, (wy0 + wy1) / 2, mz, 0, ry);                 // glass
-    box(0.34, 0.05, wz + 0.1, M.stone, x0 - sx * 0.06, wy0 - 0.02, mz);             // sill
-    for (const dz of [-1, 0, 1]) box(0.06, wy1 - wy0, 0.05, M.silver, x0, (wy0 + wy1) / 2, mz + dz * wz / 2);
-    for (const y of [wy0, wy1]) box(0.06, 0.05, wz, M.silver, x0, y, mz);
-    // the garden outside: walls up to the open roof, lawn, gravel edge, real trees and shrubs
-    const gx = sx * 6.3;
-    box(0.3, BH, 4.2, M.ivory, sx * 8.35, BH / 2, mz);
-    box(4.0, BH - 3, 0.3, M.ivory, gx, 3 + (BH - 3) / 2, CZ1 - 0.2); box(4.0, BH, 0.3, M.ivory, gx, BH / 2, EZ - 0.2);
-    box(0.2, BH - 3, 4, M.ivory, x0, 3 + (BH - 3) / 2, mz);
-    plane(3.8, 4, M.paver, gx, 0.008, mz, -Math.PI / 2);
-    plane(2.8, 3.2, M.lawn, gx + sx * 0.3, 0.014, mz, -Math.PI / 2);
-    tree(gx + sx * 0.5, mz - 0.5, 0.55); tree(gx + sx * 0.4, mz + 0.6, 0.42);
-    for (let i = 0; i < 5; i++) { const m = new THREE.Mesh(new THREE.IcosahedronGeometry(0.22 + Math.random() * 0.12, 2), std(0x4f5e3d, 0.95)); m.position.set(gx - sx * 0.9 + (Math.random() - 0.5) * 0.5, 0.22, mz + (i - 2) * 0.7); m.castShadow = true; scene.add(m); }
-  }
-}
+for (const sx of [-1, 1]) box(0.2, 3, 4, M.ivory, sx * 4.3, 1.5, (CZ1 + EZ) / 2);
 box(2.0, 3, 0.2, M.ivory, -3.3, 1.5, CZ1); box(1.9, 3, 0.2, M.ivory, 3.25, 1.5, CZ1 - 0.05);
 const elevWall = new THREE.Group(); scene.add(elevWall);
 for (const [x0, x1] of [[-4.2, -2.3], [-0.9, 0.9], [2.3, 4.2]]) box(x1 - x0, 3, 0.2, M.stone, (x0 + x1) / 2, 1.5, EZ, elevWall);

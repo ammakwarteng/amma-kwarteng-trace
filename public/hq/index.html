@@ -106,6 +106,13 @@ a.btn { text-decoration: none; }
 
 /* shift summary */
 /* the IAM handbook: an open book you can flip through */
+.hbchip { position: fixed; z-index: 3; top: calc(48px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px));
+  display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; background: var(--panel); color: var(--ink); border: 1px solid var(--line);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; cursor: pointer; backdrop-filter: blur(6px); }
+.hbchip svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linejoin: round; }
+.hbchip:hover { border-color: var(--ink); }
+.hbchip:focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
+.hbchip[hidden] { display: none; }
 .hb { position: fixed; inset: 0; z-index: 8; display: grid; place-items: center; padding: 20px max(12px, env(safe-area-inset-right, 0px)) 20px max(12px, env(safe-area-inset-left, 0px));
   background: rgba(6, 7, 9, 0.78); backdrop-filter: blur(6px); }
 .hb[hidden] { display: none; }
@@ -247,7 +254,6 @@ a.btn { text-decoration: none; }
   <div class="modes">
     <button class="btn btn--txt" type="button" id="mCine" aria-pressed="true">cinematic</button>
     <button class="btn btn--txt" type="button" id="mWalk" aria-pressed="false">free walk</button>
-    <button class="btn btn--txt" type="button" id="hbBtn" hidden>handbook</button>
     <button class="btn" type="button" id="infoBtn" aria-label="Credits" aria-expanded="false" aria-controls="info"><svg viewBox="0 0 16 16"><circle cx="8" cy="4" r="1.3"/><path d="M6.6 7h2.2v6H6.6z"/></svg></button>
     <a class="btn" href="../" aria-label="Exit to portfolio">exit</a>
     <button class="btn" type="button" id="snd" aria-pressed="false" aria-label="Sound">
@@ -256,6 +262,7 @@ a.btn { text-decoration: none; }
   </div>
 </div>
 
+<button class="hbchip" type="button" id="hbBtn" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5C6.5 2.3 4.3 2 2 2.3v10c2.3-.3 4.5 0 6 1.2 1.5-1.2 3.7-1.5 6-1.2v-10C11.7 2 9.5 2.3 8 3.5zM8 3.5v10"/></svg>handbook</button>
 <div class="hb" id="hb" role="dialog" aria-modal="true" aria-label="IAM handbook" hidden>
   <div class="hb__wrap">
     <div class="hb__book" id="hbBook"><div class="hb__board"></div><div class="hb__spine"></div></div>

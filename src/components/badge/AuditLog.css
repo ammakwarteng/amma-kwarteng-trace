@@ -142,6 +142,7 @@ html.is-locked, html.is-locked body { overflow: hidden; }
 }
 .audit__pill--info { font-size: 9.5px; letter-spacing: 0.08em; }
 .audit__pill--ok { background: var(--log-ok-bg); color: var(--log-ok-ink); }
+.audit__pill--deny { background: rgba(255, 77, 77, 0.16); color: #ff6b6b; }   /* red only for denied */
 
 .audit__cursor { width: 7px; height: 13px; margin: 10px 14px; background: var(--log-ink-3); animation: audit-blink 1s steps(2) infinite; }
 @keyframes audit-blink { 50% { opacity: 0; } }

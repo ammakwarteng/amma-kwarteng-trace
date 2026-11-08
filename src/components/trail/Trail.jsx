@@ -1,3 +1,4 @@
+import { leaveTrace } from "../../trace.js";
 import { useEffect, useRef, useState } from "react";
 import DecryptText from "./DecryptText.jsx";
 import "./Trail.css";
@@ -21,7 +22,7 @@ export default function Trail({ sections }) {
   const toggle = (id) =>
     setOpen((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id); else { next.add(id); leaveTrace("access.read", id, "allow", "section"); }
       return next;
     });
 
@@ -29,13 +30,13 @@ export default function Trail({ sections }) {
   useEffect(() => {
     const openFromHash = () => {
       const id = decodeURIComponent(window.location.hash.slice(1));
-      if (sections.some((s) => s.id === id)) setOpen((prev) => new Set(prev).add(id));
+      if (sections.some((s) => s.id === id)) { leaveTrace("access.read", id, "allow", "section"); setOpen((prev) => new Set(prev).add(id)); }
     };
     const onClick = (e) => {
       const a = e.target.closest?.('a[href^="#"]');
       if (!a) return;
       const id = a.getAttribute("href").slice(1);
-      if (sections.some((s) => s.id === id)) setOpen((prev) => new Set(prev).add(id));
+      if (sections.some((s) => s.id === id)) { leaveTrace("access.read", id, "allow", "section"); setOpen((prev) => new Set(prev).add(id)); }
     };
     openFromHash();
     window.addEventListener("hashchange", openFromHash);

@@ -6,6 +6,7 @@ import ThreatHunt from "./hunt/ThreatHunt.jsx";
 import DoodlePad from "./doodle/DoodlePad.jsx";
 import EmailLink from "./EmailLink.jsx";
 import { track } from "../track.js";
+import { leaveTrace } from "../trace.js";
 import "./Hero.css";
 
 // Photographic artifacts that float around the word. Empty for now: add
@@ -42,6 +43,7 @@ export default function Hero() {
     setPinned(src);
     try { localStorage.setItem(PIN_KEY, src); } catch { /* storage blocked */ }
     track("leave-your-trace-pinned", "Leave your trace: doodle pinned");
+    leaveTrace("trace.pinned", "visitor doodle pinned to the page", "recorded");
     setTimeout(closePad, 700); // slide away so the sticker shows
   };
   const unpin = () => {

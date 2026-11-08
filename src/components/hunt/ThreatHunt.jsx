@@ -1,3 +1,4 @@
+import { leaveTrace } from "../../trace.js";
 import { useEffect, useRef, useState } from "react";
 import { createHunt } from "./huntEngine.js";
 import "./ThreatHunt.css";
@@ -23,7 +24,7 @@ export default function ThreatHunt({ surfaceRef }) {
       reducedMotion,
       getBounds: () => ({ top: 110, bottom: canvas.clientHeight - 110 }), // room for the reticle below
       onStatus: (text, tone) => setStatus({ text, tone }),
-      onCount: setCount,
+      onCount: (n) => { setCount(n); leaveTrace("threat.quarantine", "malware fragment isolated", "contained", "threat"); },
     });
     return destroy;
   }, [surfaceRef]);

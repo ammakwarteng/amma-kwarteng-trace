@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { track } from "../../track.js";
+import { readTrace, clearTrace } from "../../trace.js";
 import "./AuditLog.css";
 
 /*
@@ -42,14 +43,30 @@ export default function AuditLog({ onResume }) {
     const corr = `${hex(8)}-${hex(4)}-${hex(4)}`;
     const visit = Math.round(performance.now() / 1000);
     const who = client();
+    // what this visitor actually did, grouped so the log stays short
+    const tr = readTrace(), visitStart = new Date(Date.now() - performance.now());
+    const mine = [{ t: visitStart, id: "TR-1000", ev: "session.start", detail: `visitor (guest) · scope read:public · ${who}`, res: "success" }];
+    const reads = tr.filter((e) => e.key === "section");
+    if (reads.length) {
+      const names = [...new Set(reads.map((e) => e.detail))];
+      mine.push({ t: new Date(reads[0].t), id: "TR-1100", ev: "access.read", detail: `${names.length} section${names.length > 1 ? "s" : ""} · ${names.join(", ")}`, res: "allow" });
+    }
+    const threats = tr.filter((e) => e.key === "threat");
+    if (threats.length) mine.push({ t: new Date(threats[threats.length - 1].t), id: "TR-1300", ev: "threat.quarantine", detail: `${threats.length} malware fragment${threats.length > 1 ? "s" : ""} isolated during this visit`, res: "contained" });
+    const denied = tr.filter((e) => e.ev === "authn.code_attempt");
+    if (denied.length) mine.push({ t: new Date(denied[denied.length - 1].t), id: "TR-1400", ev: "authn.code_attempt", detail: `resume access code rejected ×${denied.length} · stayed restricted`, res: "denied" });
+    tr.filter((e) => !e.key && e.ev !== "authn.code_attempt").forEach((e, i) => mine.push({ t: new Date(e.t), id: `TR-15${i}0`, ev: e.ev, detail: e.detail, res: e.res }));
+    mine.sort((x, y) => x.t - y.t);
+    const findings = denied.length;
     const events = [
+      ...mine,
       { t: at(0), id: "AC-4101", ev: "device.badge_read", detail: `badge ${badge} · magnetic stripe · track 2 · checksum ok`, res: "success" },
       { t: at(31), id: "AC-4624", ev: "authn.session", detail: "actor visitor (guest) · method badge · mfa not required for guest", res: "success" },
       { t: at(58), id: "AC-4672", ev: "authz.policy_eval", detail: "role visitor · scope read:public · policy least-privilege", res: "allow" },
       { t: at(74), id: "AC-4673", ev: "priv.check", detail: "elevation requested: none · admin rights: none", res: "pass" },
       { t: at(112), id: "AC-4634", ev: "authn.sign_out", detail: `user-initiated · session ${duration(visit * 1000)} · ${who}`, res: "success" },
       { t: at(139), id: "AC-4769", ev: "token.revoke", detail: `access token ${jti} · refresh token ${hex(8)}`, res: "revoked" },
-      { t: at(170), id: "AC-5001", ev: "review.complete", detail: "least privilege upheld · 0 findings", res: "closed" },
+      { t: at(170), id: "AC-5001", ev: "review.complete", detail: findings ? `least privilege upheld · ${findings} failed code attempt${findings > 1 ? "s" : ""} logged` : "least privilege upheld · 0 findings", res: "closed" },
     ];
     const raw = {
       eventId: "AC-4634",
@@ -64,7 +81,7 @@ export default function AuditLog({ onResume }) {
       reason: "user_initiated_badge_swipe",
       result: "success",
     };
-    return { session, corr, events, raw };
+    return { session, corr, events, raw, warnings: findings };
   }, []);
 
   const done = shown >= log.events.length;
@@ -85,6 +102,7 @@ export default function AuditLog({ onResume }) {
 
   const restart = () => {
     track("session-audit-new-session", "Started a new session from the audit log");
+    clearTrace();
     onResume();
   };
 
@@ -135,7 +153,7 @@ export default function AuditLog({ onResume }) {
               <span className="audit__lvl" role="cell"><span className="audit__pill audit__pill--info">INFO</span></span>
               <span className="audit__ev" role="cell">{e.ev}</span>
               <span className="audit__detail" role="cell">{e.detail}</span>
-              <span className="audit__res" role="cell"><span className="audit__pill audit__pill--ok">{e.res}</span></span>
+              <span className="audit__res" role="cell"><span className={`audit__pill ${e.res === "denied" ? "audit__pill--deny" : "audit__pill--ok"}`}>{e.res}</span></span>
             </div>
           ))}
           {!done && <div className="audit__cursor" aria-hidden="true" />}
@@ -145,7 +163,7 @@ export default function AuditLog({ onResume }) {
         <div className={`audit__after ${done ? "is-done" : ""}`}>
           <p className="audit__summary">
             <span className="audit__pill audit__pill--ok">{log.events.length} events</span>
-            <span className="audit__pill">0 warnings</span>
+            <span className={`audit__pill ${log.warnings ? "audit__pill--deny" : ""}`}>{log.warnings} warning{log.warnings === 1 ? "" : "s"}</span>
             <span className="audit__pill">0 errors</span>
             <span>access closed</span>
           </p>

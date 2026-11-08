@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import EmailLink from "../EmailLink.jsx";
 import { track } from "../../track.js";
+import { leaveTrace } from "../../trace.js";
 import "./sections.css";
 
 /*
@@ -48,10 +49,12 @@ export default function Resume() {
     try {
       setUrl(await unlock(code.trim()));
       setState("granted");
+      leaveTrace("authz.resume_unlock", "encrypted resume decrypted with an employer code", "granted");
       track("resume-unlocked", "Resume unlocked with the access code");
       setCode("");
     } catch (err) {
       setState(err.message === "unavailable" ? "unavailable" : "denied");
+      if (err.message !== "unavailable") leaveTrace("authn.code_attempt", "resume access code rejected", "denied");
       inputRef.current?.select();
     }
   }

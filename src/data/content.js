@@ -1,7 +1,7 @@
 // Written content for the sections below the hero. Edit freely.
 
 export const about = [
-  "I'm Amma, an ISO/IEC 27001 Lead Auditor building a career in identity and access management.",
+  "I'm Amma, a cybersecurity auditor building a career in identity and access management.",
   "So many breaches come down to access: who has it, and who shouldn't. That's the problem I want to solve. This site is my trace.",
 ];
 

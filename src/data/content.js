@@ -1,8 +1,8 @@
 // Written content for the sections below the hero. Edit freely.
 
 export const about = [
-  "I'm Amma, a cybersecurity auditor building a career in identity and access management.",
-  "So many breaches come down to access: who has it, and who shouldn't. That's the problem I want to solve. This site is my trace.",
+  "I’m Amma, a cybersecurity auditor expanding into Identity & Access Management (IAM).",
+  "My work is grounded in understanding security controls, risk, and accountability. I’m building on that foundation through hands-on exploration of identity lifecycles, access governance, and secure authentication.",
 ];
 
 // Career roadmap. Set `now: true` on the phase Amma is in.

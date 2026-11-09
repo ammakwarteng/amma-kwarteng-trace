@@ -3,7 +3,7 @@ import { owner, links, heroMedia } from "../data/site.js";
 import HeroMedia from "./HeroMedia.jsx";
 import TraceImprint from "./TraceImprint.jsx";
 import EmailLink from "./EmailLink.jsx";
-import { AboutText, Roadmap } from "./sections/About.jsx";
+import { AboutText } from "./sections/About.jsx";
 import "./Hero.css";
 import "./HeroEditorial.css";
 import "./HeroStage.css";
@@ -155,10 +155,13 @@ export default function Hero() {
         <span className="stage__anchor" id="about" aria-hidden="true" />
       </section>
 
-      <div className="about-more">
-        {narrow && <AboutText from={1} />}
-        <Roadmap />
-      </div>
+      {/* phones: the rest of the introduction follows the stage (the roadmap is off for now;
+          it is still in sections/About.jsx and content.js) */}
+      {narrow && (
+        <div className="about-more">
+          <AboutText from={1} />
+        </div>
+      )}
     </>
   );
 }

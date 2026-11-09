@@ -54,7 +54,8 @@
 .stage__h { margin: 0 0 clamp(6px, 2svh, 22px); font-size: min(10vw, 196px); font-weight: 400; letter-spacing: -0.075em; line-height: 0.85; }
 .stage__slot { grid-area: slot; position: relative; min-height: 0; }
 
-/* the roadmap continues the About section right after the stage */
+/* the rest of the About section right after the stage: the profile index (and on phones the
+   second paragraph of the introduction) */
 .about-more {
   display: grid;
   gap: 40px;

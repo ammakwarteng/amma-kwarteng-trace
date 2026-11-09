@@ -3,7 +3,8 @@ import { owner, links, heroMedia } from "../data/site.js";
 import HeroMedia from "./HeroMedia.jsx";
 import TraceImprint from "./TraceImprint.jsx";
 import EmailLink from "./EmailLink.jsx";
-import { AboutText, Roadmap } from "./sections/About.jsx";
+import { AboutText } from "./sections/About.jsx";
+import ProfileIndex from "./archive/ProfileIndex.jsx";
 import "./Hero.css";
 import "./HeroEditorial.css";
 import "./HeroStage.css";
@@ -157,7 +158,7 @@ export default function Hero() {
 
       <div className="about-more">
         {narrow && <AboutText from={1} />}
-        <Roadmap />
+        <ProfileIndex />
       </div>
     </>
   );

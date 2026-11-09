@@ -4,7 +4,7 @@
     - TRACE Frame (.tf): four thin corner brackets, no full border
     - Target lock (.tf-lock + .is-locked): the corners snap in from outside
     - Identification label (.idl): mono, uppercase, "ID · NAME · STATUS"
-    - Squares, not decorative circles (the logo and hunt reticle keep theirs)
+    - Squares, not decorative circles (the reticle logo keeps its circle)
   Loaded after every other stylesheet, so it only adds to or squares off
   what is already there. Colours are the site's own tokens.
 */
@@ -99,7 +99,6 @@
 .road__dot { border-radius: 0; width: 11px; height: 11px; }
 .hero__scroll::before { border-radius: 0; width: 9px; height: 9px; }
 .status__dot { border-radius: 0; width: 6px; height: 6px; }
-.hunt__status i { border-radius: 0; }
 .resume__dot { border-radius: 0; }
 .project__dot { border-radius: 0; }
 .certs__row.is-studying .certs__status::before,

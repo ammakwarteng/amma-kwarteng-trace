@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { owner, links } from "../data/site.js";
 import ArtifactSlot from "./ArtifactSlot.jsx";
-import ThreatHunt from "./hunt/ThreatHunt.jsx";
+import TraceImprint from "./TraceImprint.jsx";
 import DoodlePad from "./doodle/DoodlePad.jsx";
 import EmailLink from "./EmailLink.jsx";
 import { track } from "../track.js";
@@ -22,7 +22,7 @@ export default function Hero() {
   const heroRef = useRef(null);
   // A visitor's pinned doodle floats on the page and is remembered on their device.
   const [pinned, setPinned] = useState(null);
-  // The pad stays folded into a small button so it never blocks the hunt.
+  // The pad stays folded into a small button so it stays out of the way.
   // "closing" plays the slide back up before the sheet unmounts.
   const [padOpen, setPadOpen] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -58,7 +58,7 @@ export default function Hero() {
       ))}
 
       <h1 id="hero-title" className="hero__word">
-        trace<span className="visually-hidden">, the portfolio of {owner.name}</span>
+        <TraceImprint text="trace" /><span className="visually-hidden">, the portfolio of {owner.name}</span>
       </h1>
 
       {pinned && (
@@ -99,8 +99,6 @@ export default function Hero() {
           <li><EmailLink /></li>
         </ul>
       </div>
-
-      <ThreatHunt surfaceRef={heroRef} />
 
       <a className="hero__scroll" href="#about" aria-label="Scroll to the portfolio">
         <span aria-hidden="true" />

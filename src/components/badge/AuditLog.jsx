@@ -51,8 +51,6 @@ export default function AuditLog({ onResume }) {
       const names = [...new Set(reads.map((e) => e.detail))];
       mine.push({ t: new Date(reads[0].t), id: "TR-1100", ev: "access.read", detail: `${names.length} section${names.length > 1 ? "s" : ""} · ${names.join(", ")}`, res: "allow" });
     }
-    const threats = tr.filter((e) => e.key === "threat");
-    if (threats.length) mine.push({ t: new Date(threats[threats.length - 1].t), id: "TR-1300", ev: "threat.quarantine", detail: `${threats.length} malware fragment${threats.length > 1 ? "s" : ""} isolated during this visit`, res: "contained" });
     const denied = tr.filter((e) => e.ev === "authn.code_attempt");
     if (denied.length) mine.push({ t: new Date(denied[denied.length - 1].t), id: "TR-1400", ev: "authn.code_attempt", detail: `resume access code rejected ×${denied.length} · stayed restricted`, res: "denied" });
     tr.filter((e) => !e.key && e.ev !== "authn.code_attempt").forEach((e, i) => mine.push({ t: new Date(e.t), id: `TR-15${i}0`, ev: e.ev, detail: e.detail, res: e.res }));

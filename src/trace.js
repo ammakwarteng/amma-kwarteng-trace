@@ -1,5 +1,5 @@
 // The visitor's trace: a small, in-memory record of what they did on the site during this visit
-// (sections opened, threats quarantined, resume attempts, doodles pinned). It is shown back to them
+// (sections opened, imprints left on the wordmark, resume attempts, doodles pinned). It is shown back to them
 // in the session audit log when they sign out. It never leaves the browser and is not stored:
 // a reload or "start a new session" clears it.
 const ledger = [];

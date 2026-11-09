@@ -133,7 +133,7 @@ export const projects = [
     year: "2026",
     status: "live",
     summary:
-      "An interactive cybersecurity portfolio on my own domain, with a threat-hunt hero, an employer-only encrypted resume and an access-card sign-out that ends in a session audit log.",
+      "An interactive cybersecurity portfolio on my own domain, with a living typographic hero, an employer-only encrypted resume and an access-card sign-out that ends in a session audit log.",
     points: [
       "Designed the concept and look of an interactive cybersecurity portfolio",
       "Designed the full visual identity: layout, interactions and logo",
@@ -141,7 +141,7 @@ export const projects = [
       "Locked my resume behind an access code using AES-256 encryption, so only employers I share it with can open it",
       "Set up privacy-friendly analytics with the dashboard restricted to me only",
       "Verified domain ownership and set up automatic publishing on every update",
-      "Designed an interactive threat hunt: a tracking reticle follows the mouse or finger to detect and quarantine a fragment of malware",
+      "Designed TRACE IMPRINT: the wordmark reconstructs itself on load and leaves faint silver imprints of its letterforms wherever you move or click",
       "Designed a \"leave your trace\" doodle pad where visitors draw and pin their own doodle",
       "Designed an access-card sign-out: a brushed-silver magnetic-stripe credential that visitors drag through a swipe reader, with a swipe sound, a reader beep and a green access light",
       "Designed a session audit log that closes the visit the way an IAM system records it: credential read, authentication, least-privilege authorization, sign-out and token revocation",
@@ -150,7 +150,7 @@ export const projects = [
       "Added a loading screen that replays when a visitor starts a new session",
     ],
     gallery: [
-      { src: "projects/trace/01.webp", caption: "The hero: the reticle tracks a fragment of malware to quarantine it" },
+      { src: "projects/trace/01.webp", caption: "TRACE IMPRINT: silver impressions of the wordmark follow your movement" },
       { src: "projects/trace/02.webp", caption: "The resume, locked behind an access code with AES-256 encryption" },
       { src: "projects/trace/03.webp", caption: "Sections read as records, with the TRACE frame locking onto each heading" },
       { src: "projects/trace/04.webp", caption: "The access card and swipe reader at the end of the trace" },

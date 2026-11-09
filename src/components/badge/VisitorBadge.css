@@ -288,3 +288,10 @@
 /* the read head lights faintly while the stripe passes over it */
 .badge__readhead { transition: box-shadow 0.25s; }
 .badge.is-reading .badge__readhead { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.6), 0 0 10px rgba(255, 255, 255, 0.35); }
+
+/* the final section: "leave your trace." - the visitor signs out with their credential */
+.badge__intro { display: grid; gap: 10px; justify-items: inherit; text-align: inherit; margin-bottom: clamp(18px, 3vh, 36px); }
+.badge__title { margin: 0; font-size: clamp(48px, 7.5vw, 128px); font-weight: 400; letter-spacing: -0.07em; line-height: 0.9; color: var(--white); }
+.badge__hint { margin: 0; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white-faint); }
+.badge.is-granted .badge__hint { color: var(--secure); }
+@media (min-width: 761px) { .badge__intro { text-align: right; justify-items: end; } }

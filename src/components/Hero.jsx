@@ -10,12 +10,12 @@ import "./HeroStage.css";
 
 /*
   The hero stage: the signature interaction of TRACE.
-  The full-screen portrait is pinned while the visitor scrolls a short distance. Over that
-  distance the frame is clipped down to the image panel of the About section (.stage__slot)
-  and the portrait inside it is re-framed to stay centred on her, while the hero type fades
-  out and the About heading and introduction fade in beside the panel. After that the page
-  scrolls on normally: no scroll lock, no snapping.
-  - Native scrolling only; the effect just reads the scroll position (one rAF per frame).
+  The full-screen portrait is pinned for a short distance. The first small scroll down plays the
+  transformation on its own: the frame is clipped down to the image panel of the About section
+  (.stage__slot) and the portrait inside it is re-framed to stay centred on her, while the hero
+  type recedes and the About heading and introduction fade in beside the panel. Scrolling back
+  to the top plays it in reverse. The page keeps scrolling normally: no scroll lock, no snapping.
+  - One video element throughout; only clip-path, transform and opacity change.
   - Phones: their own composition: a narrower panel with the section label beside it like a
     caption, the heading and lead line under it; the rest of the introduction follows below.
   - Reduced motion: no pinning or scaling; the hero and About are laid out as two plain blocks,
@@ -25,6 +25,7 @@ const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const range = (p, a, b) => clamp01((p - a) / (b - a));
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const NARROW = "(max-width: 760px)";
+const DURATION = 1400;   // ms for the portrait to glide from the hero into About
 // where her face sits on the full-screen hero (x, y as fractions of the screen)
 const FOCUS = { wide: [0.6, 0.4], narrow: [0.56, 0.42] };
 
@@ -63,10 +64,11 @@ export default function Hero() {
       g.dx = l + S.width / 2 - P.width / 2 - (fx - 0.5) * P.width * g.k;
       g.dy = t + S.height / 2 - P.height / 2 - (fy - 0.5) * P.height * g.k;
     };
-    // q follows the scroll position with a light easing, so wheel steps and touch flicks still
-    // read as one continuous movement, in both directions
-    let q = null, last = 0;
-    const target = () => clamp01(-stage.current.getBoundingClientRect().top / g.D);
+    // The transformation plays by itself: the first small scroll down starts it, and it glides to
+    // the About layout over DURATION ms; scrolling back to the top plays it in reverse. It never
+    // holds the page: scrolling stays native the whole time, and a change of direction mid-way
+    // simply turns the movement around.
+    let q = null, want = 0, last = 0;
     const render = (p) => {
       const e = ease(range(p, 0, 0.86));                   // the portrait: one element, clipped and re-framed
       frame.current.style.clipPath = `inset(${(g.t * e).toFixed(2)}px ${(g.r * e).toFixed(2)}px ${(g.b * e).toFixed(2)}px ${(g.l * e).toFixed(2)}px round ${(2 * e).toFixed(2)}px)`;
@@ -84,14 +86,16 @@ export default function Hero() {
     const update = (now) => {
       raf = 0;
       if (!g) measure();
-      const p = target();
+      const y = -stage.current.getBoundingClientRect().top;
+      const on = Math.min(40, g.D * 0.1);                  // a small scroll down plays it
+      if (y > on) want = 1; else if (y < on / 2) want = 0; // back near the top reverses it
+      if (q === null) { q = want; last = 0; render(q); return; }   // first paint (also a reload mid-page): no replay
       const dt = last ? Math.min(64, now - last) : 16.7;
       last = now;
-      if (q === null || Math.abs(p - q) > 0.6) q = p;     // first paint or a jump (menu link): no lag
-      else q += (p - q) * (1 - Math.pow(0.78, dt / 16.7));
-      if (Math.abs(p - q) < 0.0008) q = p;
+      const step = dt / DURATION;
+      q = want > q ? Math.min(want, q + step) : Math.max(want, q - step);
       render(q);
-      if (q !== p) raf = requestAnimationFrame(update); else last = 0;
+      if (q !== want) raf = requestAnimationFrame(update); else last = 0;
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
     const onResize = () => { g = null; onScroll(); };

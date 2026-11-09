@@ -2,9 +2,9 @@
    Hero.jsx writes the clip, the portrait's position, and the opacity of the two type layers;
    everything else is laid out here. */
 
-.stage { position: relative; height: calc(100svh + 75svh); background: var(--black); }
+.stage { position: relative; height: calc(100svh + 45svh); background: var(--black); }
 .stage__pin { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; }
-.stage__anchor { position: absolute; left: 0; top: 75svh; width: 1px; height: 1px; scroll-margin-top: 0; }
+.stage__anchor { position: absolute; left: 0; top: 45svh; width: 1px; height: 1px; scroll-margin-top: 0; }
 
 /* the portrait frame */
 .stage .hmedia { will-change: clip-path; }
@@ -65,8 +65,8 @@
 /* phones: a narrower panel set to the right, the section label running up beside it like a
    caption, then the heading and lead line full width beneath it. Shorter scroll distance. */
 @media (max-width: 760px) {
-  .stage { height: calc(100svh + 60svh); }
-  .stage__anchor { top: 60svh; }
+  .stage { height: calc(100svh + 35svh); }
+  .stage__anchor { top: 35svh; }
   .stage .hero__word { font-size: clamp(110px, 32vw, 180px); }
   .stage__about {
     grid-template-columns: minmax(0, 1fr) minmax(0, 3.2fr);

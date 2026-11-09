@@ -78,9 +78,12 @@ export default function CorridorTransition() {
     const onScroll = () => {
       const s = spacer.current; if (!s) return;
       const r = s.getBoundingClientRect(), p = phaseRef.current;
-      if (p === "idle" && r.top < innerHeight * 0.9) start();   // as soon as the hero starts to leave, it dissolves into the corridor
+      // only after a real scroll past the start of the hero (iPhone Safari's short "svh" hero can sit
+      // above the fold on load, which must not trigger it), and never while the intro screen is up
+      const scrolled = scrollY > Math.min(120, innerHeight * 0.15);
+      if (p === "idle" && scrolled && !document.documentElement.classList.contains("is-loading") && r.top < innerHeight * 0.9) start();
     };
-    addEventListener("scroll", onScroll, { passive: true }); onScroll();
+    addEventListener("scroll", onScroll, { passive: true });
     return () => { removeEventListener("scroll", onScroll); timers.current.forEach(clearTimeout); };
   }, [reduce]);
 

@@ -28,10 +28,11 @@ export const heroMedia = {
   layout: "editorial",
   image: "hero/portrait.jpg",   // e.g. "hero/portrait.jpg"   (2400×1600 or larger, black and white)
   imageMobile: "hero/portrait-mobile.jpg",   // e.g. "hero/portrait-mobile.jpg" (1080×1920, portrait crop)
-  video: "",            // e.g. "hero/portrait.mp4"   (muted, 6-12 s seamless loop, H.264, under ~4 MB)
-  poster: "",           // e.g. "hero/portrait-poster.jpg" (first frame of the video)
+  video: "videos/trace-portrait.mp4",   // Higgsfield portrait, played forward then back for a seamless loop   (muted, 6-12 s seamless loop, H.264, under ~4 MB)
+  videoMobile: "",      // optional 9:16 Higgsfield clip for phones (from the tall portrait)
+  poster: "videos/trace-portrait-poster.jpg",   // first frame of the video
   glass: false,         // the ribbed glass is already in the photograph
-  focus: "60% 30%",     // which part of the photo stays in view on wide screens
+  focus: "50% 38%",     // which part of the photo stays in view on wide screens
   focusMobile: "50% 30%",
 };
 

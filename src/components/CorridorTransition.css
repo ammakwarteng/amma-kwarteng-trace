@@ -5,16 +5,23 @@
   background: linear-gradient(180deg, var(--black) 0%, rgba(10, 10, 10, 0) 18%, rgba(10, 10, 10, 0) 70%, var(--black) 100%); }
 /* once unlocked the frame settles back, so it flows into About */
 .corridor.is-unlocked .corridor__media { opacity: 0.55; filter: grayscale(1) brightness(0.85); }
-.corridor__status { position: absolute; left: 50%; bottom: 12%; transform: translateX(-50%); margin: 0; display: inline-flex; align-items: center; gap: 9px;
-  padding: 7px 12px; background: rgba(10, 10, 10, 0.55); border: 1px solid rgba(255, 255, 255, 0.16); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-dim); white-space: nowrap; transition: color 0.4s, border-color 0.4s; }
-.corridor__status i { width: 7px; height: 7px; background: #ff4d4d; transition: background 0.4s; }
-.corridor.is-verifying .corridor__status i { background: var(--white); animation: corridor-blink 0.35s steps(2) infinite; }
-.corridor.is-unlocked .corridor__status { color: var(--white); border-color: rgba(87, 227, 137, 0.45); }
-.corridor.is-unlocked .corridor__status i { background: var(--secure); }
+/* the trace line runs down through the corridor as you approach the door */
+.corridor__line { position: absolute; left: var(--line-x); top: 0; width: 1px; height: 100%; background: rgba(255, 255, 255, 0.85); transform: scaleY(var(--progress)); transform-origin: top; opacity: 0.55; transition: transform 0.3s linear; }
+/* authentication: three short lines, one after another */
+.corridor__auth { position: absolute; left: 50%; bottom: 11%; transform: translateX(-50%); display: grid; gap: 6px; justify-items: start;
+  padding: 10px 14px; background: rgba(10, 10, 10, 0.55); border: 1px solid rgba(255, 255, 255, 0.14); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: border-color 0.4s; }
+.corridor.is-unlocked .corridor__auth { border-color: rgba(87, 227, 137, 0.4); }
+.corridor__row { margin: 0; display: inline-flex; align-items: center; gap: 9px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-dim); white-space: nowrap; animation: corridor-row 0.35s ease both; }
+.corridor__row i { width: 7px; height: 7px; background: var(--white-faint); }
+.corridor__row.is-locked i { background: #ff4d4d; }
+.corridor__row.is-active { color: var(--white); }
+.corridor__row.is-active i { background: var(--white); animation: corridor-blink 0.35s steps(2) infinite; }
+.corridor__row.is-done { color: var(--white); }
+.corridor__row.is-done i { background: var(--secure); }
+@keyframes corridor-row { from { opacity: 0; transform: translateY(4px); } }
 @keyframes corridor-blink { 50% { opacity: 0.2; } }
 @media (max-width: 760px) {
   .corridor { aspect-ratio: 4 / 5; }          /* taller on phones; the corridor's centre stays in view */
-  .corridor__status { font-size: 10px; bottom: 9%; }
+  .corridor__row { font-size: 10px; } .corridor__auth { bottom: 8%; }
 }
-@media (prefers-reduced-motion: reduce) { .corridor__media { transition: none; } .corridor.is-verifying .corridor__status i { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .corridor__media { transition: none; } .corridor__row, .corridor__row i { animation: none !important; } .corridor__line { transition: none; } }

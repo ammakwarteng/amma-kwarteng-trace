@@ -3,6 +3,7 @@ import Header from "./components/Header.jsx";
 import VisitorBadge from "./components/badge/VisitorBadge.jsx";
 import Loader from "./components/loader/Loader.jsx";
 import Hero from "./components/Hero.jsx";
+import CorridorTransition from "./components/CorridorTransition.jsx";
 import Trail from "./components/trail/Trail.jsx";
 import EmailLink from "./components/EmailLink.jsx";
 import About from "./components/sections/About.jsx";
@@ -64,6 +65,7 @@ export default function App() {
       <Header />
       <main>
         <Hero />
+        <CorridorTransition />
         <Trail sections={sections} />
         <VisitorBadge />
       </main>

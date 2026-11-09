@@ -4,19 +4,8 @@
   overflow-x: clip; /* scrambled glyphs can be wider than the final word */
 }
 
-.trail__svg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: visible;
-}
-.trail__ghost { fill: none; stroke: rgba(255, 255, 255, 0.08); stroke-width: 1; stroke-dasharray: 2 6; }
-.trail__path { fill: none; stroke: var(--white); stroke-width: 1.2; stroke-linejoin: round; }
-.trail__head { transition: opacity 0.2s; }
-.trail__head circle { fill: var(--black); stroke: var(--white); stroke-width: 1.2; }
-.trail__head path { stroke: var(--white); stroke-width: 1.2; }
 
-/* Sections: each one is a hop on the route */
+/* Sections */
 .trail__sec {
   position: relative;
   min-height: 34vh;
@@ -27,7 +16,7 @@
   gap: 18px;
   scroll-margin-top: 10vh;
 }
-.trail__sec.is-open { min-height: 72vh; padding-bottom: 56px; } /* room for the route to cross below the content */
+.trail__sec.is-open { min-height: 72vh; padding-bottom: 56px; }
 .trail__sec.is-right { justify-items: end; text-align: right; }
 
 /* the title is the open / close button */
@@ -76,24 +65,6 @@
 .trail__head-row { display: flex; align-items: center; gap: 14px; }
 .trail__sec.is-right .trail__head-row { flex-direction: row-reverse; }
 
-.trail__node {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1.2px solid var(--white-faint);
-  background: var(--black);
-  position: relative;
-  z-index: 1;
-  flex: none;
-  margin-left: -34px; /* sit in the margin so the route runs beside the text */
-  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
-}
-.trail__sec.is-right .trail__node { margin-left: 0; margin-right: -34px; }
-.trail__sec.is-reached .trail__node {
-  background: var(--white);
-  border-color: var(--white);
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12);
-}
 .trail__hop { color: var(--white-faint); transition: color 0.3s; }
 .trail__sec.is-reached .trail__hop { color: var(--white); }
 
@@ -125,7 +96,5 @@
 @media (max-width: 700px) {
   .trail__sec { min-height: 24vh; }
   .trail__sec.is-open { min-height: 60vh; }
-  .trail__node { margin-left: -21px; width: 12px; height: 12px; }
-  .trail__sec.is-right .trail__node { margin-right: -21px; }
   .trail__head-row { gap: 8px; }
 }

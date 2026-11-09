@@ -36,12 +36,6 @@ export const heroMedia = {
   focusMobile: "50% 30%",
 };
 
-// The corridor sequence after the hero. doorOpen: the Higgsfield door-opening clip, played right
-// after "access granted" (e.g. "videos/trace-door-open.mp4"). Empty = the door dissolves instead.
-export const corridorMedia = { doorOpen: "videos/trace-door-open.mp4" };
-
-// The continuous tracing line that connected the sections. false = removed (cleaner editorial layout).
-export const showRoute = false;
 
 // Professional communities, shown in the community section. Add one only
 // once joined; add events under a community only once attended.

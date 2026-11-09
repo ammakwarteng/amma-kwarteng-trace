@@ -41,7 +41,6 @@
 .hero--editorial .hero__subline { margin: 0; max-width: 34ch; color: rgba(255, 255, 255, 0.82); }
 .hero--editorial .hero__player { position: static; animation: hero-rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.6s both; }
 .hero--editorial .hero__links { margin: 0; justify-content: center; animation: hero-rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.7s both; }
-.hero--editorial .hero__scroll { z-index: 5; }
 @keyframes hero-rise { from { opacity: 0; transform: translateY(14px); } }
 
 /* phones: compact centred stack, no giant gaps */
@@ -58,24 +57,19 @@
   .hmedia__photo, .hmedia__light, .hero--editorial .hero__word, .hero--editorial .hero__intro, .hero--editorial .hero__player, .hero--editorial .hero__links { animation: none; }
 }
 
-/* the join with the sections below: no extra band on phones */
-@media (max-width: 760px) {
-  body:has(.hero--editorial) .trail { padding-top: 6px; }
-}
 
 /* mobile polish: ease the portrait a little lower so it shows behind the wordmark
    (positioning only; the image itself is unchanged) */
 @media (max-width: 760px) {
-  .hero--editorial .hmedia__photo { transform: translateY(3%) scale(1.08); transform-origin: 50% 50%; }   /* top edge stays above the screen: no gap */
   /* About: the intro line leads; the second paragraph is softer and more open */
   .about__text p:first-child { font-size: 21px; line-height: 1.32; letter-spacing: -0.035em; color: var(--white); }
   .about__text p + p { font-size: 17px; line-height: 1.5; letter-spacing: -0.02em; color: var(--white-dim); }
-  /* the heading frame tucks in toward the word so its corners never touch the route line */
+  /* the heading frame tucks in toward the word */
   .trail__sec .trail__h.tf { --tf-inset: -4px -8px -8px -3px; --tf-from: -12px -18px -16px -8px; }
   .trail__sec.is-right .trail__h.tf { --tf-inset: -4px -3px -8px -8px; --tf-from: -12px -8px -16px -18px; }
 }
 
 /* phones: the wide portrait clip is framed so her face stays in view */
 @media (max-width: 760px) {
-  .hero--editorial .hmedia__video { object-position: 68% 42%; transform: none; }
+  .hmedia .hmedia__video { object-position: 68% 42%; }
 }

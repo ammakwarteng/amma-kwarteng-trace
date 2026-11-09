@@ -92,11 +92,8 @@ export default function VisitorBadge() {
   const status = state === "granted" ? "signing out…" : state === "reading" ? "reading badge…" : "swipe your badge to sign out";
 
   return (
-    <section className={`badge is-${state}`} id="leave" aria-labelledby="leave-title">
-      <header className="badge__intro">
-        <h2 className="badge__title" id="leave-title">leave your trace.</h2>
-        <p className="badge__hint mono">swipe your credential through the reader to end the session</p>
-      </header>
+    <section className={`badge is-${state}`} id="leave" aria-label="Sign out">
+      <p className="badge__hint mono">swipe your credential through the reader to end the session</p>
       <div className="badge__track" ref={trackRef} style={scale > 1 ? { transform: `scale(${scale})`, marginTop: `${(scale - 1) * 244}px` } : undefined}>
         <div className="badge__groove" aria-hidden="true">
           <span className="badge__readhead" />

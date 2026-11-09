@@ -16,10 +16,17 @@ export function playInline(v, { onBlocked } = {}) {
     throw err;
   });
 }
-// play on the first tap/click if autoplay was refused
+// play on the visitor's first tap, click or key press if autoplay was refused (e.g. iPhone Low
+// Power Mode). Keeps listening until playback really starts: a touch that turns out to be a
+// scroll doesn't count as a tap on iOS, so the next gesture tries again.
+const GESTURES = ["touchend", "click", "keydown"];
 export function playOnFirstGesture(v, then) {
-  const go = () => { playInline(v).then(() => then?.()).catch(() => {}); off(); };
-  const off = () => ["touchend", "click", "keydown"].forEach((e) => removeEventListener(e, go, true));
-  ["touchend", "click", "keydown"].forEach((e) => addEventListener(e, go, { capture: true, passive: true, once: true }));
+  let done = false;
+  const off = () => GESTURES.forEach((e) => removeEventListener(e, go, true));
+  const go = () => {
+    if (done) return;
+    playInline(v).then(() => { done = true; off(); then?.(); }).catch(() => {});
+  };
+  GESTURES.forEach((e) => addEventListener(e, go, { capture: true, passive: true }));
   return off;
 }

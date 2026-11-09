@@ -73,3 +73,15 @@
 @media (max-width: 760px) {
   .hmedia .hmedia__video { object-position: 68% 42%; }
 }
+
+/* iPhone Safari draws its own play button over a video it won't autoplay (for example in Low
+   Power Mode). The portrait is decorative and starts on the visitor's first tap (HeroMedia.jsx),
+   so that button is hidden; until then the poster frame shows as a still photograph. */
+.hmedia__video::-webkit-media-controls,
+.hmedia__video::-webkit-media-controls-panel,
+.hmedia__video::-webkit-media-controls-overlay-play-button,
+.hmedia__video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0 !important;
+}

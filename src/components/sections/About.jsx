@@ -2,7 +2,18 @@ import { useState } from "react";
 import { about, roadmap } from "../../data/content.js";
 import "./sections.css";
 
-export default function About() {
+// the About introduction (all paragraphs, or a range of them): shown beside the portrait at the
+// end of the hero transformation (see Hero.jsx)
+export function AboutText({ from = 0, to }) {
+  return (
+    <div className={`about__text ${from ? "about__text--rest" : ""}`}>
+      {about.slice(from, to).map((p, i) => <p key={i}>{p}</p>)}
+    </div>
+  );
+}
+
+// the career roadmap, which continues the About section below the hero stage
+export function Roadmap() {
   // the phase Amma is in starts open; the rest start closed
   const [open, setOpen] = useState(() => new Set(roadmap.filter((r) => r.now).map((r) => r.phase)));
   const toggle = (phase) =>
@@ -13,11 +24,6 @@ export default function About() {
     });
 
   return (
-    <div className="about">
-      <div className="about__text">
-        {about.map((p, i) => <p key={i}>{p}</p>)}
-      </div>
-
       <div className="road" aria-label="Career roadmap">
         <p className="road__label mono">roadmap · tap a step to open it</p>
         <ol className="road__list">
@@ -54,6 +60,5 @@ export default function About() {
           })}
         </ol>
       </div>
-    </div>
   );
 }

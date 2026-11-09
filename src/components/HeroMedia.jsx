@@ -4,7 +4,8 @@ import { heroMedia as M } from "../data/site.js";
 
 /*
   Background layer for the editorial hero: a black-and-white portrait behind frosted, vertically
-  ribbed glass. All text stays as real HTML above it.
+  ribbed glass. All text stays as real HTML above it. Hero.jsx clips this
+  layer (frameRef) and moves the portrait inside it (moveRef) as the visitor scrolls.
   - image / imageMobile: the photograph (set paths in src/data/site.js -> heroMedia)
   - video + poster: optional short muted loop (e.g. from Higgsfield); never autoplays with
     reduced motion, and the poster/image is the static fallback
@@ -12,7 +13,7 @@ import { heroMedia as M } from "../data/site.js";
   With no image set yet, it shows only the dark glass and a clearly labelled placeholder note in
   the code (no stand-in photo).
 */
-export default function HeroMedia() {
+export default function HeroMedia({ frameRef, moveRef }) {
   const [reduce, setReduce] = useState(false);
   const vref = useRef(null);
   useEffect(() => { setReduce(matchMedia("(prefers-reduced-motion: reduce)").matches); }, []);
@@ -31,7 +32,9 @@ export default function HeroMedia() {
   const style = { "--focus": M.focus, "--focus-m": M.focusMobile };
   const hasPhoto = !!(M.image || M.poster);
   return (
-    <div className={`hmedia ${hasPhoto ? "" : "is-empty"} ${M.glass ? "has-glass" : ""}`} style={style} aria-hidden="true">
+    <div ref={frameRef} className={`hmedia ${hasPhoto ? "" : "is-empty"} ${M.glass ? "has-glass" : ""}`} style={style} aria-hidden="true">
+      {/* the portrait moves as one piece when the hero turns into the About panel (Hero.jsx) */}
+      <div className="hmedia__move" ref={moveRef}>
       {useVideo ? (
         <video ref={vref} className="hmedia__photo hmedia__video" autoPlay muted loop playsInline preload="auto" poster={M.poster || M.image || undefined}>
           <source src={M.video} type="video/mp4" />
@@ -42,6 +45,7 @@ export default function HeroMedia() {
           <img className="hmedia__photo" src={M.image || M.poster} alt="" decoding="async" fetchpriority="high" />
         </picture>
       ) : null /* PLACEHOLDER: no portrait yet. Add it in site.js -> heroMedia.image */}
+      </div>
       <span className="hmedia__glass" />
       <span className="hmedia__light" />
       <span className="hmedia__shade" />

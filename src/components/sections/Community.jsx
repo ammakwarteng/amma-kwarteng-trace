@@ -1,34 +1,24 @@
 import { communities } from "../../data/site.js";
 import "./sections.css";
 
-// A curated directory: numbered entries with the name, abbreviation, role and what the group does.
-// Also used for volunteer roles (see Volunteer.jsx).
-export function Directory({ items, prefix = "MBR", label = "Professional communities" }) {
-  return (
-    <ol className="dir" aria-label={label}>
-      {items.map((c, n) => (
-        <li key={c.name} className="dir__entry">
-          <p className="dir__meta mono">
-            <span>{prefix}-{String(n + 1).padStart(2, "0")}</span>
-            {c.short && <span>{c.short}</span>}
-            <span>{c.role.toLowerCase()}</span>
-            {c.when && <span>{c.when}</span>}
-          </p>
-          <h3 className="dir__name">
-            {c.url ? (
-              <a href={c.url} target="_blank" rel="noopener noreferrer">
-                {c.name.toLowerCase()}<span className="dir__arrow" aria-hidden="true">↗</span>
-                <span className="visually-hidden"> (opens in a new tab)</span>
-              </a>
-            ) : c.name.toLowerCase()}
-          </h3>
-          <p className="dir__about">{c.about}</p>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
+// Professional communities: one row each, with the role and what the group does.
 export default function Community() {
-  return <Directory items={communities} />;
+  return (
+    <div className="community">
+      {communities.map((c, n) => (
+        <section key={c.name} className="community__row" aria-label={c.name}>
+          <div className="community__head">
+            <span className="community__badge idl"><b>MBR-{String(n + 1).padStart(2, "0")}</b> · <span className="st">{c.role.toLowerCase()}</span></span>
+            <h3 className="community__name">
+              <a href={c.url} target="_blank" rel="noopener noreferrer">
+                {c.name.toLowerCase()}{c.short ? ` (${c.short.toLowerCase()})` : ""}
+              </a>
+            </h3>
+            {c.note && <p className="community__note mono">{c.note}</p>}
+          </div>
+          <p className="community__about">{c.about}</p>
+        </section>
+      ))}
+    </div>
+  );
 }

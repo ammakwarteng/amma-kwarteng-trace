@@ -130,3 +130,20 @@
 .cert.is-earned { border-color: rgba(255, 255, 255, 0.16); } /* the frame marks it as verified */
 .cert__top.idl { font-size: 10px; }
 .community__badge.idl { padding: 0; border: 0; border-radius: 0; font-size: 11px; letter-spacing: 0.14em; color: var(--white-faint); }
+
+/* ---------- no tracing line (site.js -> showRoute: false) ---------- */
+html.no-route .trail__svg,
+html.no-route .trail__node,
+html.no-route .hero__scroll,
+html.no-route .cinema__line { display: none !important; }
+html.no-route .trail { padding-top: clamp(48px, 9vh, 96px); padding-bottom: clamp(48px, 10vh, 120px); }
+html.no-route .trail__head-row { gap: 0; }
+@media (max-width: 760px) {
+  html.no-route .trail { padding-top: 40px; }
+  html.no-route .trail__sec { min-height: 0; padding-top: 28px; padding-bottom: 28px; }
+  html.no-route .trail__sec.is-open { min-height: 0; }
+}
+@media (min-width: 761px) {
+  html.no-route .trail__sec { min-height: 26vh; }
+  html.no-route .trail__sec.is-open { min-height: 0; padding-bottom: 72px; }
+}

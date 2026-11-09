@@ -13,7 +13,7 @@ import Projects from "./components/sections/Projects.jsx";
 import Skills from "./components/sections/Skills.jsx";
 import Community from "./components/sections/Community.jsx";
 import Volunteer from "./components/sections/Volunteer.jsx";
-import { navItems, links } from "./data/site.js";
+import { navItems, links, showRoute } from "./data/site.js";
 
 // Each section that is ready (see navItems in site.js) is a hop on the trace.
 const sections = navItems.map((item) => ({
@@ -57,6 +57,8 @@ export default function App() {
     window.addEventListener("trace:new-session", restart);
     return () => window.removeEventListener("trace:new-session", restart);
   }, []);
+
+  useEffect(() => { document.documentElement.classList.toggle("no-route", !showRoute); }, []);
 
   return (
     <div key={session} style={{ display: "contents" }}>

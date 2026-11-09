@@ -1,33 +1,27 @@
-/* the corridor clip between the hero and About: full-bleed, dissolving into page black at both ends */
-.corridor { position: relative; overflow: hidden; background: var(--black); aspect-ratio: 16 / 9; max-height: 92vh; width: 100%; }
-.corridor__media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: block; filter: grayscale(1); transition: opacity 1.4s ease, filter 1.4s ease; }
-.corridor__fade { position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, var(--black) 0%, rgba(10, 10, 10, 0) 18%, rgba(10, 10, 10, 0) 70%, var(--black) 100%); }
-/* once unlocked the frame settles back, so it flows into About */
-.corridor.is-unlocked .corridor__media { opacity: 0.55; filter: grayscale(1) brightness(0.85); }
-/* the trace line runs down through the corridor as you approach the door */
-.corridor__line { position: absolute; left: var(--line-x); top: 0; width: 1px; height: 100%; background: rgba(255, 255, 255, 0.85); transform: scaleY(var(--progress)); transform-origin: top; opacity: 0.55; transition: transform 0.3s linear; }
-/* authentication: three short lines, one after another */
-.corridor__auth { position: absolute; left: 50%; bottom: 11%; transform: translateX(-50%); display: grid; gap: 6px; justify-items: start;
-  padding: 10px 14px; background: rgba(10, 10, 10, 0.55); border: 1px solid rgba(255, 255, 255, 0.14); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: border-color 0.4s; }
-.corridor.is-unlocked .corridor__auth { border-color: rgba(87, 227, 137, 0.4); }
-.corridor__row { margin: 0; display: inline-flex; align-items: center; gap: 9px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-dim); white-space: nowrap; animation: corridor-row 0.35s ease both; }
-.corridor__row i { width: 7px; height: 7px; background: var(--white-faint); }
-.corridor__row.is-locked i { background: #ff4d4d; }
-.corridor__row.is-active { color: var(--white); }
-.corridor__row.is-active i { background: var(--white); animation: corridor-blink 0.35s steps(2) infinite; }
-.corridor__row.is-done { color: var(--white); }
-.corridor__row.is-done i { background: var(--secure); }
-@keyframes corridor-row { from { opacity: 0; transform: translateY(4px); } }
-@keyframes corridor-blink { 50% { opacity: 0.2; } }
-@media (max-width: 760px) {
-  .corridor { aspect-ratio: 4 / 5; }          /* taller on phones; the corridor's centre stays in view */
-  .corridor__row { font-size: 10px; } .corridor__auth { bottom: 8%; }
-}
-@media (prefers-reduced-motion: reduce) { .corridor__media { transition: none; } .corridor__row, .corridor__row i { animation: none !important; } .corridor__line { transition: none; } }
+/* The cinematic transition: a full-viewport layer over the page, never a stacked section */
+.cinema-spacer { height: 100svh; }                 /* scroll room after the hero */
+.cinema-spacer.is-collapsed { height: 0; }
+html.is-cinema, html.is-cinema body { overflow: hidden; overscroll-behavior: none; }
 
-/* the door-opening clip sits exactly over the corridor and appears without a flash */
-.corridor__door { opacity: 0; transition: opacity 0.25s linear; }
-.corridor__door.is-on { opacity: 1; }
-.corridor.is-opening .corridor__media, .corridor.is-opening .corridor__door { opacity: 1; filter: grayscale(1); }
-.corridor.is-unlocked .corridor__door.is-on { opacity: 0.55; }
+.cinema { position: fixed; inset: 0; z-index: 60; background: var(--black); opacity: 0; visibility: hidden; transition: opacity 0.7s ease, visibility 0s linear 0.7s; }
+.cinema.is-on { opacity: 1; visibility: visible; transition: opacity 0.7s ease, visibility 0s; }
+.cinema__media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; filter: grayscale(1); }
+.cinema__door { opacity: 0; transition: opacity 0.25s linear; }
+.cinema__door.is-on { opacity: 1; }
+/* soft vignette top and bottom, so the frame sits in the black page */
+.cinema__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(10, 10, 10, 0.55) 0%, transparent 16%, transparent 78%, rgba(10, 10, 10, 0.6) 100%); }
+/* the trace line keeps running through the corridor as you approach */
+.cinema__line { position: absolute; left: var(--line-x); top: 0; width: 1px; height: 100%; background: rgba(255, 255, 255, 0.85); opacity: 0.5; transform: scaleY(var(--progress)); transform-origin: top; transition: transform 0.3s linear; }
+.cinema__auth { position: absolute; left: 50%; bottom: max(11%, calc(60px + env(safe-area-inset-bottom, 0px))); transform: translateX(-50%); display: grid; gap: 6px; justify-items: start; }
+.cinema__auth:empty { display: none; }
+.cinema__auth { padding: 10px 14px; background: rgba(10, 10, 10, 0.55); border: 1px solid rgba(255, 255, 255, 0.14); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: border-color 0.4s; }
+.cinema.is-granted .cinema__auth, .cinema.is-opening .cinema__auth { border-color: rgba(87, 227, 137, 0.4); }
+.cinema__row { margin: 0; display: inline-flex; align-items: center; gap: 9px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white); white-space: nowrap; animation: cinema-row 0.35s ease both; }
+.cinema__row i { width: 7px; height: 7px; }
+.cinema__row.is-active i { background: var(--white); animation: cinema-blink 0.35s steps(2) infinite; }
+.cinema__row.is-done i { background: var(--secure); }
+.cinema__skip { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); padding: 6px 10px; border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(10, 10, 10, 0.4); color: var(--white-dim); font-size: 11px; letter-spacing: 0.08em; cursor: pointer; }
+.cinema__skip:hover, .cinema__skip:focus-visible { color: var(--white); border-color: var(--white); outline: none; }
+@keyframes cinema-row { from { opacity: 0; transform: translateY(4px); } }
+@keyframes cinema-blink { 50% { opacity: 0.2; } }
+@media (max-width: 760px) { .cinema__row { font-size: 10px; } }

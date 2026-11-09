@@ -166,7 +166,7 @@
 .cert.is-studying .cert__status::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--white); vertical-align: middle; animation: live-blink 1.4s steps(2) infinite; }
 .cert.is-next .cert__status { color: var(--white-dim); }
 .cert.is-earned { border-color: rgba(87, 227, 137, 0.6); }
-/* earned: solid white (green is reserved for quarantined malware) */
+/* earned: solid white (green is reserved for access granted) */
 .cert.is-earned { border-color: var(--white); }
 .cert.is-earned .cert__code, .cert.is-earned .cert__name, .cert.is-earned .cert__status { color: var(--white); }
 

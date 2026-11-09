@@ -1,0 +1,30 @@
+/* TRACE IMPRINT: layers sit exactly on top of the wordmark and inherit its font, size and spacing */
+.imprint { position: relative; display: inline-block; pointer-events: auto; cursor: default; -webkit-tap-highlight-color: transparent; }
+.imprint__base { position: relative; z-index: 2; display: inline-block; opacity: 0; }
+.imprint.is-built .imprint__base { opacity: 1; }
+.imprint__slices, .imprint__slice, .imprint__echo, .imprint__scan { position: absolute; left: 0; top: 0; pointer-events: none; }
+.imprint__slices { inset: 0; z-index: 3; }
+.imprint__slice { opacity: 0; will-change: transform; }
+.imprint.is-built .imprint__slices { display: none; }
+
+/* silver outline impressions, behind the white letters */
+.imprint__echo { z-index: 1; color: transparent; -webkit-text-stroke: 1.4px rgba(214, 218, 222, 0.95); will-change: transform, opacity; }
+
+/* recurring silver scan, clipped to the letterforms; still between passes */
+.imprint__scan {
+  z-index: 3; color: transparent; opacity: 0;
+  background: linear-gradient(100deg, transparent 0%, transparent 42%, rgba(167, 173, 176, 0.85) 48%, rgba(236, 238, 240, 0.95) 50%, rgba(167, 173, 176, 0.85) 52%, transparent 58%, transparent 100%);
+  background-size: 300% 100%; background-position: 120% 0;
+  -webkit-background-clip: text; background-clip: text;
+}
+.imprint.is-built .imprint__scan { opacity: 1; animation: imprint-scan 8s cubic-bezier(0.45, 0, 0.25, 1) 2.5s infinite; }
+@keyframes imprint-scan {
+  0% { background-position: 120% 0; }
+  18% { background-position: -20% 0; }
+  100% { background-position: -20% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .imprint__base { opacity: 1; }
+  .imprint__slices { display: none; }
+  .imprint.is-built .imprint__scan { animation: none; opacity: 0; }
+}

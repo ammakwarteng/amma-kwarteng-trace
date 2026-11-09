@@ -4,7 +4,6 @@
   min-height: 640px;
   overflow: hidden;
   isolation: isolate;
-  cursor: crosshair;
   user-select: none;
   -webkit-user-select: none;
 }

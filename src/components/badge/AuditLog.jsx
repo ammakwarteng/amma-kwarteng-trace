@@ -32,6 +32,12 @@ function client() {
 
 export default function AuditLog({ onResume }) {
   const [shown, setShown] = useState(0);
+  const [phase, setPhase] = useState("ending");   // ending -> log
+  useEffect(() => {
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const t = setTimeout(() => setPhase("log"), reduce ? 0 : 1500);
+    return () => clearTimeout(t);
+  }, []);
   const btnRef = useRef(null);
 
   const log = useMemo(() => {
@@ -89,7 +95,7 @@ export default function AuditLog({ onResume }) {
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const timers = reduce
       ? [setTimeout(() => setShown(log.events.length), 0)]
-      : log.events.map((_, i) => setTimeout(() => setShown(i + 1), 500 + i * 260));
+      : log.events.map((_, i) => setTimeout(() => setShown(i + 1), 1900 + i * 240));
     return () => {
       document.documentElement.classList.remove("is-locked");
       timers.forEach(clearTimeout);
@@ -112,7 +118,14 @@ export default function AuditLog({ onResume }) {
 
   return createPortal(
     <div className="audit" role="dialog" aria-modal="true" aria-label="Session audit log">
-      <div className="audit__panel mono tf">
+      {phase === "ending" && (
+        <div className="audit__ending mono" role="status">
+          <span>terminating session</span>
+          <i aria-hidden="true" />
+          <small>revoking tokens · closing access · writing audit trail</small>
+        </div>
+      )}
+      <div className={`audit__panel mono tf ${phase === "ending" ? "is-waiting" : ""}`}>
         {/* toolbar */}
         <header className="audit__bar">
           <span className="audit__title">trace · <span className="audit__title-long">identity </span>audit log</span>
@@ -133,6 +146,15 @@ export default function AuditLog({ onResume }) {
           <span>level: <b>all</b></span>
           <span className="audit__corr">correlation id: <b>{log.corr}</b></span>
         </div>
+
+        {/* the visitor's simulated identity, as an identity platform would summarise it */}
+        <div className="audit__who">
+          <div><span>identity</span><b>visitor · guest-{log.session}</b></div>
+          <div><span>role</span><b>read-only · scope read:public</b></div>
+          <div><span>session</span><b>{done ? "terminated" : "terminating…"}</b></div>
+          <div><span>access</span><b className={done ? "is-revoked" : ""}>{done ? "revoked" : "active"}</b></div>
+        </div>
+        <p className="audit__note">simulated session log · no real authentication or personal data</p>
 
         {/* events */}
         <div className="audit__table" role="table" aria-label="Audit events">
@@ -172,14 +194,6 @@ export default function AuditLog({ onResume }) {
           <div className="audit__foot">
             <p>Thanks for visiting.</p>
             <div className="audit__actions">
-              <a
-                className="audit__hq"
-                href="hq/"
-                tabIndex={done ? 0 : -1}
-                onClick={() => track("session-audit-enter-hq", "Entered TRACE HQ from the audit log")}
-              >
-                enter TRACE HQ
-              </a>
               <button ref={btnRef} type="button" onClick={restart} disabled={!done}>
                 start a new session
               </button>

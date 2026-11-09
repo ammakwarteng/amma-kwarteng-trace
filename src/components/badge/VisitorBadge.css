@@ -259,3 +259,32 @@
 @media (prefers-reduced-motion: reduce) {
   .badge.is-reading .badge__screws i { animation: none; }
 }
+
+/* large monitors: the whole card + reader scales from the right edge (set in VisitorBadge.jsx) */
+@media (min-width: 1101px) { .badge__track { transform-origin: right bottom; } }
+
+/* physical realism: thicker card edge, deeper slot, bevelled reader, softer highlights */
+.badge__card {
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.22),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.9),
+    inset 1px 0 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.25),
+    0 1px 0 #8d8d89, 0 2px 0 #74746f, 0 3px 0 #5b5b57, 0 4px 0 #2a2a2a,
+    0 22px 30px -16px rgba(0, 0, 0, 0.95);
+}
+.badge__groove {
+  background: linear-gradient(180deg, #050505 0%, #0b0b0b 55%, var(--hw-reader) 100%);
+  box-shadow: inset 0 6px 8px -2px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+.badge__face {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 22%),
+    radial-gradient(120% 140% at 50% 0%, rgba(255, 255, 255, 0.05), transparent 60%),
+    linear-gradient(180deg, #141414, #0c0c0c);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07), inset 0 -2px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.badge__trim { box-shadow: 0 -2px 0 var(--hw-stripe), inset 0 -1px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.6); }
+/* the read head lights faintly while the stripe passes over it */
+.badge__readhead { transition: box-shadow 0.25s; }
+.badge.is-reading .badge__readhead { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.6), 0 0 10px rgba(255, 255, 255, 0.35); }

@@ -60,35 +60,24 @@ export const certifications = [
 // project; the section shows them in this order.
 export const projects = [
   {
-    name: "TRACE HQ — an IAM engineer's workday",
-    type: "simulation",
+    name: "Access request review — an IAM case study",
+    type: "case study",
     year: "2026",
-    status: "in progress",
+    status: "live",
     summary:
-      "A first-person 3D walkthrough of an IAM engineer's day at a fictional headquarters: arrive, prove who you are, get in, and process joiner, mover and leaver requests.",
+      "An interactive access-review queue: you act as the reviewer and decide three fictional access requests against least privilege, separation of duties and privileged-access policy.",
     points: [
-      "Designed a first-person walkthrough of an IAM engineer's workday, from the building entrance to the end of the shift",
-      "Built the scenes in 3D: exterior, revolving door, lobby, security checkpoint, secured corridor, elevator and an IAM workstation",
-      "Used a licensed 3D revolving-door model (CC BY 4.0, credited on the page) and turned its painted glass into real see-through glass",
-      "Modelled two-factor entry: an access-card check, then a simulated 68-point facial verification with no camera and no biometric data",
-      "Kept authentication and authorization separate: the verified employee gets the secure area but is still denied the server room because it's not in their role",
-      "Walked through joiner, mover and leaver workflows step by step, with access granted, removed and revoked, and every action recorded in an audit log",
-      "Added a cinematic mode with play, pause and replay, plus a free-walk mode for keyboard, mouse and touch",
-      "Made free walk playable: badge in, pass the face scan, and the security door only unlocks after both; then call the elevator, ride to floor 4 and sit at the workstation to work the queue",
-      "Wrote an IAM handbook that sits on the desk as a 3D book: open it to flip through the four pillars, RBAC, joiner-mover-leaver, access policies, access reviews and IAM governance mapped to ISO/IEC 27001",
+      "Designed a compact access-review tool modelled on enterprise identity governance software",
+      "Wrote three fictional requests that each test a different policy: an in-role read request, a separation-of-duties conflict, and a privileged production request",
+      "Shows each requester's role baseline and current access next to the request, so least privilege can be judged at a glance",
+      "Runs a policy check on every request: role baseline, least privilege, privileged access, separation of duties and time limits",
+      "Approve, deny or escalate, then see whether the decision is policy-aligned and why",
+      "Writes a simulated audit event for every decision, and adds it to the visitor's own session audit log at sign-out",
     ],
-    next: "Next: let visitors click through each joiner, mover and leaver step themselves instead of watching the queue run.",
-    links: [{ label: "enter the simulation", url: "hq/" }],
-    gallery: [
-      { src: "projects/hq/01.webp", caption: "Arriving at TRACE headquarters" },
-      { src: "projects/hq/02.webp", caption: "Walking through the revolving door into the lobby" },
-      { src: "projects/hq/03.webp", caption: "Presenting the access credential at the card reader" },
-      { src: "projects/hq/04.webp", caption: "Simulated facial verification: 68 / 68 landmarks, access granted" },
-      { src: "projects/hq/05.webp", caption: "The elevator to the IAM floor" },
-      { src: "projects/hq/06.webp", caption: "The IAM console: a mover request removing outdated access" },
-    ],
-    tags: ["IAM", "joiner / mover / leaver", "RBAC", "least privilege", "authentication", "audit logging", "3D", "UX/UI"],
+    demo: "access-review",
+    tags: ["IAM", "access reviews", "least privilege", "separation of duties", "PAM", "audit logging", "UX/UI"],
   },
+
   {
     name: "Active Directory home lab",
     type: "lab",

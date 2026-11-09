@@ -27,6 +27,11 @@ export default function VisitorBadge() {
 
   // travel along the reader's groove to its far end
   // (the card is bigger on laptops, so read its width from the page)
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const fit = () => setScale(window.innerWidth > 1100 ? Math.min(1.7, Math.max(1, window.innerWidth / 1400)) : 1);
+    fit(); addEventListener("resize", fit); return () => removeEventListener("resize", fit);
+  }, []);
   const max = () => {
     const t = trackRef.current;
     if (!t) return 300;
@@ -43,7 +48,7 @@ export default function VisitorBadge() {
     buzz();
     // carry on through the reader and off the screen
     const t = trackRef.current?.getBoundingClientRect();
-    setX(t ? window.innerWidth - t.left + 40 : 1200);
+    setX(t ? (window.innerWidth - t.left) / scale + 40 : 1200);
     track("visitor-badge-swiped", "Visitor badge swiped at the end of the trace");
     setTimeout(() => setLocked(true), 1100);
   };
@@ -58,7 +63,7 @@ export default function VisitorBadge() {
     unlockAudio();
     startScrape();
     e.currentTarget.setPointerCapture(e.pointerId);
-    drag.current = { start: e.clientX - x, last: e.clientX };
+    drag.current = { start: e.clientX / scale - x, last: e.clientX };
     setState("reading");
   };
   const onHover = (e) => {
@@ -70,9 +75,9 @@ export default function VisitorBadge() {
     if (!drag.current) return;
     const dx = e.clientX - drag.current.last;
     drag.current.last = e.clientX;
-    setScrapeSpeed(dx);
+    setScrapeSpeed(dx / scale);
     setTilt((t) => Math.max(-2, Math.min(2, t * 0.6 + dx * 0.25)));
-    setX(Math.max(0, Math.min(max(), e.clientX - drag.current.start)));
+    setX(Math.max(0, Math.min(max(), e.clientX / scale - drag.current.start)));
   };
   const onUp = () => {
     if (!drag.current) return;
@@ -88,7 +93,7 @@ export default function VisitorBadge() {
 
   return (
     <section className={`badge is-${state}`} aria-label="Visitor badge">
-      <div className="badge__track" ref={trackRef}>
+      <div className="badge__track" ref={trackRef} style={scale > 1 ? { transform: `scale(${scale})`, marginTop: `${(scale - 1) * 244}px` } : undefined}>
         <div className="badge__groove" aria-hidden="true">
           <span className="badge__readhead" />
         </div>

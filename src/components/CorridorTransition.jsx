@@ -50,7 +50,7 @@ export default function CorridorTransition() {
     const v = vid.current;
     if (door.current) door.current.preload = "auto";
     v.currentTime = 0;
-    v.play().catch(() => authenticate());
+    later(() => v.play().catch(() => authenticate()), 650);   // starts once the hero has faded out
   };
   const authenticate = () => {
     setProgress(1); setPhase("verifying");

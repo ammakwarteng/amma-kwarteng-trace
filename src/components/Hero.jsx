@@ -16,8 +16,8 @@ import "./HeroStage.css";
   out and the About heading and introduction fade in beside the panel. After that the page
   scrolls on normally: no scroll lock, no snapping.
   - Native scrolling only; the effect just reads the scroll position (one rAF per frame).
-  - Phones: the same idea stacked vertically (panel on top, heading and lead line under it);
-    the rest of the introduction follows below the stage.
+  - Phones: their own composition: a narrower panel with the section label beside it like a
+    caption, the heading and lead line under it; the rest of the introduction follows below.
   - Reduced motion: no pinning or scaling; the hero and About are laid out as two plain blocks,
     with the still portrait in the About panel.
 */
@@ -63,26 +63,39 @@ export default function Hero() {
       g.dx = l + S.width / 2 - P.width / 2 - (fx - 0.5) * P.width * g.k;
       g.dy = t + S.height / 2 - P.height / 2 - (fy - 0.5) * P.height * g.k;
     };
-    const update = () => {
-      raf = 0;
-      if (!g) measure();
-      const p = clamp01(-stage.current.getBoundingClientRect().top / g.D);
-      const e = ease(range(p, 0.06, 0.8));                 // the portrait's transformation
-      frame.current.style.clipPath = `inset(${g.t * e}px ${g.r * e}px ${g.b * e}px ${g.l * e}px round ${2 * e}px)`;
-      move.current.style.transform = `translate3d(${g.dx * e}px, ${g.dy * e}px, 0) scale(${1 + (g.k - 1) * e})`;
+    // q follows the scroll position with a light easing, so wheel steps and touch flicks still
+    // read as one continuous movement, in both directions
+    let q = null, last = 0;
+    const target = () => clamp01(-stage.current.getBoundingClientRect().top / g.D);
+    const render = (p) => {
+      const e = ease(range(p, 0, 0.86));                   // the portrait: one element, clipped and re-framed
+      frame.current.style.clipPath = `inset(${(g.t * e).toFixed(2)}px ${(g.r * e).toFixed(2)}px ${(g.b * e).toFixed(2)}px ${(g.l * e).toFixed(2)}px round ${(2 * e).toFixed(2)}px)`;
+      move.current.style.transform = `translate3d(${(g.dx * e).toFixed(2)}px, ${(g.dy * e).toFixed(2)}px, 0) scale(${(1 + (g.k - 1) * e).toFixed(4)})`;
       stage.current.style.setProperty("--e", e.toFixed(4));
-      const h = 1 - range(p, 0, 0.3);                     // hero type leaves first
+      const h = 1 - ease(range(p, 0, 0.38));               // hero type recedes as scrolling begins
       heroLayer.current.style.opacity = h.toFixed(3);
-      heroLayer.current.style.transform = `translate3d(0, ${(-40 * (1 - h)).toFixed(1)}px, 0)`;
-      const off = h === 0;
+      heroLayer.current.style.transform = `translate3d(0, ${(-36 * (1 - h)).toFixed(1)}px, 0) scale(${(1 - 0.04 * (1 - h)).toFixed(4)})`;
+      const off = h < 0.01;
       if (off !== hidden) { hidden = off; heroLayer.current.style.visibility = off ? "hidden" : ""; }   // its links leave the tab order
-      const a = ease(range(p, 0.5, 0.92));                 // then About arrives beside the panel
+      const a = ease(range(p, 0.42, 0.96));                // About arrives while the portrait settles
       aboutLayer.current.style.opacity = a.toFixed(3);
       aboutLayer.current.style.setProperty("--a", a.toFixed(3));
     };
+    const update = (now) => {
+      raf = 0;
+      if (!g) measure();
+      const p = target();
+      const dt = last ? Math.min(64, now - last) : 16.7;
+      last = now;
+      if (q === null || Math.abs(p - q) > 0.6) q = p;     // first paint or a jump (menu link): no lag
+      else q += (p - q) * (1 - Math.pow(0.78, dt / 16.7));
+      if (Math.abs(p - q) < 0.0008) q = p;
+      render(q);
+      if (q !== p) raf = requestAnimationFrame(update); else last = 0;
+    };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
     const onResize = () => { g = null; onScroll(); };
-    update();
+    onScroll();
     addEventListener("scroll", onScroll, { passive: true });
     addEventListener("resize", onResize);
     const ro = new ResizeObserver(onResize);
@@ -124,8 +137,8 @@ export default function Hero() {
           </div>
 
           <section className="stage__about" ref={aboutLayer} aria-labelledby="about-title">
+            <p className="stage__label trail__hop mono">01 · about</p>
             <div className="stage__text">
-              <p className="trail__hop mono">01 · about</p>
               <h2 className="stage__h" id="about-title">about</h2>
               <AboutText to={narrow ? 1 : undefined} />
             </div>

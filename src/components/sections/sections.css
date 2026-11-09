@@ -373,3 +373,6 @@
 @media (max-width: 760px) {
   .community__row { grid-template-columns: minmax(0, 1fr); }
 }
+
+.project__try { padding: 0; border: 0; border-bottom: 1px solid var(--white-faint); background: none; color: var(--white); font: inherit; font-size: 15px; cursor: pointer; }
+.project__try:hover { border-bottom-color: var(--white); }

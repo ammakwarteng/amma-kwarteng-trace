@@ -186,18 +186,6 @@ html.is-locked, html.is-locked body { overflow: hidden; }
 .audit__foot button:hover { background: transparent; color: #ffffff; }
 .audit__foot button:disabled { opacity: 0.4; cursor: default; }
 .audit__actions { display: flex; flex-wrap: wrap; gap: 8px; }
-/* second action: a quieter outline button into the TRACE HQ simulation */
-.audit__hq {
-  display: inline-flex; align-items: center;
-  padding: 9px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 999px;
-  color: #ffffff;
-  text-decoration: none;
-  transition: border-color 0.2s;
-}
-.audit__hq:hover { border-color: #ffffff; }
-.audit__hq:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
 .audit__foot button:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
 
 /* narrower laptops: drop the level column */
@@ -243,3 +231,27 @@ html.is-locked, html.is-locked body { overflow: hidden; }
   .audit, .audit__panel, .audit__row { animation: none; }
   .audit__cursor, .audit__live i { animation: none; }
 }
+
+/* the terminating moment before the log appears */
+.audit__ending { position: fixed; inset: 0; z-index: 3; display: grid; place-content: center; justify-items: center; gap: 14px; color: #f2f2f0; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; animation: audit-end 1.5s ease forwards; }
+.audit__ending i { width: 180px; height: 1px; background: rgba(255, 255, 255, 0.18); position: relative; overflow: hidden; }
+.audit__ending i::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #a7adb0, #f2f2f0); transform-origin: left; animation: audit-bar 1.2s cubic-bezier(0.6, 0, 0.3, 1) forwards; }
+.audit__ending small { font-size: 10px; letter-spacing: 0.1em; text-transform: none; color: #80848a; }
+@keyframes audit-bar { from { transform: scaleX(0); } }
+@keyframes audit-end { 0% { opacity: 0; } 15%, 80% { opacity: 1; } 100% { opacity: 0; } }
+.audit__panel.is-waiting { visibility: hidden; }
+
+/* identity summary */
+.audit__who { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0 16px; border: 1px solid var(--log-line); border-radius: 6px; background: var(--log-panel); }
+.audit__who > div { display: grid; gap: 3px; padding: 10px 12px; border-left: 1px solid var(--log-line); min-width: 0; }
+.audit__who > div:first-child { border-left: 0; }
+.audit__who span { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--log-ink-3); }
+.audit__who b { font-weight: 400; color: var(--log-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color 0.4s; }
+.audit__who b.is-revoked { color: var(--log-ink-2); }
+.audit__note { margin: 8px 16px 12px; font-size: 10.5px; color: var(--log-ink-3); }
+@media (max-width: 640px) {
+  .audit__who { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .audit__who > div:nth-child(3) { border-left: 0; }
+  .audit__who > div:nth-child(n + 3) { border-top: 1px solid var(--log-line); }
+}
+@media (prefers-reduced-motion: reduce) { .audit__ending { display: none; } }

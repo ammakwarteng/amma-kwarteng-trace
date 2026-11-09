@@ -44,9 +44,9 @@
 
 /* phones: compact centred stack, no giant gaps */
 @media (max-width: 760px) {
-  .hero--editorial { min-height: 0; height: auto; min-height: 100svh; }
+  .hero--editorial { height: auto; min-height: 0; }   /* fit the content: no empty band under the links */
   .hero--editorial .hero__word { font-size: 31vw; position: relative; left: auto; top: auto; transform: none; }
-  .hero--editorial .hero__stack { gap: 14px; padding-top: calc(96px + env(safe-area-inset-top, 0px)); padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)); }
+  .hero--editorial .hero__stack { gap: 14px; padding-top: calc(96px + env(safe-area-inset-top, 0px)); padding-bottom: 56px; }
   .hero--editorial .hero__intro { position: static; left: auto; right: auto; bottom: auto; }
   .hero--editorial .hero__headline { font-size: clamp(30px, 9vw, 40px); }
   .hero--editorial .hero__player { position: static; left: auto; bottom: auto; }

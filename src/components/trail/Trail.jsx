@@ -64,7 +64,8 @@ export default function Trail({ sections }) {
         return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top, prevBottom };
       });
       const w = wrap.clientWidth, h = wrap.scrollHeight;
-      let x = w / 2, y = 0;
+      // phones: start straight above the first node; laptops: from the hero's centred scroll cue
+      let x = w < 761 && pts[0] ? pts[0].x : w / 2, y = 0;
       let d = `M ${x} ${y}`;
       pts.forEach((p) => {
         // orthogonal hop: down, across, down, with small chamfered corners.
@@ -74,6 +75,7 @@ export default function Trail({ sections }) {
           const lo = p.prevBottom + 22, hi = p.y - 30;
           midY = lo <= hi ? (lo + hi) / 2 : hi;
         }
+        if (Math.abs(p.x - x) < 1) { d += ` L ${p.x} ${p.y}`; x = p.x; y = p.y; return; }   // same column: straight down
         const c = 14 * Math.sign(p.x - x || 1);
         d += ` L ${x} ${midY - 14} L ${x + c} ${midY} L ${p.x - c} ${midY} L ${p.x} ${midY + 14} L ${p.x} ${p.y}`;
         x = p.x; y = p.y;

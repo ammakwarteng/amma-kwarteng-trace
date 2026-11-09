@@ -13,13 +13,21 @@ import { heroMedia as M } from "../data/site.js";
 */
 export default function HeroMedia() {
   const [reduce, setReduce] = useState(false);
-  useEffect(() => { setReduce(matchMedia("(prefers-reduced-motion: reduce)").matches); }, []);
+  const [narrow, setNarrow] = useState(() => typeof window !== "undefined" && matchMedia("(max-width: 760px)").matches);
+  useEffect(() => {
+    setReduce(matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const mq = matchMedia("(max-width: 760px)"), on = () => setNarrow(mq.matches);
+    mq.addEventListener("change", on); return () => mq.removeEventListener("change", on);
+  }, []);
+  // phones use the tall still portrait until a 9:16 video exists (a wide clip crops too tightly)
+  const useVideo = M.video && !reduce && !(narrow && M.imageMobile && !M.videoMobile);
   const style = { "--focus": M.focus, "--focus-m": M.focusMobile };
   const hasPhoto = !!(M.image || M.poster);
   return (
     <div className={`hmedia ${hasPhoto ? "" : "is-empty"} ${M.glass ? "has-glass" : ""}`} style={style} aria-hidden="true">
-      {M.video && !reduce ? (
+      {useVideo ? (
         <video className="hmedia__photo" autoPlay muted loop playsInline preload="metadata" poster={M.poster || M.image || undefined}>
+          {M.videoMobile && <source media="(max-width: 760px)" src={M.videoMobile} type="video/mp4" />}
           <source src={M.video} type="video/mp4" />
         </video>
       ) : hasPhoto ? (

@@ -26,13 +26,13 @@ export const links = [
 // previous hero layout (fully reversible).
 export const heroMedia = {
   layout: "editorial",
-  image: "",            // e.g. "hero/portrait.jpg"   (2400×1600 or larger, black and white)
+  image: "hero/portrait.jpg",   // e.g. "hero/portrait.jpg"   (2400×1600 or larger, black and white)
   imageMobile: "",      // e.g. "hero/portrait-mobile.jpg" (1080×1920, portrait crop)
   video: "",            // e.g. "hero/portrait.mp4"   (muted, 6-12 s seamless loop, H.264, under ~4 MB)
   poster: "",           // e.g. "hero/portrait-poster.jpg" (first frame of the video)
-  glass: true,
-  focus: "50% 35%",     // which part of the photo stays in view on wide screens
-  focusMobile: "50% 30%",
+  glass: false,         // the ribbed glass is already in the photograph
+  focus: "60% 30%",     // which part of the photo stays in view on wide screens
+  focusMobile: "68% 22%",
 };
 
 // Professional communities, shown in the community section. Add one only

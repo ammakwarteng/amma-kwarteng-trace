@@ -96,3 +96,22 @@
   .stage.is-still .stage__about { height: 100svh; }
   .stage.is-still .stage__slot img { object-position: 68% 42%; }
 }
+
+/* About opens and closes from its title, like the sections below it */
+.stage__toggle { gap: clamp(14px, 2vw, 32px); letter-spacing: inherit; line-height: inherit; }
+.stage__about .trail__icon { transition: transform 0.35s var(--ease), opacity 0.2s; }
+.stage__about.is-open .trail__icon { transform: rotate(45deg); opacity: 1; }
+.stage__hint { margin: -4px 0 0; font-size: 11px; }
+.stage__about.is-open .stage__hint { color: rgba(255, 255, 255, 0.3); }
+.stage__more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--ease); }
+.stage__about.is-open .stage__more { grid-template-rows: 1fr; }
+.stage__more-inner { min-height: 0; overflow: hidden; }
+.stage__more-inner .about__text { padding-top: 6px; }
+/* phones: the second paragraph below the stage opens with it */
+.about-more { display: grid; grid-template-rows: 0fr; padding-top: 0; transition: grid-template-rows 0.5s var(--ease); }
+.about-more.is-open { grid-template-rows: 1fr; }
+.about-more__inner { min-height: 0; overflow: hidden; }
+.about-more.is-open .about-more__inner { padding-top: 22px; }
+@media (prefers-reduced-motion: reduce) {
+  .stage__more, .about-more, .stage__about .trail__icon { transition: none; }
+}

@@ -39,6 +39,8 @@ export default function Hero() {
   const aboutLayer = useRef(null);
   const [narrow, setNarrow] = useState(() => matchMedia(NARROW).matches);
   const [still] = useState(() => matchMedia("(prefers-reduced-motion: reduce)").matches);
+  // About opens and closes from its title, like the sections below it (starts closed)
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   useEffect(() => {
     const m = matchMedia(NARROW);
@@ -140,11 +142,25 @@ export default function Hero() {
             </div>
           </div>
 
-          <section className="stage__about" ref={aboutLayer} aria-labelledby="about-title">
+          <section className={`stage__about ${aboutOpen ? "is-open" : ""}`} ref={aboutLayer} aria-labelledby="about-title">
             <p className="stage__label trail__hop mono">01 · about</p>
             <div className="stage__text">
-              <h2 className="stage__h" id="about-title">about</h2>
-              <AboutText to={narrow ? 1 : undefined} />
+              <h2 className="stage__h" id="about-title">
+                <button
+                  type="button"
+                  className="trail__toggle stage__toggle"
+                  aria-expanded={aboutOpen}
+                  aria-controls={narrow ? "about-panel about-panel-rest" : "about-panel"}
+                  onClick={() => setAboutOpen((v) => !v)}
+                >
+                  <span>about</span>
+                  <span className="trail__icon" aria-hidden="true" />
+                </button>
+              </h2>
+              <p className="trail__hint mono stage__hint" aria-hidden="true">{aboutOpen ? "tap the title to close" : "tap to open"}</p>
+              <div className="stage__more" id="about-panel" {...(aboutOpen ? {} : { inert: "" })}>
+                <div className="stage__more-inner"><AboutText to={narrow ? 1 : undefined} /></div>
+              </div>
             </div>
             <div className="stage__slot" ref={slot} aria-hidden="true">
               {still && <img src={heroMedia.poster || heroMedia.image} alt="" decoding="async" />}
@@ -158,8 +174,8 @@ export default function Hero() {
       {/* phones: the rest of the introduction follows the stage (the roadmap is off for now;
           it is still in sections/About.jsx and content.js) */}
       {narrow && (
-        <div className="about-more">
-          <AboutText from={1} />
+        <div className={`about-more ${aboutOpen ? "is-open" : ""}`} id="about-panel-rest" {...(aboutOpen ? {} : { inert: "" })}>
+          <div className="about-more__inner"><AboutText from={1} /></div>
         </div>
       )}
     </>

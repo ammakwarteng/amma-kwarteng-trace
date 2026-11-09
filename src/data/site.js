@@ -18,6 +18,23 @@ export const links = [
   { label: "github", url: "https://github.com/ammakwarteng" },
 ];
 
+// Homepage hero media (the frosted-glass editorial portrait).
+// Put the final photograph in public/hero/ and set its path here, e.g. image: "hero/portrait.jpg".
+// Optional: a separate crop for phones, and a short muted loop (Higgsfield export) with a poster frame.
+// glass: true lays a CSS frosted, vertically ribbed glass over the photo; set it to false if the
+// glass is already part of the photograph. layout: "editorial" = centred hero; "classic" = the
+// previous hero layout (fully reversible).
+export const heroMedia = {
+  layout: "editorial",
+  image: "",            // e.g. "hero/portrait.jpg"   (2400×1600 or larger, black and white)
+  imageMobile: "",      // e.g. "hero/portrait-mobile.jpg" (1080×1920, portrait crop)
+  video: "",            // e.g. "hero/portrait.mp4"   (muted, 6-12 s seamless loop, H.264, under ~4 MB)
+  poster: "",           // e.g. "hero/portrait-poster.jpg" (first frame of the video)
+  glass: true,
+  focus: "50% 35%",     // which part of the photo stays in view on wide screens
+  focusMobile: "50% 30%",
+};
+
 // Professional communities, shown in the community section. Add one only
 // once joined; add events under a community only once attended.
 export const communities = [

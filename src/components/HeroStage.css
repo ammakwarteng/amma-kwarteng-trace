@@ -2,9 +2,9 @@
    Hero.jsx writes the clip, the portrait's position, and the opacity of the two type layers;
    everything else is laid out here. */
 
-.stage { position: relative; height: calc(100svh + 90svh); background: var(--black); }
+.stage { position: relative; height: calc(100svh + 75svh); background: var(--black); }
 .stage__pin { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; }
-.stage__anchor { position: absolute; left: 0; top: 90svh; width: 1px; height: 1px; scroll-margin-top: 0; }
+.stage__anchor { position: absolute; left: 0; top: 75svh; width: 1px; height: 1px; scroll-margin-top: 0; }
 
 /* the portrait frame */
 .stage .hmedia { will-change: clip-path; }
@@ -36,21 +36,23 @@
   opacity: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  grid-template-areas: ". slot" "label slot" "text slot";
   column-gap: clamp(40px, 6vw, 120px);
   padding:
     clamp(72px, 12svh, 128px) max(var(--gutter), env(safe-area-inset-right, 0px))
     clamp(40px, 8svh, 96px) max(var(--gutter), env(safe-area-inset-left, 0px));
 }
+.stage__label { grid-area: label; margin: 0 0 16px; color: var(--white-dim); transform: translate3d(0, calc((1 - var(--a, 1)) * 28px), 0); }
 .stage__text {
-  align-self: end;
+  grid-area: text;
   display: grid;
   gap: 16px;
   max-width: 40rem;
   transform: translate3d(0, calc((1 - var(--a, 1)) * 28px), 0);
 }
-.stage__text .trail__hop { margin: 0; color: var(--white-dim); }
 .stage__h { margin: 0 0 clamp(6px, 2svh, 22px); font-size: min(10vw, 196px); font-weight: 400; letter-spacing: -0.075em; line-height: 0.85; }
-.stage__slot { position: relative; min-height: 0; }
+.stage__slot { grid-area: slot; position: relative; min-height: 0; }
 
 /* the roadmap continues the About section right after the stage */
 .about-more {
@@ -60,20 +62,23 @@
 }
 .about__text--rest p { font-size: 17px; line-height: 1.5; letter-spacing: -0.02em; color: var(--white-dim); }
 
-/* phones: panel on top, heading and lead line beneath it */
+/* phones: a narrower panel set to the right, the section label running up beside it like a
+   caption, then the heading and lead line full width beneath it. Shorter scroll distance. */
 @media (max-width: 760px) {
-  .stage { height: calc(100svh + 70svh); }
-  .stage__anchor { top: 70svh; }
+  .stage { height: calc(100svh + 60svh); }
+  .stage__anchor { top: 60svh; }
   .stage .hero__word { font-size: clamp(110px, 32vw, 180px); }
   .stage__about {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3.2fr);
     grid-template-rows: minmax(0, 1fr) auto;
-    row-gap: 20px;
-    padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(18px + env(safe-area-inset-bottom, 0px));
+    grid-template-areas: "label slot" "text text";
+    column-gap: 14px;
+    row-gap: 22px;
+    padding: calc(28px + env(safe-area-inset-top, 0px)) 16px calc(22px + env(safe-area-inset-bottom, 0px));
   }
-  .stage__slot { grid-row: 1; }
-  .stage__text { grid-row: 2; gap: 10px; }
-  .stage__h { font-size: 20vw; margin: 0 0 4px; }
+  .stage__label { align-self: end; justify-self: start; margin: 0; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+  .stage__text { gap: 10px; }
+  .stage__h { font-size: 19vw; margin: 0 0 4px; }
   .about-more { gap: 36px; padding-top: 22px; padding-left: 16px; padding-right: 16px; }
 }
 
@@ -83,7 +88,8 @@
 .stage.is-still .hmedia { bottom: auto; height: 100svh; }
 .stage.is-still .hero.hero--editorial { position: relative; inset: auto; height: 100svh; }
 .stage.is-still .stage__about { position: relative; inset: auto; opacity: 1; height: min(100svh, 920px); }
-.stage.is-still .stage__text { transform: none; }
+.stage.is-still .stage__text, .stage.is-still .stage__label { transform: none; }
+@media (max-width: 760px) { .stage.is-still .stage__label { transform: rotate(180deg); } }
 .stage.is-still .stage__slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, 50% 38%); filter: grayscale(1) contrast(1.06); }
 .stage.is-still .stage__anchor { top: 100svh; }
 @media (max-width: 760px) {

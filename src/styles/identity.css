@@ -69,18 +69,33 @@
 .idl .st.is-secure { color: var(--secure); }
 .idl .st.is-threat { color: var(--threat); }
 
-/* ---------- Section label used by the About stage ---------- */
+/* ---------- Section headings: hop labels as records ---------- */
 .trail__hop { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+.trail__hop .st { color: var(--white-faint); transition: color 0.3s, opacity 0.3s; }
+.trail__sec.is-reached .trail__hop .st { color: var(--white); }
+/* opening a section locks a frame onto its heading */
+.trail__h.tf { --tf-inset: -6px -18px -10px -18px; --tf-from: -22px -34px -26px -34px; }
+.trail__sec.is-open .trail__h.tf-lock::before { inset: var(--tf-inset); opacity: 1; }
+@media (max-width: 700px) {
+  .trail__h.tf { --tf-inset: -4px -10px -8px -10px; --tf-from: -16px -22px -20px -22px; }
+}
 
 /* ---------- Squares instead of decorative circles ---------- */
+.road__dot { border-radius: 0; width: 11px; height: 11px; }
 .status__dot { border-radius: 0; width: 6px; height: 6px; }
 .resume__dot { border-radius: 0; }
+.project__dot { border-radius: 0; }
+.certs__row.is-studying .certs__status::before,
+.cert.is-studying .cert__status::before { border-radius: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .tf::before, .tf-hover::before { transition: none; }
   .tf-scan.is-scanning::after { animation: none; }
 }
 
+/* the heading frame hugs the title, not the whole row */
+.trail__h.tf { justify-self: start; }
+.trail__sec.is-right .trail__h.tf { justify-self: end; }
 
 /* ---------- Encrypted resume: framed code field ---------- */
 .resume__label.idl { display: block; letter-spacing: 0.14em; }
@@ -90,3 +105,25 @@
 .resume__box input:focus { border-color: rgba(255, 255, 255, 0.3); }
 .resume__box.tf--threat input { border-color: rgba(255, 43, 43, 0.35); }
 .resume__box::before { z-index: 1; }
+
+/* ---------- Cards read as records ---------- */
+.project { border-radius: 2px; --tf-inset: -1px; --tf-from: -9px; }
+.project__meta .project__status.idl { gap: 8px; color: var(--white-faint); }
+.project__meta span.project__status.idl b { color: var(--white-dim); }
+.cert { border-radius: 2px; --tf-inset: -1px; --tf-from: -9px; }
+.cert.is-earned { border-color: rgba(255, 255, 255, 0.16); } /* the frame marks it as verified */
+.cert__top.idl { font-size: 10px; }
+.community__badge.idl { padding: 0; border: 0; border-radius: 0; font-size: 11px; letter-spacing: 0.14em; color: var(--white-faint); }
+
+/* ---------- section spacing (the tracing line has been removed) ---------- */
+.trail { padding-top: clamp(48px, 9vh, 96px); padding-bottom: clamp(48px, 10vh, 120px); }
+.trail__head-row { gap: 0; }
+@media (max-width: 760px) {
+  .trail { padding-top: 40px; }
+  .trail__sec { min-height: 0; padding-top: 28px; padding-bottom: 28px; }
+  .trail__sec.is-open { min-height: 0; }
+}
+@media (min-width: 761px) {
+  .trail__sec { min-height: 26vh; }
+  .trail__sec.is-open { min-height: 0; padding-bottom: 72px; }
+}

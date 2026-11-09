@@ -59,49 +59,27 @@ export default function Resume() {
     }
   }
 
+  if (state === "granted") {
+    return (
+      <div className="resume">
+        <p className="resume__label idl"><i className="resume__dot is-open" aria-hidden="true" />employer access · <span className="st is-secure">access granted</span></p>
+        <p className="resume__lead">thanks for your interest. my resume is ready.</p>
+        <div className="resume__actions">
+          <a className="resume__btn" href={url} target="_blank" rel="noopener">view resume</a>
+          <a className="resume__btn resume__btn--ghost" href={url} download="Amma-Kwarteng-Resume.pdf">download pdf</a>
+        </div>
+      </div>
+    );
+  }
+
   const msg = {
     checking: "verifying…",
     denied: "access denied: that code didn't work. check it and try again.",
     unavailable: "the resume couldn't be loaded right now. please try again later.",
   }[state];
 
-  // the document: an abstract sheet whose lines are redaction bars while it is locked;
-  // they turn into readable silver lines once the code is accepted. No real content is shown.
-  const LINES = [62, 38, 0, 88, 92, 74, 0, 46, 90, 84, 58, 0, 40, 86, 80, 66, 0, 52, 88, 70];
-  const doc = (
-    <figure className="rs__doc" aria-hidden="true">
-      <div className="rs__sheet tf tf--sm">
-        <p className="rs__doc-head mono"><span>amma kwarteng</span><span>resume · pdf</span></p>
-        <div className="rs__lines">
-          {LINES.map((w, i) => w ? <span key={i} style={{ "--w": `${w}%`, "--d": `${i * 28}ms` }} /> : <i key={i} />)}
-        </div>
-        <p className={`rs__stamp mono ${state === "granted" ? "is-open" : state === "denied" ? "is-denied" : ""}`}>
-          {state === "granted" ? "access granted" : state === "denied" ? "access denied" : "restricted · aes-256"}
-        </p>
-      </div>
-    </figure>
-  );
-
-  if (state === "granted") {
-    return (
-      <div className="rs is-granted">
-        {doc}
-        <div className="resume rs__panel">
-          <p className="resume__label idl"><i className="resume__dot is-open" aria-hidden="true" />employer access · <span className="st is-secure">access granted</span></p>
-          <p className="resume__lead">thanks for your interest. my resume is ready.</p>
-          <div className="resume__actions">
-            <a className="resume__btn" href={url} target="_blank" rel="noopener">view resume</a>
-            <a className="resume__btn resume__btn--ghost" href={url} download="Amma-Kwarteng-Resume.pdf">download pdf</a>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={`rs is-${state}`}>
-      {doc}
-    <div className="resume rs__panel">
+    <div className="resume">
       <p className="resume__label idl">
         <i className="resume__dot" aria-hidden="true" />employer access ·{" "}
         <span className={`st ${state === "denied" ? "is-threat" : ""}`}>
@@ -132,7 +110,6 @@ export default function Resume() {
         {msg || " "}
       </p>
       <p className="resume__request">no code? request one: <EmailLink variant="full" /></p>
-    </div>
     </div>
   );
 }

@@ -1,25 +1,22 @@
 import { skills } from "../../data/content.js";
 import "./sections.css";
 
-// 04 · Skills as a typographic index: one row per category, the skills set inline,
-// and the proof for them as a footnote.
+// Skills grouped by area, each with where it was used.
 export default function Skills() {
   return (
-    <dl className="sk">
+    <div className="skills">
       {skills.map((s, n) => (
-        <div key={s.group} className="sk__row">
-          <dt className="sk__group">
-            <span className="sk__no mono">SKL-{String(n + 1).padStart(2, "0")}</span>
-            <span className="sk__name">{s.group}</span>
-          </dt>
-          <dd className="sk__items">
-            <ul>
-              {s.items.map((i) => <li key={i}>{i}</li>)}
-            </ul>
-            <p className="sk__proof mono">proof · {s.proof}</p>
-          </dd>
-        </div>
+        <section key={s.group} className="skills__group" aria-label={s.group}>
+          <div className="skills__head">
+            <span className="idl"><b>SKL-{String(n + 1).padStart(2, "0")}</b> · <span className="st">proven</span></span>
+            <h3 className="skills__name">{s.group}</h3>
+            <p className="skills__proof mono">proof · {s.proof}</p>
+          </div>
+          <ul className="skills__items">
+            {s.items.map((i) => <li key={i} className="mono">{i}</li>)}
+          </ul>
+        </section>
       ))}
-    </dl>
+    </div>
   );
 }

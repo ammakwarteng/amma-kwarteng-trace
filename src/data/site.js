@@ -59,6 +59,7 @@ export const volunteering = [];
 // real content; sections that are not ready stay hidden everywhere.
 export const navItems = [
   { id: "about", label: "about", ready: true },
+  { id: "roadmap", label: "roadmap", ready: true },
   { id: "portfolio", label: "portfolio", ready: false },
   { id: "projects", label: "projects", ready: true },
   { id: "skills", label: "skills", ready: true },

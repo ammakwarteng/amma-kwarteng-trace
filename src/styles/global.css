@@ -98,10 +98,4 @@ a { color: inherit; }
 }
 
 /* copyright line at the very bottom */
-.site-footer {
-  padding: 0 max(var(--gutter), env(safe-area-inset-right, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)) max(var(--gutter), env(safe-area-inset-left, 0px));
-  text-align: center;
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: var(--white-faint);
-}
+

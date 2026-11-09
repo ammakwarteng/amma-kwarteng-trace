@@ -1,44 +1,35 @@
 import Header from "./components/Header.jsx";
 import Loader from "./components/loader/Loader.jsx";
 import Hero from "./components/Hero.jsx";
-import Trail from "./components/trail/Trail.jsx";
-import EmailLink from "./components/EmailLink.jsx";
+import Section from "./components/archive/Section.jsx";
+import Roadmap from "./components/archive/Roadmap.jsx";
+import Folio from "./components/archive/Folio.jsx";
+import { Contact, Colophon } from "./components/archive/Colophon.jsx";
 import Certifications from "./components/sections/Certifications.jsx";
 import Resume from "./components/sections/Resume.jsx";
 import Projects from "./components/sections/Projects.jsx";
 import Skills from "./components/sections/Skills.jsx";
 import Community from "./components/sections/Community.jsx";
 import Volunteer from "./components/sections/Volunteer.jsx";
-import { navItems, links } from "./data/site.js";
+import { navItems, communities, volunteering } from "./data/site.js";
+import { roadmap, projects, skills, certifications } from "./data/content.js";
 
-// Each section that is ready (see navItems in site.js). About is part of the hero stage
-// (Hero.jsx), so the numbered sections below it start at 02.
-const sections = navItems.filter((item) => item.id !== "about").map((item) => ({
-  ...item,
-  body:
-    item.id === "projects" ? (
-      <Projects />
-    ) : item.id === "skills" ? (
-      <Skills />
-    ) : item.id === "certifications" ? (
-      <Certifications />
-    ) : item.id === "community" ? (
-      <Community />
-    ) : item.id === "volunteer" ? (
-      <Volunteer />
-    ) : item.id === "resume" ? (
-      <Resume />
-    ) : item.id === "contact" ? (
-      <div className="trail__contact">
-        <EmailLink variant="full" />
-        <ul className="trail__links">
-          {links.map((l) => (
-            <li key={l.label}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a></li>
-          ))}
-        </ul>
-      </div>
-    ) : null,
-}));
+/*
+  TRACE — the living archive. The hero stage (Hero.jsx) carries 01 · about; every section
+  after it is an always-open editorial section (archive/Section.jsx), numbered in menu order.
+*/
+const shownCerts = certifications.filter((c) => ["earned", "studying", "next"].includes(c.status)).length;
+const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const SECTIONS = {
+  roadmap: { title: "iam roadmap", kicker: `progression · ${count(roadmap.length, "stage", "stages")}`, body: <Roadmap /> },
+  projects: { title: "projects", kicker: `case files · ${count(projects.length, "entry", "entries")}`, body: <Projects /> },
+  skills: { title: "skills", kicker: `index · ${count(skills.length, "category", "categories")}`, body: <Skills /> },
+  certifications: { title: "certifications", kicker: `credential register · ${count(shownCerts, "record", "records")}`, body: <Certifications /> },
+  community: { title: "community", kicker: `directory · ${count(communities.length, "membership", "memberships")}`, body: <Community /> },
+  volunteer: { title: "volunteer", kicker: `directory · ${count(volunteering.length, "role", "roles")}`, body: <Volunteer /> },
+  resume: { title: "resume", kicker: "restricted document", body: <Resume /> },
+  contact: { title: "contact", kicker: "colophon", body: <Contact /> },
+};
 
 export default function App() {
   return (
@@ -48,9 +39,16 @@ export default function App() {
       <Header />
       <main>
         <Hero />
-        <Trail sections={sections} start={2} />
+        <div className="archive">
+          {navItems.map((item, i) => {
+            const s = SECTIONS[item.id];
+            if (!s) return null;
+            return <Section key={item.id} id={item.id} n={i + 1} label={item.label} kicker={s.kicker} title={s.title}>{s.body}</Section>;
+          })}
+        </div>
       </main>
-      <footer className="site-footer mono">© {new Date().getFullYear()} amma kwarteng. all rights reserved.</footer>
+      <Colophon />
+      <Folio />
     </>
   );
 }

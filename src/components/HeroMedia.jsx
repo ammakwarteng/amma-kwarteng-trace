@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { playInline, playOnFirstGesture, prepareInline } from "../inlineVideo.js";
 import { heroMedia as M } from "../data/site.js";
 
 /*
@@ -13,21 +14,26 @@ import { heroMedia as M } from "../data/site.js";
 */
 export default function HeroMedia() {
   const [reduce, setReduce] = useState(false);
-  const [narrow, setNarrow] = useState(() => typeof window !== "undefined" && matchMedia("(max-width: 760px)").matches);
+  const vref = useRef(null);
+  useEffect(() => { setReduce(matchMedia("(prefers-reduced-motion: reduce)").matches); }, []);
+  // the Higgsfield portrait loop plays on every screen size (reduced motion: still image)
+  const useVideo = !!M.video && !reduce;
+  // start it explicitly: Safari only autoplays when `muted` is an attribute on the element itself
   useEffect(() => {
-    setReduce(matchMedia("(prefers-reduced-motion: reduce)").matches);
-    const mq = matchMedia("(max-width: 760px)"), on = () => setNarrow(mq.matches);
-    mq.addEventListener("change", on); return () => mq.removeEventListener("change", on);
-  }, []);
-  // phones use the tall still portrait until a 9:16 video exists (a wide clip crops too tightly)
-  const useVideo = M.video && !reduce && !(narrow && M.imageMobile && !M.videoMobile);
+    const v = vref.current; if (!useVideo || !v) return;
+    prepareInline(v);
+    let off = () => {};
+    const go = () => playInline(v).catch(() => { off = playOnFirstGesture(v); });
+    if (v.readyState >= 2) go(); else v.addEventListener("loadeddata", go, { once: true });
+    v.load();
+    return () => off();
+  }, [useVideo]);
   const style = { "--focus": M.focus, "--focus-m": M.focusMobile };
   const hasPhoto = !!(M.image || M.poster);
   return (
     <div className={`hmedia ${hasPhoto ? "" : "is-empty"} ${M.glass ? "has-glass" : ""}`} style={style} aria-hidden="true">
       {useVideo ? (
-        <video className="hmedia__photo" autoPlay muted loop playsInline preload="metadata" poster={M.poster || M.image || undefined}>
-          {M.videoMobile && <source media="(max-width: 760px)" src={M.videoMobile} type="video/mp4" />}
+        <video ref={vref} className="hmedia__photo hmedia__video" autoPlay muted loop playsInline preload="auto" poster={M.poster || M.image || undefined}>
           <source src={M.video} type="video/mp4" />
         </video>
       ) : hasPhoto ? (

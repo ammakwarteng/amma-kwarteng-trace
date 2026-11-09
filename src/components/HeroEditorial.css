@@ -74,3 +74,8 @@
   .trail__sec .trail__h.tf { --tf-inset: -4px -8px -8px -3px; --tf-from: -12px -18px -16px -8px; }
   .trail__sec.is-right .trail__h.tf { --tf-inset: -4px -3px -8px -8px; --tf-from: -12px -8px -16px -18px; }
 }
+
+/* phones: the wide portrait clip is framed so her face stays in view */
+@media (max-width: 760px) {
+  .hero--editorial .hmedia__video { object-position: 68% 42%; transform: none; }
+}

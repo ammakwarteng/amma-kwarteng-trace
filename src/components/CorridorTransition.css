@@ -1,5 +1,5 @@
 /* The cinematic transition: a full-viewport layer over the page, never a stacked section */
-.cinema-spacer { height: 100svh; }                 /* scroll room after the hero */
+.cinema-spacer { height: 0; }   /* no gap: the layer starts from a scroll inside the hero */
 .cinema-spacer.is-collapsed { height: 0; }
 html.is-cinema, html.is-cinema body { overflow: hidden; overscroll-behavior: none; }
 
@@ -29,3 +29,6 @@ html.is-cinema, html.is-cinema body { overflow: hidden; overscroll-behavior: non
 @keyframes cinema-row { from { opacity: 0; transform: translateY(4px); } }
 @keyframes cinema-blink { 50% { opacity: 0.2; } }
 @media (max-width: 760px) { .cinema__row { font-size: 10px; } }
+
+/* autoplay refused (e.g. Low Power Mode): one tap continues the sequence */
+.cinema__tap { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 12px 20px; border: 1px solid rgba(255, 255, 255, 0.5); background: rgba(10, 10, 10, 0.6); color: var(--white); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }

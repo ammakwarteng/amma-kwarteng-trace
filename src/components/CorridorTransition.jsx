@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { leaveTrace } from "../trace.js";
 import { corridorMedia } from "../data/site.js";
+import { playInline, prepareInline } from "../inlineVideo.js";
 import "./CorridorTransition.css";
 
 /*
@@ -24,6 +25,7 @@ export default function CorridorTransition() {
   const [show, setShow] = useState(false);       // the full-screen layer is visible
   const [progress, setProgress] = useState(0);
   const [lineX, setLineX] = useState("50%");
+  const [needTap, setNeedTap] = useState(false);   // autoplay refused: ask for one tap
   const timers = useRef([]);
   const phaseRef = useRef(phase); phaseRef.current = phase;
 
@@ -48,16 +50,22 @@ export default function CorridorTransition() {
     if (phaseRef.current !== "idle") return;
     setPhase("corridor"); setShow(true);
     const v = vid.current;
-    if (door.current) door.current.preload = "auto";
+    if (door.current) { prepareInline(door.current); door.current.preload = "auto"; door.current.load(); }
     v.currentTime = 0;
-    later(() => v.play().catch(() => authenticate()), 650);   // starts once the hero has faded out
+    // starts once the hero has faded out; if the browser refuses, show a tap-to-enter prompt
+    later(() => playInline(v).catch(() => setNeedTap("corridor")), 650);
+  };
+  const tapToContinue = () => {
+    const which = needTap; setNeedTap(false);
+    if (which === "door") playInline(door.current).then(() => setPhase("opening")).catch(() => finish(false));
+    else playInline(vid.current).catch(() => authenticate());
   };
   const authenticate = () => {
     setProgress(1); setPhase("verifying");
     later(() => setPhase("granted"), 1200);
     if (DOOR && door.current) {
       later(() => {
-        door.current.play().then(() => setPhase("opening")).catch(() => finish(false));
+        playInline(door.current).then(() => setPhase("opening")).catch(() => setNeedTap("door"));
       }, 2000);
     } else later(() => finish(false), 2600);
   };
@@ -81,7 +89,7 @@ export default function CorridorTransition() {
       // only after a real scroll past the start of the hero (iPhone Safari's short "svh" hero can sit
       // above the fold on load, which must not trigger it), and never while the intro screen is up
       const scrolled = scrollY > Math.min(120, innerHeight * 0.15);
-      if (p === "idle" && scrolled && !document.documentElement.classList.contains("is-loading") && r.top < innerHeight * 0.9) start();
+      if (p === "idle" && scrolled && !document.documentElement.classList.contains("is-loading")) start();
     };
     addEventListener("scroll", onScroll, { passive: true });
     return () => { removeEventListener("scroll", onScroll); timers.current.forEach(clearTimeout); };
@@ -90,6 +98,7 @@ export default function CorridorTransition() {
   useEffect(() => {
     if (reduce) return;
     const v = vid.current, d = door.current;
+    prepareInline(v); prepareInline(d);
     const onTime = () => setProgress(v.duration ? v.currentTime / v.duration : 0);
     v.addEventListener("timeupdate", onTime); v.addEventListener("ended", authenticate);
     d?.addEventListener("ended", () => finish(false));
@@ -116,6 +125,9 @@ export default function CorridorTransition() {
         <div className="cinema__auth mono" role="status" aria-live="polite">
           {rows.map(([t, s]) => <p key={t} className={`cinema__row is-${s}`}><i aria-hidden="true" />{t}</p>)}
         </div>
+        {needTap && (
+          <button type="button" className="cinema__tap mono" onClick={tapToContinue}>{needTap === "door" ? "tap to open the door" : "tap to enter"}</button>
+        )}
         <button type="button" className="cinema__skip mono" onClick={() => finish(true)} tabIndex={show ? 0 : -1}>skip →</button>
       </div>
     </>

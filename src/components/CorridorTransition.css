@@ -25,3 +25,9 @@
   .corridor__row { font-size: 10px; } .corridor__auth { bottom: 8%; }
 }
 @media (prefers-reduced-motion: reduce) { .corridor__media { transition: none; } .corridor__row, .corridor__row i { animation: none !important; } .corridor__line { transition: none; } }
+
+/* the door-opening clip sits exactly over the corridor and appears without a flash */
+.corridor__door { opacity: 0; transition: opacity 0.25s linear; }
+.corridor__door.is-on { opacity: 1; }
+.corridor.is-opening .corridor__media, .corridor.is-opening .corridor__door { opacity: 1; filter: grayscale(1); }
+.corridor.is-unlocked .corridor__door.is-on { opacity: 0.55; }

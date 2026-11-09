@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { leaveTrace } from "../trace.js";
+import { corridorMedia } from "../data/site.js";
 import "./CorridorTransition.css";
 
 /*
@@ -11,11 +12,14 @@ import "./CorridorTransition.css";
   visitor has scrolled away). No fake door-opening. Reduced motion: final frame, already unlocked.
 */
 const BASE = import.meta.env.BASE_URL;
-const STEPS = ["verifying credential", "access granted", "door unlocked"];
+const DOOR = corridorMedia.doorOpen ? `${BASE}${corridorMedia.doorOpen}` : "";
+const STEPS = DOOR ? ["verifying credential", "access granted"] : ["verifying credential", "access granted", "door unlocked"];
 
 export default function CorridorTransition() {
   const wrap = useRef(null);
   const vid = useRef(null);
+  const door = useRef(null);
+  const [opening, setOpening] = useState(false);
   const [step, setStep] = useState(-1);          // -1 locked, 0..2 auth steps
   const [progress, setProgress] = useState(0);   // 0..1, the trace line's length
   const [reduce, setReduce] = useState(false);
@@ -43,6 +47,7 @@ export default function CorridorTransition() {
       if (e.isIntersecting && e.intersectionRatio > 0.45 && !played) {
         played = true;
         v.play().catch(() => authenticate());
+        if (door.current) door.current.preload = "auto";
       }
     }, { threshold: [0, 0.45, 0.8] });
     io.observe(el);
@@ -52,28 +57,41 @@ export default function CorridorTransition() {
       setProgress(1);
       setStep(0);
       timers.push(setTimeout(() => setStep(1), 1200));
-      timers.push(setTimeout(() => { setStep(2); leaveTrace("door.unlock", "secure area door unlocked for the visitor", "granted"); }, 2000));
+      const enter = (delay) => timers.push(setTimeout(() => {
+        const b = el.getBoundingClientRect();
+        if (!userMoved && b.top < innerHeight * 0.5 && b.bottom > innerHeight * 0.4) document.getElementById("about")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, delay));
+      if (DOOR && door.current) {
+        // access granted -> the door-opening clip takes over, frame-matched on top of the corridor's last frame
+        timers.push(setTimeout(() => {
+          const d = door.current;
+          d.play().then(() => setOpening(true)).catch(() => { setStep(2); enter(900); });
+          d.addEventListener("ended", () => { setStep(2); leaveTrace("door.unlock", "secure area door opened for the visitor", "granted"); enter(400); }, { once: true });
+        }, 1900));
+      } else {
+        timers.push(setTimeout(() => { setStep(2); leaveTrace("door.unlock", "secure area door unlocked for the visitor", "granted"); }, 2000));
+        enter(3100);
+      }
       // enter the portfolio: ease down to About, unless the visitor has already scrolled on
       userMoved = false;
       addEventListener("wheel", markMoved, { passive: true, once: true });
       addEventListener("touchmove", markMoved, { passive: true, once: true });
-      timers.push(setTimeout(() => {
-        const b = el.getBoundingClientRect();
-        if (!userMoved && b.top < innerHeight * 0.5 && b.bottom > innerHeight * 0.4) document.getElementById("about")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 3100));
     };
     v.addEventListener("timeupdate", onTime);
     v.addEventListener("ended", authenticate);
     return () => { io.disconnect(); v.removeEventListener("timeupdate", onTime); v.removeEventListener("ended", authenticate); timers.forEach(clearTimeout); removeEventListener("wheel", markMoved); removeEventListener("touchmove", markMoved); };
   }, []);
 
-  const state = step < 0 ? "locked" : step < 2 ? "verifying" : "unlocked";
+  const state = step < 0 ? "locked" : step < STEPS.length - 1 && !(DOOR && step >= 1 && !opening) ? "verifying" : step >= STEPS.length - 1 && !DOOR ? "unlocked" : opening ? "opening" : step >= 2 ? "unlocked" : "verifying";
   return (
     <section className={`corridor is-${state}`} ref={wrap} aria-label="Entering the secure area" style={{ "--line-x": lineX, "--progress": progress }}>
       {reduce ? (
         <img className="corridor__media" src={`${BASE}videos/trace-corridor-end.jpg`} alt="" />
       ) : (
         <video ref={vid} className="corridor__media" src={`${BASE}videos/trace-corridor.mp4`} poster={`${BASE}videos/trace-corridor-poster.jpg`} muted playsInline preload="metadata" aria-hidden="true" />
+      )}
+      {DOOR && !reduce && (
+        <video ref={door} className={`corridor__media corridor__door ${opening ? "is-on" : ""}`} src={DOOR} muted playsInline preload="metadata" aria-hidden="true" />
       )}
       <span className="corridor__fade" aria-hidden="true" />
       <span className="corridor__line" aria-hidden="true" />

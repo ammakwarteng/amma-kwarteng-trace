@@ -26,17 +26,19 @@ export default function Trail({ sections, start = 1 }) {
       return next;
     });
 
-  // Jumping to a section (menu links, scroll arrow, a shared #link) opens it.
+  // Jumping to a section (menu links, scroll arrow, a shared #link) opens it, except About,
+  // which stays closed until its own title is tapped.
   useEffect(() => {
+    const autoOpens = (id) => id !== "about" && sections.some((s) => s.id === id);
     const openFromHash = () => {
       const id = decodeURIComponent(window.location.hash.slice(1));
-      if (sections.some((s) => s.id === id)) { leaveTrace("access.read", id, "allow", "section"); setOpen((prev) => new Set(prev).add(id)); }
+      if (autoOpens(id)) { leaveTrace("access.read", id, "allow", "section"); setOpen((prev) => new Set(prev).add(id)); }
     };
     const onClick = (e) => {
       const a = e.target.closest?.('a[href^="#"]');
       if (!a) return;
       const id = a.getAttribute("href").slice(1);
-      if (sections.some((s) => s.id === id)) { leaveTrace("access.read", id, "allow", "section"); setOpen((prev) => new Set(prev).add(id)); }
+      if (autoOpens(id)) { leaveTrace("access.read", id, "allow", "section"); setOpen((prev) => new Set(prev).add(id)); }
     };
     openFromHash();
     window.addEventListener("hashchange", openFromHash);

@@ -9,11 +9,11 @@ import "./CredentialSwipe.css";
   The hero wordmark (passed in as children, unchanged) is printed on a thin black credential
   whose magnetic-stripe edge rides in the slot of a slim reader. Drag it to the right through the
   reader (mouse or finger): the reader's head and light respond while the stripe passes, and a
-  completed swipe shows VERIFYING CREDENTIAL… then ACCESS GRANTED, the card comes back to rest,
-  and the page moves on into the portfolio. An incomplete swipe springs back.
+  completed swipe shows VERIFYING CREDENTIAL… then ACCESS GRANTED and the card comes back to rest
+  in the hero (the page does not move). An incomplete swipe springs back.
   - Nothing is locked: this is an interaction, not a login.
   - Keyboard / screen readers: the "swipe the credential" button does the same swipe.
-  - Reduced motion: no dragging or travel; the button shows the messages and jumps to the portfolio.
+  - Reduced motion: no dragging or travel; the button shows the messages.
   - Vertical touch gestures still scroll the page; once a horizontal swipe has started, the page
     stays put until the finger lifts.
 */
@@ -65,15 +65,6 @@ export default function CredentialSwipe({ children }) {
     return () => el.removeEventListener("touchmove", block);
   }, []);
 
-  const toPortfolio = () => {
-    const smooth = !reduce;
-    // About opens from its #link (Trail listens for it); clear an old hash so it always fires
-    if (location.hash === "#about") history.replaceState(null, "", location.pathname + location.search);
-    document.documentElement.style.scrollBehavior = smooth ? "" : "auto";
-    location.hash = "about";
-    if (!smooth) setTimeout(() => { document.documentElement.style.scrollBehavior = ""; }, 50);
-  };
-
   const complete = async () => {
     if (busy) return;
     setHinted(true);
@@ -88,8 +79,8 @@ export default function CredentialSwipe({ children }) {
       x.set(-range.back);                                   // the card comes back in from the left, at rest
       await animate(x, 0, { type: "spring", stiffness: 120, damping: 20, mass: 0.9 });
     }
-    toPortfolio();
-    setTimeout(() => setPhase("idle"), reduce ? 400 : 900);
+    // stays in the hero: visitors scroll on to the portfolio when they are ready
+    setTimeout(() => setPhase("idle"), reduce ? 1200 : 1400);
   };
 
   const onDragStart = () => { dragging.current = true; setHinted(true); };

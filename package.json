@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/ammakwarteng/amma-kwarteng-trace#readme",
   "dependencies": {
-    "@fontsource-variable/bodoni-moda": "^5.3.0",
     "@fontsource/inter-tight": "^5.1.0",
     "@fontsource/jetbrains-mono": "^5.1.0",
     "react": "^18.3.1",

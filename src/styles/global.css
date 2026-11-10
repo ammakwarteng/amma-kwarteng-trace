@@ -28,7 +28,6 @@
 
   --font-display: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-ui: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-hero: "Bodoni Moda Variable", "Bodoni 72", Didot, "Didot LT STD", serif;   /* the hero title only */
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --gutter: clamp(16px, 7.5vw, 148px);

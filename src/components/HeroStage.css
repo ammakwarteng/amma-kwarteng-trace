@@ -16,18 +16,6 @@
 /* hero type layer */
 .stage .hero.hero--editorial { position: absolute; inset: 0; z-index: 3; height: auto; min-height: 0; will-change: opacity, transform; }
 
-/* the hero title: a high-contrast Didone, set like a masthead. Only here. */
-.stage .hero__word {
-  font-family: var(--font-hero);
-  font-weight: 400;
-  font-optical-sizing: auto;
-  font-size: clamp(132px, min(22vw, 36svh), 420px);
-  letter-spacing: -0.035em;
-  line-height: 0.74;
-  text-shadow: 0 8px 50px rgba(0, 0, 0, 0.3);
-}
-.stage .hero__word .imprint__echo { -webkit-text-stroke-width: 1px; }
-
 /* About layer: the end state */
 .stage__about {
   position: absolute;
@@ -67,7 +55,6 @@
 @media (max-width: 760px) {
   .stage { height: calc(100svh + 35svh); }
   .stage__anchor { top: 35svh; }
-  .stage .hero__word { font-size: clamp(110px, 32vw, 180px); }
   .stage__about {
     grid-template-columns: minmax(0, 1fr) minmax(0, 3.2fr);
     grid-template-rows: minmax(0, 1fr) auto;

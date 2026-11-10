@@ -40,9 +40,6 @@ export default function Projects() {
 
   return (
     <div className="projects-wrap">
-    {projects.length > 1 && (
-      <p className="projects-hint mono" aria-hidden="true">{projects.length} projects · scroll sideways for more</p>
-    )}
     <div className="projects" aria-label="Projects">
       {projects.map((p, n) => {
         const isOpen = openCards.has(p.name);
@@ -59,8 +56,17 @@ export default function Projects() {
             <span>{p.year}</span>
           </p>
           <h3 className="project__name">{p.name}</h3>
-          <p className="project__summary">{p.summary}</p>
+          {/* the lead picture, set like a magazine figure with its caption */}
           {p.gallery?.length > 0 && (
+            <figure className="project__lead">
+              <button type="button" onClick={() => setShot({ list: p.gallery, index: 0 })} aria-label={`Open screenshot: ${p.gallery[0].caption}`}>
+                <img src={url(p.gallery[0].src)} alt="" width="1120" height="630" loading="lazy" />
+              </button>
+              <figcaption><span className="mono">fig. {n + 1}</span>{p.gallery[0].caption}</figcaption>
+            </figure>
+          )}
+          <p className="project__summary">{p.summary}</p>
+          {p.gallery?.length > 1 && (
             <ul
               className="project__gallery"
               aria-label={`${p.name} screenshots`}
@@ -69,7 +75,7 @@ export default function Projects() {
                 g.classList.toggle("is-end", g.scrollLeft + g.clientWidth >= g.scrollWidth - 4);
               }}
             >
-              {p.gallery.map((g, i) => (
+              {p.gallery.map((g, i) => i === 0 ? null : (
                 <li key={g.src}>
                   <button type="button" onClick={() => setShot({ list: p.gallery, index: i })} aria-label={`Open screenshot: ${g.caption}`}>
                     <img src={url(g.src)} alt="" width="1024" height="768" loading="lazy" />
@@ -78,8 +84,8 @@ export default function Projects() {
               ))}
             </ul>
           )}
-          {p.gallery?.length > 0 && (
-            <p className="project__gallery-hint mono" aria-hidden="true">{p.gallery.length} screenshots · scroll sideways, tap to enlarge</p>
+          {p.gallery?.length > 1 && (
+            <p className="project__gallery-hint mono" aria-hidden="true">{p.gallery.length - 1} more · scroll sideways, tap to enlarge</p>
           )}
           {p.image && (
             <figure className="project__figure">

@@ -2,16 +2,8 @@ import { useState } from "react";
 import { about, roadmap } from "../../data/content.js";
 import "./sections.css";
 
-// 01 · About: the introduction. (The roadmap below is off the page for now; to bring it back,
-// render <Roadmap /> after the text.)
-export default function About() {
-  return (
-    <div className="about">
-      <AboutText />
-    </div>
-  );
-}
-
+// the About introduction (all paragraphs, or a range of them): shown beside the portrait at the
+// end of the hero transformation (see Hero.jsx)
 export function AboutText({ from = 0, to }) {
   return (
     <div className={`about__text ${from ? "about__text--rest" : ""}`}>
@@ -20,7 +12,7 @@ export function AboutText({ from = 0, to }) {
   );
 }
 
-// the career roadmap (not shown at the moment)
+// the career roadmap, which continues the About section below the hero stage
 export function Roadmap() {
   // the phase Amma is in starts open; the rest start closed
   const [open, setOpen] = useState(() => new Set(roadmap.filter((r) => r.now).map((r) => r.phase)));

@@ -18,6 +18,23 @@ export const links = [
   { label: "github", url: "https://github.com/ammakwarteng" },
 ];
 
+// Homepage hero media (the frosted-glass editorial portrait).
+// Put the final photograph in public/hero/ and set its path here, e.g. image: "hero/portrait.jpg".
+// Optional: a separate crop for phones, and a short muted loop (Higgsfield export) with a poster frame.
+// glass: true lays a CSS frosted, vertically ribbed glass over the photo; set it to false if the
+// glass is already part of the photograph. layout: "editorial" = centred hero; "classic" = the
+// previous hero layout (fully reversible).
+export const heroMedia = {
+  layout: "editorial",
+  image: "hero/portrait.jpg",   // e.g. "hero/portrait.jpg"   (2400×1600 or larger, black and white)
+  imageMobile: "hero/portrait-mobile.jpg",   // e.g. "hero/portrait-mobile.jpg" (1080×1920, portrait crop)
+  video: "videos/trace-portrait.mp4",   // Higgsfield portrait, played forward then back for a seamless loop   (muted, 6-12 s seamless loop, H.264, under ~4 MB)
+  videoMobile: "",      // optional 9:16 Higgsfield clip for phones (from the tall portrait)
+  poster: "videos/trace-portrait-poster.jpg",   // first frame of the video
+  glass: false,         // the ribbed glass is already in the photograph
+  focus: "50% 38%",     // which part of the photo stays in view on wide screens
+  focusMobile: "50% 30%",
+};
 
 
 // Professional communities, shown in the community section. Add one only

@@ -46,9 +46,12 @@
 .about__text p + p { color: var(--white-dim); }
 
 /* ---------- Projects as articles ---------- */
-.projects { display: grid; gap: clamp(48px, 8vh, 96px); overflow: visible; scroll-snap-type: none; -webkit-mask-image: none; mask-image: none; padding: 0; }
-.projects > .project { width: 100%; flex: none; max-width: 760px; }
-.trail__sec.is-right .projects > .project { margin-left: auto; }
+/* side by side: two magazine columns on laptops; a sideways swipe on phones */
+.projects {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 3.4vw, 56px);
+  align-items: start; overflow: visible; scroll-snap-type: none; -webkit-mask-image: none; mask-image: none; padding: 0;
+}
+.projects > .project { width: auto; flex: none; max-width: none; margin: 0; }
 .project { gap: 16px; padding: 22px 0 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: none; }
 .project__name {
   font-family: var(--font-hero); font-weight: 400; font-optical-sizing: auto;
@@ -66,7 +69,18 @@
 
 /* ---------- phones ---------- */
 @media (max-width: 760px) {
+  .projects {
+    display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .projects::-webkit-scrollbar { display: none; }
+  .projects > .project { flex: 0 0 86%; scroll-snap-align: start; }
   .trail__title { font-size: 12.4vw; }
   .about__quote { font-size: 23px; margin-bottom: 10px; }
   .project__lead figcaption { font-size: 15px; }
 }
+
+/* the swipe hint shows only where the projects scroll sideways */
+.projects-hint--phone { display: none; }
+@media (max-width: 760px) { .projects-hint--phone { display: block; } }

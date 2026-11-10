@@ -38,6 +38,7 @@ export default function Projects() {
 
   return (
     <div className="projects-wrap">
+    {projects.length > 1 && <p className="projects-hint projects-hint--phone mono" aria-hidden="true">{projects.length} projects · swipe sideways</p>}
     <div className="projects" aria-label="Projects">
       {projects.map((p, n) => {
         const isOpen = openCards.has(p.name);

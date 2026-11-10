@@ -4,6 +4,21 @@ import "./sections.css";
 
 // the About introduction (all paragraphs, or a range of them): shown beside the portrait at the
 // end of the hero transformation (see Hero.jsx)
+// The magazine About: the first sentence of the second paragraph as a pull quote, then the
+// introduction. Nothing is dropped: the quoted sentence is not repeated, the rest follows.
+const [quoteLine, ...restLines] = (about[1] || "").split(/(?<=\.)\s+/);
+export function AboutQuote() {
+  return <blockquote className="about__quote">“{quoteLine.replace(/\.$/, "")}.”</blockquote>;
+}
+export function AboutBody() {
+  return (
+    <div className="about__text">
+      <p>{about[0]}</p>
+      {restLines.length > 0 && <p>{restLines.join(" ")}</p>}
+    </div>
+  );
+}
+
 export function AboutText({ from = 0, to }) {
   return (
     <div className={`about__text ${from ? "about__text--rest" : ""}`}>

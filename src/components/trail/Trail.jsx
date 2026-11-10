@@ -1,6 +1,5 @@
 import { leaveTrace } from "../../trace.js";
 import { useEffect, useRef, useState } from "react";
-import DecryptText from "./DecryptText.jsx";
 import "./Trail.css";
 
 /*
@@ -165,9 +164,9 @@ export default function Trail({ sections, start = 1 }) {
           >
             <div className="trail__head-row">
               <span className="trail__node" data-node aria-hidden="true" />
-              <span className="trail__hop mono">{String(i + start).padStart(2, "0")} · {s.label}{i <= reached && <span className="st"> · verified</span>}</span>
+              <span className="trail__hop mono">No. {String(i + start).padStart(2, "0")} — {s.kicker || s.label}</span>
             </div>
-            <h2 className="trail__h tf tf-lock" id={`${s.id}-title`}>
+            <h2 className="trail__h" id={`${s.id}-title`}>
               <button
                 type="button"
                 className="trail__toggle"
@@ -176,7 +175,7 @@ export default function Trail({ sections, start = 1 }) {
                 aria-label={s.label}
                 onClick={() => toggle(s.id)}
               >
-                <DecryptText className="trail__title" text={s.label} />
+                <span className="trail__title">{s.label}</span>
                 <span className="trail__icon" aria-hidden="true" />
               </button>
             </h2>

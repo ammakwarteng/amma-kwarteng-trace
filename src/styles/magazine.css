@@ -1,0 +1,72 @@
+/*
+  TRACE as a magazine. Loaded last; it only restyles, so removing this file (and its import in
+  main.jsx) brings back the previous look. The serif from the hero carries through: section
+  titles in italic, an issue-style line above each ("No. 02 — the work"), a pull quote in About,
+  and projects set as articles with a captioned lead picture. Body text and labels keep the
+  site's sans and mono; black and white throughout.
+*/
+
+/* ---------- section openers ---------- */
+.trail__hop {
+  font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--white-faint); transition: color 0.4s;
+}
+.trail__sec.is-reached .trail__hop { color: var(--white-dim); }
+.trail__title {
+  font-family: var(--font-hero);
+  font-style: italic;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-size: clamp(56px, 8.6vw, 144px);
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  text-transform: capitalize;
+  font-variant-numeric: normal;
+  padding-right: 0.06em;           /* italic overhang */
+}
+/* the open/close mark: a thinner, smaller plus that suits the serif */
+.trail__icon { width: clamp(18px, 2vw, 30px); height: clamp(18px, 2vw, 30px); opacity: 0.5; }
+.trail__icon::before, .trail__icon::after { height: 1px; }
+.trail__toggle { gap: clamp(14px, 1.8vw, 28px); align-items: baseline; }
+.trail__hint { font-size: 10.5px; letter-spacing: 0.1em; }
+
+/* ---------- About (in the hero stage) ---------- */
+.stage__title, .stage__h .stage__toggle > span:first-child {
+  font-family: var(--font-hero); font-style: italic; font-weight: 400; font-optical-sizing: auto;
+  letter-spacing: -0.02em; padding-right: 0.06em;
+}
+.stage__h { letter-spacing: -0.02em; line-height: 0.95; }
+.stage__label { letter-spacing: 0.18em; }
+.about__quote {
+  margin: 4px 0 18px; max-width: 22ch;
+  font-family: var(--font-hero); font-weight: 400; font-optical-sizing: auto;
+  font-size: clamp(24px, 2.4vw, 38px); line-height: 1.16; letter-spacing: -0.01em; color: var(--white);
+  text-wrap: balance;
+}
+.about__text p + p { color: var(--white-dim); }
+
+/* ---------- Projects as articles ---------- */
+.projects { display: grid; gap: clamp(48px, 8vh, 96px); overflow: visible; scroll-snap-type: none; -webkit-mask-image: none; mask-image: none; padding: 0; }
+.projects > .project { width: 100%; flex: none; max-width: 760px; }
+.trail__sec.is-right .projects > .project { margin-left: auto; }
+.project { gap: 16px; padding: 22px 0 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: none; }
+.project__name {
+  font-family: var(--font-hero); font-weight: 400; font-optical-sizing: auto;
+  font-size: clamp(30px, 3.6vw, 52px); letter-spacing: -0.015em; line-height: 1.02;
+  text-wrap: balance;
+}
+.project__lead { margin: 4px 0 0; display: grid; gap: 10px; }
+.project__lead button { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; }
+.project__lead button:focus-visible { outline: 2px solid var(--white); outline-offset: 4px; }
+.project__lead img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; filter: grayscale(1) contrast(1.04); transition: filter 0.4s ease; }
+.project__lead button:hover img { filter: grayscale(0.6) contrast(1.04); }
+.project__lead figcaption { font-family: var(--font-hero); font-style: italic; font-size: 16px; line-height: 1.35; color: var(--white-dim); }
+.project__lead figcaption .mono { margin-right: 10px; font-family: var(--font-mono); font-style: normal; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-faint); }
+.project__summary { font-size: clamp(17px, 1.3vw, 19px); color: var(--white-dim); }
+
+/* ---------- phones ---------- */
+@media (max-width: 760px) {
+  .trail__title { font-size: 12.4vw; }
+  .about__quote { font-size: 23px; margin-bottom: 10px; }
+  .project__lead figcaption { font-size: 15px; }
+}

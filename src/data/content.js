@@ -60,25 +60,6 @@ export const certifications = [
 // project; the section shows them in this order.
 export const projects = [
   {
-    name: "Access request review — an IAM case study",
-    type: "case study",
-    year: "2026",
-    status: "live",
-    summary:
-      "An interactive access-review queue: you act as the reviewer and decide three fictional access requests against least privilege, separation of duties and privileged-access policy.",
-    points: [
-      "Designed a compact access-review tool modelled on enterprise identity governance software",
-      "Wrote three fictional requests that each test a different policy: an in-role read request, a separation-of-duties conflict, and a privileged production request",
-      "Shows each requester's role baseline and current access next to the request, so least privilege can be judged at a glance",
-      "Runs a policy check on every request: role baseline, least privilege, privileged access, separation of duties and time limits",
-      "Approve, deny or escalate, then see whether the decision is policy-aligned and why",
-      "Writes a simulated audit event to the review's audit trail for every decision",
-    ],
-    demo: "access-review",
-    tags: ["IAM", "access reviews", "least privilege", "separation of duties", "PAM", "audit logging", "UX/UI"],
-  },
-
-  {
     name: "Active Directory home lab",
     type: "lab",
     year: "2026",
@@ -139,11 +120,11 @@ export const projects = [
       "Added a loading screen that replays when a visitor starts a new session",
     ],
     gallery: [
-      { src: "projects/trace/01.webp", caption: "TRACE IMPRINT: silver impressions of the wordmark follow your movement" },
-      { src: "projects/trace/02.webp", caption: "The resume, locked behind an access code with AES-256 encryption" },
-      { src: "projects/trace/03.webp", caption: "Sections read as records, with the TRACE frame locking onto each heading" },
-      { src: "projects/trace/04.webp", caption: "The access card and swipe reader at the end of the trace" },
-      { src: "projects/trace/05.webp", caption: "The session audit log after a visitor signs out" },
+      { src: "projects/trace/01.webp", caption: "The hero: an animated portrait behind ribbed glass, with the serif trace title" },
+      { src: "projects/trace/02.webp", caption: "One small scroll: the portrait glides out of the hero" },
+      { src: "projects/trace/03.webp", caption: "It settles beside About, opened here to its pull quote" },
+      { src: "projects/trace/04.webp", caption: "Section openers set like a magazine, joined by the tracing line" },
+      { src: "projects/trace/05.webp", caption: "Projects read as articles, each with a captioned lead picture" },
     ],
     image: { src: "projects/logo.svg", alt: "My logo: a tracking reticle", caption: "my logo" },
     tags: ["DNS", "HTTPS", "encryption", "access control", "GitHub", "UX/UI"],

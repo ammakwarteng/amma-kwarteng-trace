@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { projects } from "../../data/content.js";
 import "./sections.css";
-import AccessReview from "./AccessReview.jsx";
 
 const url = (src) => `${import.meta.env.BASE_URL}${src}`;
 
@@ -17,7 +16,6 @@ export default function Projects() {
       return next;
     });
   const dialogRef = useRef(null);
-  const reviewRef = useRef(null);
 
   useEffect(() => {
     const d = dialogRef.current;
@@ -111,9 +109,6 @@ export default function Projects() {
           <ul className="project__tags" aria-label="Skills used">
             {p.tags.map((t) => <li key={t} className="mono">{t}</li>)}
           </ul>
-          {p.demo === "access-review" && (
-            <p className="project__links"><button type="button" className="project__try" onClick={() => reviewRef.current?.showModal()}>open the review queue →</button></p>
-          )}
           {p.links?.length > 0 && (
             <p className="project__links">
               {p.links.map((l) => (
@@ -126,11 +121,6 @@ export default function Projects() {
       })}
     </div>
 
-      <dialog ref={reviewRef} className="ar-dialog" aria-label="Access request review" onClick={(e) => { if (e.target === reviewRef.current) reviewRef.current.close(); }}>
-        <div className="ar-dialog__top"><h3>access request review</h3><button type="button" onClick={() => reviewRef.current?.close()}>close</button></div>
-        <AccessReview />
-        <p className="ar-dialog__note">fictional people and systems · simulated decisions and audit events · nothing is sent anywhere</p>
-      </dialog>
 
       <dialog
         ref={dialogRef}

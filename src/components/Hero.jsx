@@ -140,6 +140,9 @@ export default function Hero() {
                 <li><EmailLink /></li>
               </ul>
             </div>
+            <a className="hero__scroll" href="#about" aria-label="Scroll to the portfolio">
+              <span aria-hidden="true" />
+            </a>
           </div>
 
           <section className={`stage__about ${aboutOpen ? "is-open" : ""}`} ref={aboutLayer} aria-labelledby="about-title">

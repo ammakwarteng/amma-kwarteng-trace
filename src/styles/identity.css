@@ -81,7 +81,23 @@
 }
 
 /* ---------- Squares instead of decorative circles ---------- */
+.trail__node {
+  border-radius: 0;
+  width: 11px;
+  height: 11px;
+  margin-left: -32px;
+  outline: 1px solid transparent;
+  outline-offset: 4px;
+  transition: background 0.3s, border-color 0.3s, outline-color 0.3s;
+}
+.trail__sec.is-right .trail__node { margin-left: 0; margin-right: -32px; }
+.trail__sec.is-reached .trail__node { box-shadow: none; outline-color: var(--line); }
+@media (max-width: 700px) {
+  .trail__node { margin-left: -20px; width: 10px; height: 10px; outline-offset: 3px; }
+  .trail__sec.is-right .trail__node { margin-right: -20px; }
+}
 .road__dot { border-radius: 0; width: 11px; height: 11px; }
+.hero__scroll::before { border-radius: 0; width: 9px; height: 9px; }
 .status__dot { border-radius: 0; width: 6px; height: 6px; }
 .resume__dot { border-radius: 0; }
 .project__dot { border-radius: 0; }
@@ -114,16 +130,3 @@
 .cert.is-earned { border-color: rgba(255, 255, 255, 0.16); } /* the frame marks it as verified */
 .cert__top.idl { font-size: 10px; }
 .community__badge.idl { padding: 0; border: 0; border-radius: 0; font-size: 11px; letter-spacing: 0.14em; color: var(--white-faint); }
-
-/* ---------- section spacing (the tracing line has been removed) ---------- */
-.trail { padding-top: clamp(48px, 9vh, 96px); padding-bottom: clamp(48px, 10vh, 120px); }
-.trail__head-row { gap: 0; }
-@media (max-width: 760px) {
-  .trail { padding-top: 40px; }
-  .trail__sec { min-height: 0; padding-top: 28px; padding-bottom: 28px; }
-  .trail__sec.is-open { min-height: 0; }
-}
-@media (min-width: 761px) {
-  .trail__sec { min-height: 26vh; }
-  .trail__sec.is-open { min-height: 0; padding-bottom: 72px; }
-}

@@ -4,14 +4,18 @@ import DecryptText from "./DecryptText.jsx";
 import "./Trail.css";
 
 /*
-  The numbered portfolio sections below the hero stage. Each one opens and closes from its
-  title; menu links and shared #links open the section they point to.
+  The trace continues below the hero: a white route draws itself down the
+  page as you scroll, hopping from section to section like a traceroute.
+  Each section is a node that lights up when the route reaches it.
 */
 
 const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export default function Trail({ sections, start = 1 }) {
   const wrapRef = useRef(null);
+  const pathRef = useRef(null);
+  const headRef = useRef(null);
+  const [geo, setGeo] = useState({ d: "", w: 0, h: 0, nodes: [] });
   const [reached, setReached] = useState(-1);
   // Every section starts closed; the visitor opens what they want to read.
   const [open, setOpen] = useState(() => new Set());
@@ -43,17 +47,85 @@ export default function Trail({ sections, start = 1 }) {
     };
   }, [sections]);
 
-  // A section counts as reached (its number reads "verified" and its title brightens) once
-  // its top passes 60% of the screen height. Reduced motion: everything starts reached.
+  // Build the route from the node positions; rebuild when the layout changes.
   useEffect(() => {
     const wrap = wrapRef.current;
+    const build = () => {
+      const box = wrap.getBoundingClientRect();
+      const secs = [...wrap.querySelectorAll(".trail__sec")];
+      const pts = secs.map((sec, i) => {
+        const r = sec.querySelector("[data-node]").getBoundingClientRect();
+        // bottom of the previous section's visible content, so the crossing
+        // line can run in the clear space between sections
+        const prev = secs[i - 1];
+        const prevBottom = prev
+          ? Math.max(...[...prev.children].map((c) => c.getBoundingClientRect().bottom)) - box.top
+          : null;
+        return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top, prevBottom };
+      });
+      const w = wrap.clientWidth, h = wrap.scrollHeight;
+      // phones: start straight above the first node; laptops: from the hero's centred scroll cue
+      let x = w < 761 && pts[0] ? pts[0].x : w / 2, y = 0;
+      let d = `M ${x} ${y}`;
+      pts.forEach((p) => {
+        // orthogonal hop: down, across, down, with small chamfered corners.
+        // The across line sits between the previous content and this node.
+        let midY = p.y - Math.min(64, (p.y - y) * 0.3);
+        if (p.prevBottom != null) {
+          const lo = p.prevBottom + 22, hi = p.y - 30;
+          midY = lo <= hi ? (lo + hi) / 2 : hi;
+        }
+        if (Math.abs(p.x - x) < 1) { d += ` L ${p.x} ${p.y}`; x = p.x; y = p.y; return; }   // same column: straight down
+        const c = 14 * Math.sign(p.x - x || 1);
+        d += ` L ${x} ${midY - 14} L ${x + c} ${midY} L ${p.x - c} ${midY} L ${p.x} ${midY + 14} L ${p.x} ${p.y}`;
+        x = p.x; y = p.y;
+      });
+      d += ` L ${x} ${h}`;
+      setGeo({ d, w, h, nodes: pts.map(({ x, y }) => ({ x, y })) });
+    };
+    // Rebuild whenever the page or anything inside a section changes size
+    // (a section or a roadmap step opening grows its content without
+    // necessarily changing the page height).
+    let queued = 0;
+    const schedule = () => { if (!queued) queued = requestAnimationFrame(() => { queued = 0; build(); }); };
+    build();
+    const ro = new ResizeObserver(schedule);
+    ro.observe(wrap);
+    wrap.querySelectorAll(".trail__sec, .trail__panel-inner").forEach((el) => ro.observe(el));
+    document.fonts?.ready?.then(build);
+    return () => { ro.disconnect(); cancelAnimationFrame(queued); };
+  }, [sections.length]);
+
+  // Draw the route up to the reading line (60% down the viewport).
+  useEffect(() => {
+    const path = pathRef.current;
+    if (!path || !geo.d) return;
+    const total = path.getTotalLength();
+    path.style.strokeDasharray = `${total}`;
     let raf = 0;
+
+    const lengthAtY = (yLimit) => {
+      let lo = 0, hi = total;
+      for (let i = 0; i < 22; i++) {
+        const mid = (lo + hi) / 2;
+        if (path.getPointAtLength(mid).y <= yLimit) lo = mid; else hi = mid;
+      }
+      return lo;
+    };
+
     const update = () => {
       raf = 0;
-      if (reduceMotion()) { setReached(sections.length - 1); return; }
-      const line = window.innerHeight * 0.6;
+      const box = wrapRef.current.getBoundingClientRect();
+      const lineY = reduceMotion() ? Infinity : window.innerHeight * 0.6 - box.top;
+      const L = lineY === Infinity ? total : Math.max(0, lengthAtY(lineY));
+      path.style.strokeDashoffset = `${total - L}`;
+      const p = path.getPointAtLength(L);
+      if (headRef.current) {
+        headRef.current.setAttribute("transform", `translate(${p.x} ${p.y})`);
+        headRef.current.style.opacity = L > 2 && L < total - 2 ? 1 : 0;
+      }
       let last = -1;
-      wrap.querySelectorAll(".trail__sec").forEach((sec, i) => { if (sec.getBoundingClientRect().top <= line) last = i; });
+      geo.nodes.forEach((n, i) => { if (p.y >= n.y - 1 || lineY === Infinity) last = i; });
       setReached(last);
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
@@ -65,10 +137,19 @@ export default function Trail({ sections, start = 1 }) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, [sections.length]);
+  }, [geo]);
 
   return (
     <div className="trail" ref={wrapRef}>
+      <svg className="trail__svg" width={geo.w} height={geo.h} viewBox={`0 0 ${geo.w || 1} ${geo.h || 1}`} aria-hidden="true">
+        <path className="trail__ghost" d={geo.d} />
+        <path className="trail__path" ref={pathRef} d={geo.d} />
+        <g ref={headRef} className="trail__head">
+          <circle r="9" />
+          <path d="M -15 0 H -5 M 5 0 H 15 M 0 -15 V -5 M 0 5 V 15" />
+        </g>
+      </svg>
+
       {sections.map((s, i) => {
         const isOpen = open.has(s.id);
         const panelId = `${s.id}-panel`;
@@ -80,6 +161,7 @@ export default function Trail({ sections, start = 1 }) {
             aria-labelledby={`${s.id}-title`}
           >
             <div className="trail__head-row">
+              <span className="trail__node" data-node aria-hidden="true" />
               <span className="trail__hop mono">{String(i + start).padStart(2, "0")} · {s.label}{i <= reached && <span className="st"> · verified</span>}</span>
             </div>
             <h2 className="trail__h tf tf-lock" id={`${s.id}-title`}>

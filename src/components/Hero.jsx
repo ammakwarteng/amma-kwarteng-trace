@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { owner, links } from "../data/site.js";
 import ArtifactSlot from "./ArtifactSlot.jsx";
 import TraceImprint from "./TraceImprint.jsx";
+import CredentialSwipe from "./credential/CredentialSwipe.jsx";
 import DoodlePad from "./doodle/DoodlePad.jsx";
 import EmailLink from "./EmailLink.jsx";
 import { track } from "../track.js";
@@ -57,9 +58,12 @@ export default function Hero() {
         <ArtifactSlot key={a.id} index={i + 1} {...a} />
       ))}
 
-      <h1 id="hero-title" className="hero__word">
-        <TraceImprint text="trace" /><span className="visually-hidden">, the portfolio of {owner.name}</span>
-      </h1>
+      {/* the wordmark, printed on a credential that can be swiped through a reader */}
+      <CredentialSwipe>
+        <h1 id="hero-title" className="cred__title">
+          <TraceImprint text="trace" /><span className="visually-hidden">, the portfolio of {owner.name}</span>
+        </h1>
+      </CredentialSwipe>
 
       {pinned && (
         <figure className="pinned">

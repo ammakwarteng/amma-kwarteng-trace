@@ -155,8 +155,10 @@
   transition: border-color 0.2s, background 0.2s, transform 0.2s;
 }
 .cert:hover { border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.08); transform: translateY(-3px); }
-.cert__top { display: flex; justify-content: space-between; gap: 10px; color: var(--white-faint); white-space: nowrap; }
-.cert__top > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* issuer on its own line, status under it: long issuers (Mastermind Assurance Academy) wrap inside the card */
+.cert__top { display: flex; flex-direction: column; gap: 4px; min-width: 0; color: var(--white-faint); }
+.cert__top > span:first-child { overflow-wrap: anywhere; }
+.cert__top > span:last-child { white-space: nowrap; }
 .cert__code { margin: 0; align-self: center; font-size: clamp(40px, 4.4vw, 64px); letter-spacing: -0.07em; line-height: 1; color: var(--white-dim); }
 .cert__name { margin: 0; font-size: 14px; letter-spacing: -0.02em; color: var(--white-dim); }
 
@@ -174,7 +176,7 @@
 @media (hover: none) { .marquee__hint { visibility: hidden; } }
 @media (max-width: 600px) {
   .cert { width: 230px; min-height: 160px; padding: 14px 16px; }
-  .cert__top { font-size: 10px; flex-direction: column; gap: 4px; }
+  .cert__top { font-size: 10px; }
 }
 
 @keyframes live-blink { 50% { opacity: 0.2; } }

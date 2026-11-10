@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import Header from "./components/Header.jsx";
 import Loader from "./components/loader/Loader.jsx";
 import Hero from "./components/Hero.jsx";
 import Trail from "./components/trail/Trail.jsx";
+import VisitorBadge from "./components/badge/VisitorBadge.jsx";
 import About from "./components/sections/About.jsx";
 import EmailLink from "./components/EmailLink.jsx";
 import Certifications from "./components/sections/Certifications.jsx";
@@ -43,16 +45,29 @@ const sections = navItems.map((item) => ({
 }));
 
 export default function App() {
+  // "start a new session" in the audit log replays the intro: the whole site
+  // is rebuilt from scratch, starting with the loader, at the top of the page.
+  const [session, setSession] = useState(0);
+  useEffect(() => {
+    const restart = () => {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      setSession((n) => n + 1);
+    };
+    window.addEventListener("trace:new-session", restart);
+    return () => window.removeEventListener("trace:new-session", restart);
+  }, []);
+
   return (
-    <>
+    <div key={session} style={{ display: "contents" }}>
       <Loader />
       <a className="skip-link" href="#about">Skip to content</a>
       <Header />
       <main>
         <Hero />
         <Trail sections={sections} />
+        <VisitorBadge />
       </main>
       <footer className="site-footer mono">© {new Date().getFullYear()} amma kwarteng. all rights reserved.</footer>
-    </>
+    </div>
   );
 }

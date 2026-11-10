@@ -15,7 +15,7 @@
   z-index: 2;
   left: 50%;
   top: 50%;
-  transform: translate(-46%, -48%);
+  transform: translate(-50%, -50%);   /* centred */
   margin: 0;
   font-size: clamp(120px, min(17.5vw, 30vh), 340px); /* height cap keeps it off the intro on short screens */
   font-weight: 400;
@@ -169,7 +169,7 @@
 
 @media (max-width: 760px) {
   .hero { min-height: 700px; }
-  .hero__word { font-size: 31vw; left: 50%; top: 22%; transform: translate(-50%, -50%); }
+  .hero__word { font-size: 31vw; left: 50%; top: 46%; transform: translate(-50%, -50%); }   /* centred */
   .hero__player { left: 16px; top: auto; bottom: calc(7vh + 160px + env(safe-area-inset-bottom, 0px)); }
   .sheet__card { margin-top: calc(12vh + env(safe-area-inset-top, 0px)); }
   .hero__intro { left: 16px; right: 16px; bottom: calc(9vh + env(safe-area-inset-bottom, 0px)); }

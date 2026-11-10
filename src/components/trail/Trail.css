@@ -122,9 +122,11 @@
 .trail__links a { color: var(--white); font-size: 18px; letter-spacing: -0.03em; text-decoration: none; border-bottom: 1px solid var(--white-faint); }
 .trail__links a:hover { border-bottom-color: var(--white); }
 
-@media (max-width: 700px) {
-  .trail__sec { min-height: 24vh; }
-  .trail__sec.is-open { min-height: 60vh; }
+@media (max-width: 760px) {
+  /* phones: sections sit at a steady rhythm instead of filling a fixed share of the screen */
+  .trail { padding: 12px 0 48px; }
+  .trail__sec { min-height: 0; padding-top: 26px; padding-bottom: 26px; }
+  .trail__sec.is-open { min-height: 0; padding-bottom: 40px; }
   .trail__node { margin-left: -21px; width: 12px; height: 12px; }
   .trail__sec.is-right .trail__node { margin-right: -21px; }
   .trail__head-row { gap: 8px; }

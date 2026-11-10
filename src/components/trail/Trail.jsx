@@ -64,8 +64,9 @@ export default function Trail({ sections, start = 1 }) {
         return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top, prevBottom };
       });
       const w = wrap.clientWidth, h = wrap.scrollHeight;
-      // phones: start straight above the first node; laptops: from the hero's centred scroll cue
-      let x = w < 761 && pts[0] ? pts[0].x : w / 2, y = 0;
+      // phones: the line starts at the first section's marker; laptops: from the hero's centred scroll cue
+      const phone = w < 761 && pts[0];
+      let x = phone ? pts[0].x : w / 2, y = phone ? pts[0].y : 0;
       let d = `M ${x} ${y}`;
       pts.forEach((p) => {
         // orthogonal hop: down, across, down, with small chamfered corners.
@@ -125,7 +126,7 @@ export default function Trail({ sections, start = 1 }) {
         headRef.current.style.opacity = L > 2 && L < total - 2 ? 1 : 0;
       }
       let last = -1;
-      geo.nodes.forEach((n, i) => { if (p.y >= n.y - 1 || lineY === Infinity) last = i; });
+      geo.nodes.forEach((n, i) => { if ((L > 2 && p.y >= n.y - 1) || lineY === Infinity) last = i; });   // a section is reached once the line has actually arrived
       setReached(last);
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };

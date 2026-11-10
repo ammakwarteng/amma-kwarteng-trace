@@ -168,14 +168,19 @@
 @media (prefers-reduced-motion: reduce) { .hero__scroll span::after { animation: none; display: none; } }
 
 @media (max-width: 760px) {
-  .hero { min-height: 700px; }
+  /* phones: the hero is laid out top to bottom (credential, pen, intro) and is only as tall as
+     its content (at least one screen), so About follows right after the links */
+  .hero {
+    height: auto; min-height: 100svh;
+    display: flex; flex-direction: column; justify-content: flex-end; gap: 22px;
+    padding: calc(88px + env(safe-area-inset-top, 0px)) 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
   .hero__word { font-size: 31vw; left: 50%; top: 46%; transform: translate(-50%, -50%); }   /* centred */
-  .hero__player { left: 16px; top: auto; bottom: calc(7vh + 160px + env(safe-area-inset-bottom, 0px)); }
+  .hero__player { position: static; }
   .sheet__card { margin-top: calc(12vh + env(safe-area-inset-top, 0px)); }
-  .hero__intro { left: 16px; right: 16px; bottom: calc(9vh + env(safe-area-inset-bottom, 0px)); }
+  .hero__intro { position: static; max-width: none; }
   .hero__communities li { font-size: 13px; }
   .hero__links a { font-size: 13px; }
-  .hero__intro { bottom: calc(7vh + env(safe-area-inset-bottom, 0px)); }
   .hero__scroll { display: none; }
 }
 

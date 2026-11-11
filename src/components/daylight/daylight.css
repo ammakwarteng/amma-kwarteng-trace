@@ -51,7 +51,7 @@
 @media (max-width: 760px) { .trail__title { font-size: 11.6vw; } }
 
 /* the hero fills the first screen, so the film's last frame lands on it exactly */
-.dhero { min-height: 100svh; align-content: center; }
+/* the hero is as tall as its content, so About follows straight after it */
 .dhero__replay { padding: 4px 0; border: 0; border-bottom: 1px solid var(--white-faint); background: none; color: var(--white-faint); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; }
 .dhero__replay:hover, .dhero__replay:focus-visible { color: var(--white); border-color: var(--white); }
 /* Leave your trace on phones: just above the intro, as it originally sat, in the hero's flow */

@@ -1,8 +1,9 @@
 import Header from "./components/Header.jsx";
 import { useCallback, useState } from "react";
 import IntroFilm from "./components/intro/IntroFilm.jsx";
+import Loader from "./components/loader/Loader.jsx";
 import HeroDaylight from "./components/daylight/HeroDaylight.jsx";
-import { AboutText } from "./components/sections/About.jsx";
+import { AboutText, Roadmap } from "./components/sections/About.jsx";
 import Trail from "./components/trail/Trail.jsx";
 import EmailLink from "./components/EmailLink.jsx";
 import Certifications from "./components/sections/Certifications.jsx";
@@ -19,7 +20,7 @@ const sections = navItems.map((item) => ({
   ...item,
   body:
     item.id === "about" ? (
-      <div className="about"><AboutText /></div>
+      <div className="about"><AboutText /><Roadmap /></div>
     ) : item.id === "projects" ? (
       <Projects />
     ) : item.id === "skills" ? (
@@ -63,6 +64,7 @@ export default function App() {
 
   return (
     <>
+      {!intro && <Loader />}
       <a className="skip-link" href="#about">Skip to content</a>
       <main>
         {intro && <IntroFilm onDone={done} />}

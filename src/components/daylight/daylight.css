@@ -54,3 +54,5 @@
 .dhero { min-height: 100svh; align-content: center; }
 .dhero__replay { padding: 4px 0; border: 0; border-bottom: 1px solid var(--white-faint); background: none; color: var(--white-faint); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; }
 .dhero__replay:hover, .dhero__replay:focus-visible { color: var(--white); border-color: var(--white); }
+/* Leave your trace on phones: just above the intro, as it originally sat, in the hero's flow */
+@media (max-width: 760px) { .dhero .hero__player { position: static; order: 0; } }

@@ -33,6 +33,23 @@ const has = (n) => Boolean(POSES[n]);
 
 // the four worlds, cut from the panorama (panorama pixels, 3200 wide) and placed along one strip
 const PANO_W = 3200, PANO_H = 1373, PANO_SCALE = 1100 / PANO_H, HORIZON = 0.716;
+// Amma's storyline: one line at a time, faded in and out with the scroll (p = scroll progress 0-100).
+// Timed to the film: scene 1 (0-17), 2 (17-30), 3 the worlds (32-70; network ~38, cloud ~42, forensics ~45,
+// governance ~47, the doors 51-70), 4 the crossroads (70-86). Nothing during the reveal: TRACE stands alone.
+// "top" lines sit above the horizon, where the crossroads leaves room; the rest sit on the empty ground below it.
+const STORY = [
+  { from: 1, to: 7.5, text: "i didn't start out knowing where i belonged." },
+  { from: 8.5, to: 16, text: "then i found cybersecurity." },
+  { from: 18, to: 29.5, text: ["it isn't one thing. it's an umbrella,", "with a whole world underneath."] },
+  { from: 32, to: 37, text: "so i explored it." },
+  { from: 37.5, to: 43.5, text: "how networks connect. how the cloud is built." },
+  { from: 44, to: 50.5, text: "what evidence leaves behind. how risk is governed." },
+  { from: 52, to: 67, text: "and who gets through which door." },
+  { from: 71, to: 76.5, text: "every path was worth knowing.", top: true },
+  { from: 77.5, to: 85.5, text: ["but one kept pulling me back:", "identity and access."], top: true },
+];
+const FADE = 1.2;
+
 const WORLDS = [
   { name: "network", from: 0, to: 1024 },
   { name: "cloud", from: 1024, to: 1840 },
@@ -178,6 +195,11 @@ export default function IntroFilm({ onDone }) {
           show(q(".s5 > .who"), p < 89 ? ART.front : p < 95 ? ART.pull : "none");
           show(q(".s5 .exit .fig"), WALK[Math.floor(Math.max(0, p - 95) * 4) % WALK.length]);
           q(".s5 .exit").forEach((el) => { el.style.opacity = p >= 95 ? 1 : 0; });
+          // the storyline: each line fades in and out over FADE units at its edges
+          q(".intro__line").forEach((el, i) => {
+            const { from, to } = STORY[i];
+            el.style.opacity = Math.max(0, Math.min(1, (p - from) / FADE, (to - p) / FADE)).toFixed(3);
+          });
           // the site's own title stays hidden until the film has landed on it (no double TRACE)
           document.documentElement.classList.toggle("intro-playing", p < 99.8);
           setSkipVisible(p < 97);
@@ -198,7 +220,7 @@ export default function IntroFilm({ onDone }) {
   return (
     <section className="intro" ref={wrap} aria-label="Intro: under the umbrella">
       <div className="intro__stage" ref={stage}>
-        <p className="visually-hidden">An illustrated short film. A woman stands in the dark; an umbrella descends and opens above her. It grows into a world of pathways leading through network security, cloud security, digital forensics, governance and risk, and identity and access. At a crossroads she follows the path of identity and access. She turns to the visitor and pulls down a sheet of paper, on which the word TRACE appears.</p>
+        <p className="visually-hidden">An illustrated short film. A woman stands in the dark; an umbrella descends and opens above her. It grows into a world of pathways leading through network security, cloud security, digital forensics, governance and risk, and identity and access. At a crossroads she follows the path of identity and access. She turns to the visitor and pulls down a sheet of paper, on which the word TRACE appears. {STORY.map((l) => [].concat(l.text).join(" ")).join(" ")}</p>
         <svg className="intro__canvas" ref={canvas} viewBox="0 0 1600 900" aria-hidden="true">
           {/* 1 the beginning */}
           <g className="s1">
@@ -268,6 +290,13 @@ export default function IntroFilm({ onDone }) {
           </g>
         </svg>
 
+        <div className="intro__story" aria-hidden="true">
+          {STORY.map((l, i) => (
+            <p key={i} className={`intro__line ${l.top ? "is-top" : ""}`} style={{ opacity: 0 }}>
+              {[].concat(l.text).map((t, k) => <span key={k}>{t}</span>)}
+            </p>
+          ))}
+        </div>
         <span className="intro__word" ref={word} aria-hidden="true">trace</span>
         {skipVisible && <button type="button" className="intro__skip mono" onClick={skip}>skip intro</button>}
       </div>

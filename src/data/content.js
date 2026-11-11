@@ -36,10 +36,10 @@ export const roadmap = [
     items: ["CyberArk Trustee", "CyberArk Defender: PAM", "CyberArk Sentry: PAM", "vaulting", "password rotation", "session monitoring"],
   },
   {
-    phase: "devsecops",
+    phase: "iam architect",
     when: "long term",
-    goal: "Automate security, identity and secrets across cloud and pipelines.",
-    items: ["secrets management", "cloud IAM", "CI/CD security", "infrastructure as code"],
+    goal: "Design how a whole organisation handles identity and access, from strategy to the systems that run it.",
+    items: ["identity architecture and strategy", "zero trust", "identity governance (IGA)", "privileged access strategy", "cloud identity across platforms", "identity standards and policy"],
   },
 ];
 

@@ -7,43 +7,77 @@ import "./intro.css";
 gsap.registerPlugin(ScrollTrigger);
 
 /*
-  "Under the umbrella": the scroll-driven intro film (rough version).
+  "Under the umbrella": the scroll-driven intro, built to Amma's storyboard.
   One pinned stage holds a 1600 x 900 drawing; the scroll scrubs one master timeline from 0 to 100.
-    01  0–14   the beginning: ground line, she opens the umbrella, rain
-    →   12–21  the camera rises into the canopy; its ribs become the arches of a hall
-    02  20–31  beneath the umbrella: a hall of arches, she looks up
-    →   29–35  the floor becomes one horizon line
-    03  35–69  different worlds: the panorama passes while she walks (walk frames follow the scroll)
-    →   66–72  the horizon frays into paths
-    04  72–86  finding a direction: gates glint red, the fingerprint doorway turns green, she reaches
-    →   86–92  the camera pulls back
-    05  90–100 the reveal: TRACE lands exactly on the site's own title, the stage fades, the site remains
-  Artwork: public/intro (Higgsfield originals, cleaned and cut). Everything else is drawn here.
+    1  0–14   The beginning: almost black, one small figure; an umbrella descends from above and opens.
+    2  13–32  Entering the umbrella: she looks up; it grows to fill the screen; its ribs become flowing pathways.
+    3  32–70  Exploring: the pathways lead into the worlds, each growing out of the horizon and giving way to the next.
+    4  70–86  Finding a direction: a crossroads; the IAM path becomes brighter, with a faint sage tint; she follows it.
+    5  86–100 The reveal: she turns to the visitor and pulls down a sheet; it fills the screen; TRACE appears for
+              the first time; she steps aside and walks out; the sheet is the portfolio.
+  No captions, no extra elements. Artwork: public/intro (Higgsfield). Anything not drawn yet is marked
+  "artwork pending" (see ART below) and is never shown as finished.
 */
 const BASE = import.meta.env.BASE_URL;
 const src = (n) => `${BASE}intro/${n}.webp`;
-const K = 0.43;                      // canvas units per artwork pixel: every pose came off one sheet at one scale
+const K = 0.36;                                   // canvas units per artwork pixel (all poses share one scale)
 const WALK = ["w1", "w2", "w3", "w4", "w5", "w6", "w7", "w8"];
-const RAIN = Array.from({ length: 14 }, (_, i) => ({ x: 160 + i * 97 + (i % 3) * 23, d: (i * 0.37) % 1.4, h: 70 + (i % 4) * 22 }));
-const GATES = [{ x: 300, y: 430 }, { x: 560, y: 380 }, { x: 1040, y: 380 }, { x: 1300, y: 430 }];
-const DOOR = { x: 800, y: 330 };
+// the artwork each moment needs; names missing from poses.json are still to be generated in Higgsfield
+const ART = { stand: "a1-stand", reach: "a2-reach", front: "a3-front", pull: "a4-pull", umbClosed: "u1-closed", umbHalf: "u2-half", umbOpen: "u3-open", iam: "iam-world" };
+const has = (n) => Boolean(POSES[n]);
 
-// a figure standing with its feet on (x, feetY); its body (not its umbrella) is centred on x
-function Figure({ name, x, feetY, scale = 1, className = "", hidden = false }) {
-  const p = POSES[name];
-  const w = p.w * K * scale, h = p.h * K * scale;
+// the four worlds, cut from the panorama (panorama pixels, 3200 wide) and placed along one strip
+const PANO_W = 3200, PANO_H = 1373, PANO_SCALE = 1100 / PANO_H, HORIZON = 0.716;
+const WORLDS = [
+  { name: "network", from: 0, to: 1024 },
+  { name: "cloud", from: 1024, to: 1840 },
+  { name: "forensics", from: 1840, to: 2310 },
+  { name: "governance", from: 2310, to: 3200 },
+];
+const IAM_W = 900;                                // room on the strip for the identity and access world
+const STRIP_W = PANO_W * PANO_SCALE + 160 + IAM_W;
+
+function Pending({ x, feetY, w, h, label }) {
   return (
-    <image href={src(name)} x={x - p.cx * w} y={feetY - h} width={w} height={h}
-      className={`fig ${className}`} data-pose={name} style={hidden ? { opacity: 0 } : undefined} />
+    <g className="pending" data-pending={label}>
+      <rect x={x - w / 2} y={feetY - h} width={w} height={h} />
+      <text x={x} y={feetY - h / 2}>artwork pending</text>
+      <text x={x} y={feetY - h / 2 + 22}>{label}</text>
+    </g>
   );
 }
 
-function ridges(cx, cy, rx, ry, n) {
-  return Array.from({ length: n }, (_, i) => {
-    const k = (i + 1) / n;
-    return <ellipse key={i} cx={cx} cy={cy + (1 - k) * ry * 0.18} rx={rx * k} ry={ry * k} pathLength="1" className="ink draw door__ridge" />;
-  });
+// a figure standing with its feet on (x, feetY); its body (not anything it holds) is centred on x
+function Figure({ name, x, feetY, scale = 1, className = "", hidden = false, label }) {
+  if (!has(name)) {
+    return (
+      <g className={`fig ${className}`} data-pose={name} style={hidden ? { opacity: 0 } : undefined}>
+        <Pending x={x} feetY={feetY} w={90 * scale} h={280 * scale} label={label || name} />
+      </g>
+    );
+  }
+  const p = POSES[name];
+  const w = p.w * K * scale, h = p.h * K * scale;
+  return <image href={src(name)} x={x - p.cx * w} y={feetY - h} width={w} height={h} data-pose={name} className={`fig ${className}`} style={hidden ? { opacity: 0 } : undefined} />;
 }
+
+// a straight rib, written as a curve with its handles on the line, so it can bend into a pathway
+const ribD = (cx, cy, ex, ey) => `M ${cx} ${cy} C ${cx + (ex - cx) / 3} ${cy + (ey - cy) / 3} ${cx + (2 * (ex - cx)) / 3} ${cy + (2 * (ey - cy)) / 3} ${ex} ${ey}`;
+const RIBS = [-160, -120, -80, -40, 0, 40, 80, 120].map((deg) => {
+  const a = ((deg - 90) * Math.PI) / 180;
+  return { ex: 800 + Math.cos(a) * 1000, ey: 450 + Math.sin(a) * 1000 };
+});
+// where each rib flows to: a gentle pathway sweeping down to the horizon, heading right, into the worlds
+const PATHWAY = (i) => `M ${-200 + i * 120} ${-60 + (i % 2) * 40} C ${300 + i * 60} ${200 + i * 30} ${700 + i * 40} ${640 - i * 4} 1700 640`;
+
+const CROSS = [
+  "M 800 880 C 760 760 520 640 300 520",
+  "M 800 880 C 790 760 650 600 590 470",
+  "M 800 880 C 812 760 930 600 1010 470",   // identity and access
+  "M 800 880 C 840 760 1080 640 1300 520",
+  "M 800 880 C 800 760 800 600 800 450",
+];
+const IAM_PATH = 2;
 
 export default function IntroFilm({ onDone }) {
   const wrap = useRef(null);
@@ -52,19 +86,15 @@ export default function IntroFilm({ onDone }) {
   const word = useRef(null);
   const [skipVisible, setSkipVisible] = useState(true);
 
-  // fit the 1600 x 900 drawing to the screen: whole frame on laptops, the centre 800 units on phones
+  // fit the 1600 x 900 drawing to the screen; TRACE lands exactly on the site's own title
   useLayoutEffect(() => {
     const fit = () => {
       const vw = innerWidth, vh = stage.current.clientHeight;
-      const portrait = vh > vw;
-      const s = portrait ? Math.min(vw / 820, vh / 900) : Math.min(vw / 1600, vh / 900) * 1.02;
+      const s = vh > vw ? Math.min(vw / 820, vh / 900) : Math.min(vw / 1600, vh / 900) * 1.02;
       canvas.current.style.setProperty("--s", s.toFixed(4));
-      // TRACE lands where the site's own title is (the hero sits right under the last frame)
-      const title = document.querySelector(".dhero__word");
-      const hero = document.querySelector(".dhero");
+      const title = document.querySelector(".dhero__word"), hero = document.querySelector(".dhero");
       if (title && hero && word.current) {
-        const t = title.getBoundingClientRect(), h = hero.getBoundingClientRect();
-        const cs = getComputedStyle(title);
+        const t = title.getBoundingClientRect(), h = hero.getBoundingClientRect(), cs = getComputedStyle(title);
         Object.assign(word.current.style, { top: `${t.top - h.top}px`, fontSize: cs.fontSize, letterSpacing: cs.letterSpacing, lineHeight: cs.lineHeight });
       }
     };
@@ -76,90 +106,79 @@ export default function IntroFilm({ onDone }) {
 
   useEffect(() => {
     const q = gsap.utils.selector(stage.current);
-    const show = (el, on) => { if (el) el.style.opacity = on ? 1 : 0; };
-    const poses = { s1: q(".s1 .fig"), s3: q(".s3 .fig") };
+    const show = (els, name) => els.forEach((el) => { el.style.opacity = el.dataset.pose === name ? 1 : 0; });
 
     const ctx = gsap.context(() => {
-      gsap.set(q(".draw, .probe"), { strokeDasharray: 1, strokeDashoffset: 1 });
-      gsap.set(q(".probe:not(.is-chosen)"), { opacity: 0 });
+      gsap.set(q(".draw"), { strokeDasharray: 1, strokeDashoffset: 1 });
       const tl = gsap.timeline({ defaults: { ease: "none" } });
+      const stripStart = 1650, stripEnd = -STRIP_W - 40;
+      const atStrip = (x) => 32 + (38 * (stripStart - x)) / (stripStart - stripEnd);   // when the strip reaches x
 
-      // 01 the beginning
-      tl.to(q(".s1 .ground"), { strokeDashoffset: 0, duration: 4 }, 0)
-        .fromTo(q(".s1"), { opacity: 1 }, { opacity: 1, duration: 0.01 }, 0)
-        .fromTo(q(".cap1"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 3 }, 2)
-        .to(q(".cap1"), { opacity: 0, duration: 2 }, 11)
-        .fromTo(q(".rain"), { opacity: 0 }, { opacity: 1, duration: 4 }, 6)
-      // → up into the canopy
-        .to(q(".s1"), { scale: 6.5, transformOrigin: "800px 300px", duration: 8, ease: "power2.in" }, 12)
-        .to(q(".s1, .rain"), { opacity: 0, duration: 3 }, 17)
-        .fromTo(q(".s2"), { opacity: 0, scale: 0.45, transformOrigin: "800px 330px" }, { opacity: 1, scale: 1, duration: 6, ease: "power2.out" }, 16)
-        .to(q(".s2 .rib"), { strokeDashoffset: 0, duration: 4, stagger: 0.3 }, 16)
-      // 02 beneath the umbrella
-        .fromTo(q(".s2 .arch"), { scale: 0.2, transformOrigin: "800px 330px", opacity: 0 }, { scale: 1.6, opacity: 1, duration: 10, stagger: 1.6 }, 20)
-        .fromTo(q(".s2 .fig"), { opacity: 0 }, { opacity: 1, duration: 2 }, 21)
-        .fromTo(q(".cap2"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 2 }, 22)
-        .to(q(".cap2"), { opacity: 0, duration: 2 }, 28)
-      // → the floor becomes the horizon
-        .to(q(".s2"), { opacity: 0, duration: 4 }, 29)
-        .fromTo(q(".s3"), { opacity: 0 }, { opacity: 1, duration: 2 }, 31)
-        .to(q(".s3 .horizon"), { strokeDashoffset: 0, duration: 4 }, 31)
-      // 03 different worlds
-        .fromTo(q(".pano"), { x: 1650 }, { x: -2620, duration: 36 }, 33)
-        .fromTo(q(".cap3"), { opacity: 0 }, { opacity: 1, duration: 2 }, 40)
-        .to(q(".cap3"), { opacity: 0, duration: 2 }, 58)
-      // → the horizon frays into paths
-        .to(q(".s3"), { opacity: 0, duration: 3 }, 68)
-        .fromTo(q(".s4"), { opacity: 0 }, { opacity: 1, duration: 2 }, 69)
-        .to(q(".s4 .path"), { strokeDashoffset: 0, duration: 4, stagger: 0.4 }, 69)
-        .to(q(".s4 .gate"), { strokeDashoffset: 0, duration: 3, stagger: 0.4 }, 71)
-        .to(q(".s4 .door__ridge"), { strokeDashoffset: 0, duration: 4, stagger: 0.15 }, 71)
-        .fromTo(q(".cap4"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 2 }, 74)
-        .to(q(".cap4"), { opacity: 0, duration: 2 }, 85);
-      // 04 the light tries each path: red at the gates, green at the fingerprint doorway
-      q(".s4 .probe:not(.is-chosen)").forEach((el, i) => {
-        tl.fromTo(el, { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, duration: 1.4 }, 75 + i * 1.3)
-          .to(q(".s4 .gate")[i], { stroke: "var(--threat)", duration: 0.4 }, 76.3 + i * 1.3)
-          .to([el, q(".s4 .gate")[i]], { opacity: 0.35, stroke: "var(--white)", duration: 0.8 }, 77 + i * 1.3);
+      // 1 the beginning: the figure appears; the umbrella descends from above and opens
+      tl.fromTo(q(".s1__who"), { opacity: 0 }, { opacity: 1, duration: 3 }, 0)
+        .fromTo(q(".umbrella"), { y: -560 }, { y: 0, duration: 9, ease: "power1.out" }, 2)
+      // 2 entering the umbrella: she looks up; it grows to fill the screen
+        .to(q(".s1"), { scale: 7, transformOrigin: "800px 300px", duration: 9, ease: "power2.in" }, 17)
+        .to(q(".s1"), { opacity: 0, duration: 3 }, 23.5)
+        .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 22)
+        .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 22);
+      // its ribs bend into flowing pathways that lead down to the horizon
+      q(".rib").forEach((el, i) => tl.to(el, { attr: { d: PATHWAY(i) }, duration: 7, ease: "power1.inOut" }, 25));
+      tl.to(q(".ribs"), { opacity: 0, duration: 3 }, 31)
+        .fromTo(q(".s3"), { opacity: 0 }, { opacity: 1, duration: 2 }, 30)
+        .to(q(".s3 .horizon"), { strokeDashoffset: 0, duration: 3 }, 30)
+      // 3 exploring: the worlds pass, each growing up out of the horizon and settling back into it
+        .fromTo(q(".strip"), { x: stripStart }, { x: stripEnd, duration: 38 }, 32);
+      q(".world").forEach((el) => {
+        const a = +el.dataset.a, b = +el.dataset.b, clip = q(`#${el.dataset.clip} .reveal`)[0];
+        const enter = atStrip(1600 - a), leave = atStrip(-b + 300);
+        tl.fromTo(clip, { attr: { y: 640, height: 0 } }, { attr: { y: -600, height: 1240 }, duration: 4, ease: "power1.out" }, Math.max(32, enter - 1))
+          .to(clip, { attr: { height: 0, y: 640 }, duration: 4, ease: "power1.in" }, leave);
       });
-      tl.fromTo(q(".s4 .probe.is-chosen"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 2 }, 80.5)
-        .to(q(".s4 .door__ridge"), { stroke: "var(--secure)", duration: 1.5, stagger: 0.08 }, 82)
-        .to(q(".s4 .door__ridge"), { attr: { rx: (i, el) => +el.getAttribute("rx") * 1.25 }, opacity: 0.4, duration: 3 }, 84)
-      // → the camera pulls back
-        .to(q(".world"), { scale: 0.28, transformOrigin: "800px 450px", duration: 6, ease: "power2.inOut" }, 86)
-        .to(q(".world"), { opacity: 0, duration: 3 }, 88)
-      // 05 the reveal: the first time the word appears
-        .fromTo(word.current, { opacity: 0, letterSpacing: "0.12em" }, { opacity: 1, letterSpacing: () => getComputedStyle(document.querySelector(".dhero__word")).letterSpacing, duration: 4, ease: "power2.out" }, 88.5)
-        .fromTo(q(".cap5"), { opacity: 0 }, { opacity: 1, duration: 2 }, 92)
-        .to(q(".cap5"), { opacity: 0, duration: 2 }, 96.5)
-        .to(stage.current, { "--bg": 0, duration: 3 }, 96.5)
-        .to(word.current, { opacity: 0, duration: 0.6 }, 99.4);
+      // 4 finding a direction: the crossroads; the IAM path comes forward; she follows it
+      tl.to(q(".s3"), { opacity: 0, duration: 3 }, 69)
+        .fromTo(q(".s4"), { opacity: 0 }, { opacity: 1, duration: 2 }, 70)
+        .to(q(".s4 .path"), { strokeDashoffset: 0, duration: 4, stagger: 0.35 }, 70)
+        .to(q(".s4 .path:not(.is-iam)"), { opacity: 0.35, duration: 3 }, 76)
+        .to(q(".s4 .path.is-iam"), { stroke: "#dfe8df", strokeWidth: 2.4, duration: 3 }, 76)
+        .fromTo(q(".s4 .walker"), { x: 0, y: 0, scale: 1 }, { x: 150, y: -330, scale: 0.42, transformOrigin: "800px 880px", duration: 8, ease: "power1.in" }, 78)
+        .to(q(".s4 .walker"), { opacity: 0, duration: 2 }, 85)
+        .to(q(".s4"), { opacity: 0, duration: 2 }, 86)
+      // 5 the reveal: she turns to the visitor and pulls down a sheet; TRACE appears on it for the first time
+        .fromTo(q(".s5"), { opacity: 0 }, { opacity: 1, duration: 1.5 }, 86)
+        .fromTo(q(".paper__sheet"), { attr: { height: 0 } }, { attr: { height: 900 }, duration: 6, ease: "power2.inOut" }, 89)
+        .fromTo(q(".paper__roll"), { y: -900 }, { y: 0, duration: 6, ease: "power2.inOut" }, 89)
+        .fromTo(word.current, { opacity: 0 }, { opacity: 1, duration: 2.5, ease: "power1.out" }, 94)
+        .fromTo(q(".s5 .exit"), { x: 0 }, { x: 980, duration: 4, ease: "power1.in" }, 95)
+        .to(q(".paper"), { opacity: 0, duration: 2.5 }, 97)
+        .to(stage.current, { "--bg": 0, duration: 2.5 }, 97.3)
+        .to(word.current, { opacity: 0, duration: 0.2 }, 99.8);
 
       ScrollTrigger.create({
-        trigger: wrap.current,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.6,
-        animation: tl,
+        trigger: wrap.current, start: "top top", end: "bottom bottom", scrub: 0.6, animation: tl,
         onUpdate: (self) => {
           const p = self.progress * 100;
-          // she changes pose with the scroll (only one image of her is ever visible)
-          const s1 = p < 5 ? "p1-shoulder" : p < 7.5 ? "p2-lift" : p < 10 ? "p3-half" : "p4-open";
-          poses.s1.forEach((el) => show(el, el.dataset.pose === s1));
-          const f = Math.floor(Math.max(0, p - 33) * 1.25) % WALK.length;
-          poses.s3.forEach((el) => show(el, el.dataset.pose === WALK[f]));
-          const s4 = p < 82 ? "p6-pause" : "p7-reach";
-          q(".s4 .fig").forEach((el) => show(el, el.dataset.pose === s4));
-          setSkipVisible(p < 96);
+          // scene 1: standing, then reaching as the umbrella arrives; she holds it from then on and looks up
+          show(q(".s1 .who"), p < 9 ? ART.stand : p < 12.5 ? ART.reach : p < 16 ? "p4-open" : "p5-back");
+          show(q(".umbrella > *"), p < 6 ? ART.umbClosed : p < 9.5 ? ART.umbHalf : ART.umbOpen);
+          q(".umbrella").forEach((el) => { el.style.opacity = p < 12.5 ? 1 : 0; });
+          // scene 3: one walk frame at a time, stepped by the scroll
+          show(q(".s3 .fig"), WALK[Math.floor(Math.max(0, p - 32) * 1.25) % WALK.length]);
+          // scene 5: facing the visitor, pulling the sheet, then walking out of the frame
+          show(q(".s5 > .who"), p < 89 ? ART.front : p < 95 ? ART.pull : "none");
+          show(q(".s5 .exit .fig"), WALK[Math.floor(Math.max(0, p - 95) * 4) % WALK.length]);
+          q(".s5 .exit").forEach((el) => { el.style.opacity = p >= 95 ? 1 : 0; });
+          // the site's own title stays hidden until the film has landed on it (no double TRACE)
+          document.documentElement.classList.toggle("intro-playing", p < 99.8);
+          setSkipVisible(p < 97);
           if (p > 99.5) onDone?.();
         },
       });
     }, stage);
-    // the ink "boils" like hand-drawn animation: a new noise seed eight times a second
     const noise = stage.current.querySelector(".ink-noise");
     let seed = 3;
     const boil = setInterval(() => { seed = (seed % 9) + 1; noise?.setAttribute("seed", String(seed)); }, 125);
-    return () => { clearInterval(boil); ctx.revert(); };
+    return () => { clearInterval(boil); ctx.revert(); document.documentElement.classList.remove("intro-playing"); };
   }, [onDone]);
 
   const skip = () => {
@@ -168,63 +187,96 @@ export default function IntroFilm({ onDone }) {
     onDone?.();
   };
 
+  let offset = 0;
   return (
-    <section className="intro" ref={wrap} aria-label="Intro film: under the umbrella">
+    <section className="intro" ref={wrap} aria-label="Intro: under the umbrella">
       <div className="intro__stage" ref={stage}>
-        <p className="visually-hidden">A short illustrated film. A woman with an umbrella walks through worlds of cybersecurity (network security, cloud security, digital forensics, governance and risk), chooses the path of identity and access management, and the paths she walked spell TRACE.</p>
-        <svg className="intro__canvas" ref={canvas} viewBox="0 0 1600 900" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+        <p className="visually-hidden">An illustrated short film. A woman stands in the dark; an umbrella descends and opens above her. It grows into a world of pathways leading through network security, cloud security, digital forensics, governance and risk, and identity and access. At a crossroads she follows the path of identity and access. She turns to the visitor and pulls down a sheet of paper, on which the word TRACE appears.</p>
+        <svg className="intro__canvas" ref={canvas} viewBox="0 0 1600 900" aria-hidden="true">
           <defs>
             <filter id="ink" filterUnits="userSpaceOnUse" x="-400" y="-400" width="2400" height="1700">
               <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" className="ink-noise" />
               <feDisplacementMap in="SourceGraphic" scale="2.2" />
             </filter>
+            {WORLDS.map((w) => (
+              <clipPath key={w.name} id={`clip-${w.name}`}><rect className="reveal" x="-100" y="640" width={(w.to - w.from) * PANO_SCALE + 200} height="0" /></clipPath>
+            ))}
+            <clipPath id="clip-iam"><rect className="reveal" x="-100" y="640" width={IAM_W + 200} height="0" /></clipPath>
           </defs>
-          <g className="world">
-            {/* 01 the beginning */}
-            <g className="s1">
-              <line className="ink draw ground" x1="0" y1="640" x2="1600" y2="640" pathLength="1" />
-              {["p1-shoulder", "p2-lift", "p3-half", "p4-open"].map((n, i) => <Figure key={n} name={n} x={800} feetY={640} hidden={i > 0} />)}
-            </g>
-            <g className="rain">{RAIN.map((r, i) => <line key={i} className="ink rain__line" x1={r.x} y1={-r.h} x2={r.x - 8} y2={0} style={{ animationDelay: `${r.d}s` }} />)}</g>
 
-            {/* 02 beneath the umbrella: the canopy's eight ribs become a hall of arches */}
-            <g className="s2" style={{ opacity: 0 }}>
-              {[[0, 0], [400, 0], [1200, 0], [1600, 0], [0, 900], [1600, 900], [0, 450], [1600, 450]].map(([x, y], i) => (
-                <line key={i} className="ink draw rib" x1="800" y1="330" x2={x} y2={y} pathLength="1" />
+          {/* 1 the beginning */}
+          <g className="s1">
+            <g className="umbrella">
+              {[ART.umbClosed, ART.umbHalf, ART.umbOpen].map((n) => has(n)
+                ? <image key={n} data-pose={n} href={src(n)} x={830 - (POSES[n].w * K) / 2} y={640 - 300 - POSES[n].h * K} width={POSES[n].w * K} height={POSES[n].h * K} />
+                : <g key={n} data-pose={n}><Pending x={830} feetY={330} w={170} h={170} label={n.replace(/^u\d-/, "umbrella, ")} /></g>)}
+            </g>
+            <g className="s1__who">
+              {[ART.stand, ART.reach, "p4-open", "p5-back"].map((n, i) => (
+                <Figure key={n} name={n} x={800} feetY={640} className="who" hidden={i > 0}
+                  label={{ [ART.stand]: "standing, empty-handed", [ART.reach]: "reaching up" }[n]} />
               ))}
-              {[0, 1, 2, 3, 4].map((i) => <path key={i} className="ink arch" d="M 560 900 L 560 380 A 240 240 0 0 1 1040 380 L 1040 900" />)}
-              <Figure name="p5-back" x={800} feetY={870} scale={0.8} />
             </g>
+          </g>
 
-            {/* 03 different worlds, on one horizon line */}
-            <g className="s3" style={{ opacity: 0 }}>
-              <line className="ink draw horizon" x1="0" y1="640" x2="1600" y2="640" pathLength="1" />
-              <image className="pano" href={src("worlds")} x="0" y={640 - 0.716 * 1100} width={2564} height={1100} />
-              {WALK.map((n, i) => <Figure key={n} name={n} x={560} feetY={646} scale={1.06} hidden={i > 0} />)}
-            </g>
+          {/* 2 the ribs that become pathways */}
+          <g className="ribs" style={{ opacity: 0 }}>
+            {RIBS.map((r, i) => <path key={i} className="ink draw rib" d={ribD(800, 450, r.ex, r.ey)} pathLength="1" />)}
+          </g>
 
-            {/* 04 finding a direction */}
-            <g className="s4" style={{ opacity: 0 }}>
-              {GATES.map((g, i) => <path key={`p${i}`} className="ink draw path" d={`M 800 840 Q ${(800 + g.x) / 2} ${640} ${g.x} ${g.y + 60}`} pathLength="1" />)}
-              <path className="ink draw path" d={`M 800 840 L ${DOOR.x} ${DOOR.y + 150}`} pathLength="1" />
-              {GATES.map((g, i) => <path key={`g${i}`} className="ink draw gate" d={`M ${g.x - 22} ${g.y + 60} L ${g.x - 22} ${g.y + 8} A 22 22 0 0 1 ${g.x + 22} ${g.y + 8} L ${g.x + 22} ${g.y + 60}`} pathLength="1" />)}
-              {GATES.map((g, i) => <path key={`l${i}`} className="probe" d={`M 800 840 Q ${(800 + g.x) / 2} ${640} ${g.x} ${g.y + 60}`} pathLength="1" />)}
-              <path className="probe is-chosen" d={`M 800 840 L ${DOOR.x} ${DOOR.y + 150}`} pathLength="1" />
-              <g className="door">{ridges(DOOR.x, DOOR.y, 70, 120, 11)}</g>
-              <Figure name="p6-pause" x={800} feetY={880} scale={0.62} />
-              <Figure name="p7-reach" x={800} feetY={880} scale={0.62} hidden />
+          {/* 3 the worlds, on one horizon */}
+          <g className="s3" style={{ opacity: 0 }}>
+            <line className="ink draw horizon" x1="0" y1="640" x2="1600" y2="640" pathLength="1" />
+            <g className="strip">
+              {WORLDS.map((w) => {
+                const width = (w.to - w.from) * PANO_SCALE, x = offset;
+                offset += width;
+                return (
+                  <g key={w.name} className="world" data-a={x} data-b={x + width} data-clip={`clip-${w.name}`} transform={`translate(${x} 0)`}>
+                    <g clipPath={`url(#clip-${w.name})`}>
+                      <svg x="0" y={640 - HORIZON * 1100} width={width} height="1100" viewBox={`${w.from} 0 ${w.to - w.from} ${PANO_H}`} preserveAspectRatio="none">
+                        <image href={src("worlds")} x="0" y="0" width={PANO_W} height={PANO_H} />
+                      </svg>
+                    </g>
+                  </g>
+                );
+              })}
+              <g className="world" data-a={offset + 160} data-b={offset + 160 + IAM_W} data-clip="clip-iam" transform={`translate(${offset + 160} 0)`}>
+                <g clipPath="url(#clip-iam)">
+                  {has(ART.iam)
+                    ? <image href={src(ART.iam)} x="0" y={640 - HORIZON * 1100} width={IAM_W} height="1100" />
+                    : <Pending x={IAM_W / 2} feetY={636} w={IAM_W - 80} h={380} label="identity and access world" />}
+                </g>
+              </g>
             </g>
+            {WALK.map((n, i) => <Figure key={n} name={n} x={560} feetY={646} scale={1.06} hidden={i > 0} />)}
+          </g>
+
+          {/* 4 finding a direction */}
+          <g className="s4" style={{ opacity: 0 }}>
+            {CROSS.map((d, i) => <path key={i} className={`ink draw path ${i === IAM_PATH ? "is-iam" : ""}`} d={d} pathLength="1" />)}
+            <g className="walker"><Figure name="p5-back" x={800} feetY={880} scale={0.62} /></g>
+          </g>
+
+          {/* 5 the reveal: the sheet she pulls down, drawn in code */}
+          <g className="s5" style={{ opacity: 0 }}>
+            <g className="paper">
+              <rect className="paper__sheet" x="150" y="0" width="1300" height="0" />
+              <g className="paper__roll">
+                <path className="ink paper__edge" d="M 150 0 L 150 900 M 1450 0 L 1450 900" />
+                <path className="ink" d="M 140 900 C 400 906 1200 894 1460 900" />
+                <path className="ink" d="M 146 912 C 420 917 1180 907 1454 912" />
+              </g>
+            </g>
+            {[ART.front, ART.pull].map((n, i) => (
+              <Figure key={n} name={n} x={800} feetY={880} scale={0.8} className="who" hidden={i > 0}
+                label={{ [ART.front]: "facing the visitor, arms raised", [ART.pull]: "pulling the sheet down" }[n]} />
+            ))}
+            <g className="exit" style={{ opacity: 0 }}>{WALK.map((n, i) => <Figure key={n} name={n} x={800} feetY={880} scale={0.8} hidden={i > 0} />)}</g>
           </g>
         </svg>
 
-        {/* captions: real text, set into the frame */}
-        <p className="cap cap1">cybersecurity is not one thing.</p>
-        <p className="cap cap2">it is a shelter with many rooms.</p>
-        <p className="cap cap3">four of the many rooms.</p>
-        <p className="cap cap4">I chose the path of identity.</p>
-        <p className="cap cap5">trace · my cybersecurity learning archive.</p>
         <span className="intro__word" ref={word} aria-hidden="true">trace</span>
-
         {skipVisible && <button type="button" className="intro__skip mono" onClick={skip}>skip intro</button>}
       </div>
     </section>

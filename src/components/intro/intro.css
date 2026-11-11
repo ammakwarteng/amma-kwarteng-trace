@@ -8,21 +8,16 @@
 }
 .intro__canvas { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform: translate(-50%, -50%) scale(var(--s, 0.8)); overflow: visible; }
 .intro .ink { fill: none; stroke: var(--white); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: url(#ink); }
-.intro .arch { opacity: 0; }
-.intro .door__ridge { stroke-width: 1.3; }
-.intro .probe { fill: none; stroke: var(--white); stroke-width: 2.6; stroke-linecap: round; vector-effect: non-scaling-stroke; opacity: 0; }
-.intro .probe.is-chosen { stroke: var(--secure); opacity: 1; }
 .intro .fig { transition: opacity 0.12s linear; }
-.intro .rain__line { stroke-width: 1; opacity: 0.55; animation: intro-rain 1.4s linear infinite; }
-@keyframes intro-rain { from { transform: translateY(-20px); } to { transform: translateY(980px); } }
+/* identity and access: brighter white with a faint sage tint, never glowing */
+.intro { --iam: #dfe8df; }
+/* the sheet she pulls down: page black, edged in ink */
+.intro .paper__sheet { fill: var(--black); }
+.intro .paper__edge { stroke-width: 1.4; }
+/* artwork still to come from Higgsfield: shown as an outline only, never as finished art */
+.intro .pending rect { fill: none; stroke: var(--white-faint); stroke-width: 1.2; stroke-dasharray: 6 6; vector-effect: non-scaling-stroke; }
+.intro .pending text { fill: var(--white-faint); font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; text-anchor: middle; }
 
-/* captions: real text set into the frame, like subtitles */
-.intro .cap {
-  position: absolute; left: 50%; bottom: 11%; transform: translateX(-50%); margin: 0; width: max-content; max-width: calc(100vw - 32px);
-  font-size: clamp(17px, 1.6vw, 22px); letter-spacing: -0.01em; color: var(--white); opacity: 0; text-align: center;
-}
-.intro .cap3, .intro .cap4 { bottom: auto; top: 14%; }
-.intro .cap5 { bottom: 16%; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-dim); }
 /* the word, landing exactly on the site's own title (position and size are measured in IntroFilm) */
 .intro__word { position: absolute; left: 0; right: 0; text-align: center; margin: 0; font-weight: 400; text-transform: uppercase; color: var(--white); opacity: 0; white-space: nowrap; }
 .intro__skip {
@@ -35,3 +30,6 @@
 /* the site sits right under the film's last frame, so the hand-off is exact */
 .after-intro { position: relative; margin-top: -100svh; }
 @media (max-width: 760px) { .intro { height: 560svh; } }
+
+/* while the film plays, the site's own title waits underneath; the film's TRACE hands over to it at the very end */
+html.intro-playing .dhero__word { opacity: 0; }

@@ -66,3 +66,5 @@
 :root .trail__sec.is-right .resume__lead { text-align: left; }
 :root .trail__contact .email a { font-size: clamp(16px, 1.7vw, 22px); letter-spacing: -0.015em; }
 :root .trail__links a { font-size: 16px; letter-spacing: -0.015em; }
+/* the roadmap step's description reads in full white, like the About paragraph */
+:root .road__goal { color: var(--white); }

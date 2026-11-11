@@ -24,7 +24,7 @@ const src = (n) => `${BASE}intro/${n}.webp`;
 // so artwork pixels are converted per sheet (body height in pixels on that sheet -> 252 canvas units)
 const BODY_PX = { p: 700, a: 835, b: 835, e: 595, w: 635 };
 const kOf = (name) => 252 / (BODY_PX[name[0]] || 700);
-const UK = 100 / 706;                             // the umbrella on its own, drawn at the size she holds it
+const UK = 165 / 706;                             // the umbrella on its own: open, its canopy is a little wider than her shoulders and reach
 const WALK = ["e2", "e3", "e4", "e5", "e6", "e7"];           // empty-handed walk (the umbrella has become the world)
 const AWAY = ["b1", "b2", "b3", "b4"];                         // walking away, seen from behind
 // the artwork each moment needs; names missing from poses.json are still to be generated in Higgsfield
@@ -39,7 +39,7 @@ const WORLDS = [
   { name: "forensics", from: 1840, to: 2310 },
   { name: "governance", from: 2310, to: 3200 },
 ];
-const IAM_W = 1300;                               // the identity and access world (doors), at the same scale as her
+const IAM_W = 2560;                               // the identity and access world (doors): the doors stand taller than her
 const STRIP_W = PANO_W * PANO_SCALE + 160 + IAM_W;
 
 // where her raised hand is in the reaching pose: the umbrella's crook comes to rest there
@@ -125,7 +125,6 @@ export default function IntroFilm({ onDone }) {
       gsap.set(q(".draw"), { strokeDasharray: 1, strokeDashoffset: 1 });
       const tl = gsap.timeline({ defaults: { ease: "none" } });
       const stripStart = 1650, stripEnd = -STRIP_W - 40;
-      const atStrip = (x) => 32 + (38 * (stripStart - x)) / (stripStart - stripEnd);   // when the strip reaches x
 
       // 1 the beginning: the figure appears; the umbrella descends from above and opens
       // she is on screen from the first frame; the umbrella starts well above the top edge,
@@ -142,14 +141,8 @@ export default function IntroFilm({ onDone }) {
       tl.to(q(".ribs"), { opacity: 0, duration: 3 }, 31)
         .fromTo(q(".s3"), { opacity: 0 }, { opacity: 1, duration: 2 }, 30)
         .to(q(".s3 .horizon"), { strokeDashoffset: 0, duration: 3 }, 30)
-      // 3 exploring: the worlds pass, each growing up out of the horizon and settling back into it
+      // 3 exploring: the worlds pass whole, from the right edge of the screen to the left (never cut off)
         .fromTo(q(".strip"), { x: stripStart }, { x: stripEnd, duration: 38 }, 32);
-      q(".world").forEach((el) => {
-        const a = +el.dataset.a, b = +el.dataset.b, clip = q(`#${el.dataset.clip} .reveal`)[0];
-        const enter = atStrip(1600 - a), leave = atStrip(-b + 300);
-        tl.fromTo(clip, { attr: { y: 640, height: 0 } }, { attr: { y: -600, height: 1240 }, duration: 4, ease: "power1.out" }, Math.max(32, enter - 1))
-          .to(clip, { attr: { height: 0, y: 640 }, duration: 4, ease: "power1.in" }, leave);
-      });
       // 4 finding a direction: the crossroads; the IAM path comes forward; she follows it
       tl.to(q(".s3"), { opacity: 0, duration: 3 }, 69)
         .fromTo(q(".s4"), { opacity: 0 }, { opacity: 1, duration: 2 }, 70)
@@ -207,13 +200,6 @@ export default function IntroFilm({ onDone }) {
       <div className="intro__stage" ref={stage}>
         <p className="visually-hidden">An illustrated short film. A woman stands in the dark; an umbrella descends and opens above her. It grows into a world of pathways leading through network security, cloud security, digital forensics, governance and risk, and identity and access. At a crossroads she follows the path of identity and access. She turns to the visitor and pulls down a sheet of paper, on which the word TRACE appears.</p>
         <svg className="intro__canvas" ref={canvas} viewBox="0 0 1600 900" aria-hidden="true">
-          <defs>
-            {WORLDS.map((w) => (
-              <clipPath key={w.name} id={`clip-${w.name}`}><rect className="reveal" x="-100" y="640" width={(w.to - w.from) * PANO_SCALE + 200} height="0" /></clipPath>
-            ))}
-            <clipPath id="clip-iam"><rect className="reveal" x="-100" y="640" width={IAM_W + 200} height="0" /></clipPath>
-          </defs>
-
           {/* 1 the beginning */}
           <g className="s1">
             <g className="umbrella">
@@ -242,21 +228,17 @@ export default function IntroFilm({ onDone }) {
                 const width = (w.to - w.from) * PANO_SCALE, x = offset;
                 offset += width;
                 return (
-                  <g key={w.name} className="world" data-a={x} data-b={x + width} data-clip={`clip-${w.name}`} transform={`translate(${x} 0)`}>
-                    <g clipPath={`url(#clip-${w.name})`}>
+                  <g key={w.name} className="world" transform={`translate(${x} 0)`}>
                       <svg x="0" y={640 - HORIZON * 1100} width={width} height="1100" viewBox={`${w.from} 0 ${w.to - w.from} ${PANO_H}`} preserveAspectRatio="none">
                         <image href={src("worlds")} x="0" y="0" width={PANO_W} height={PANO_H} />
                       </svg>
-                    </g>
                   </g>
                 );
               })}
-              <g className="world" data-a={offset + 160} data-b={offset + 160 + IAM_W} data-clip="clip-iam" transform={`translate(${offset + 160} 0)`}>
-                <g clipPath="url(#clip-iam)">
+              <g className="world" transform={`translate(${offset + 160} 0)`}>
                   {has(ART.iam)
                     ? <image href={src(ART.iam)} x="0" y={640 - POSES[ART.iam].horizon * (IAM_W * POSES[ART.iam].h / POSES[ART.iam].w)} width={IAM_W} height={IAM_W * POSES[ART.iam].h / POSES[ART.iam].w} />
                     : <Pending x={IAM_W / 2} feetY={636} w={IAM_W - 80} h={380} label="identity and access world" />}
-                </g>
               </g>
             </g>
             {WALK.map((n, i) => <Figure key={n} name={n} x={560} feetY={646} scale={1.06} hidden={i > 0} />)}

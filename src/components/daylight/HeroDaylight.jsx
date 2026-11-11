@@ -15,7 +15,7 @@ export default function HeroDaylight() {
       </h1>
       <figure className="dhero__frame">
         <Fingerprint />
-        <figcaption className="mono"><span>fig. 00 · trace</span><span>generated · belongs to no one</span></figcaption>
+        <figcaption className="mono"><span>fig. 00 · trace</span></figcaption>
       </figure>
       <p className="dhero__lede mono">{owner.headline} {owner.subline}</p>
       <ul className="dhero__links mono">

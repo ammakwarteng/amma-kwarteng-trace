@@ -83,7 +83,7 @@ export default function Trail({ sections, start = 1 }) {
         d += ` L ${x} ${midY - 14} L ${x + c} ${midY} L ${p.x - c} ${midY} L ${p.x} ${midY + 14} L ${p.x} ${p.y}`;
         x = p.x; y = p.y;
       });
-      d += ` L ${x} ${h}`;
+      // the line ends at the last section's marker (no tail running on into empty space)
       setGeo({ d, w, h, nodes: pts.map(({ x, y }) => ({ x, y })) });
     };
     // Rebuild whenever the page or anything inside a section changes size

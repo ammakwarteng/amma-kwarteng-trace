@@ -56,7 +56,7 @@ const WORLDS = [
   { name: "forensics", from: 1840, to: 2310 },
   { name: "governance", from: 2310, to: 3200 },
 ];
-const IAM_W = 3200;                               // the identity and access world (doors): even the smallest door is taller than her
+const IAM_W = 2200;                               // the identity and access world (doors): a typical door a little taller than her
 const STRIP_W = PANO_W * PANO_SCALE + 160 + IAM_W;
 
 // where her raised hand is in the reaching pose: the umbrella's crook comes to rest there

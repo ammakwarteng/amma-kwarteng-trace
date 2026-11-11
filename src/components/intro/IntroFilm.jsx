@@ -20,8 +20,13 @@ gsap.registerPlugin(ScrollTrigger);
 */
 const BASE = import.meta.env.BASE_URL;
 const src = (n) => `${BASE}intro/${n}.webp`;
-const K = 0.36;                                   // canvas units per artwork pixel (all poses share one scale)
-const WALK = ["w1", "w2", "w3", "w4", "w5", "w6", "w7", "w8"];
+// her height on screen is the same in every pose: each Higgsfield sheet was drawn at its own scale,
+// so artwork pixels are converted per sheet (body height in pixels on that sheet -> 252 canvas units)
+const BODY_PX = { p: 700, a: 835, b: 835, e: 595, w: 635 };
+const kOf = (name) => 252 / (BODY_PX[name[0]] || 700);
+const UK = 100 / 706;                             // the umbrella on its own, drawn at the size she holds it
+const WALK = ["e2", "e3", "e4", "e5", "e6", "e7"];           // empty-handed walk (the umbrella has become the world)
+const AWAY = ["b1", "b2", "b3", "b4"];                         // walking away, seen from behind
 // the artwork each moment needs; names missing from poses.json are still to be generated in Higgsfield
 const ART = { stand: "a1-stand", reach: "a2-reach", front: "a3-front", pull: "a4-pull", umbClosed: "u1-closed", umbHalf: "u2-half", umbOpen: "u3-open", iam: "iam-world" };
 const has = (n) => Boolean(POSES[n]);
@@ -36,6 +41,14 @@ const WORLDS = [
 ];
 const IAM_W = 900;                                // room on the strip for the identity and access world
 const STRIP_W = PANO_W * PANO_SCALE + 160 + IAM_W;
+
+// where her raised hand is in the reaching pose: the umbrella's crook comes to rest there
+const HAND = (() => {
+  const r = POSES["a2-reach"];
+  if (!r) return { x: 850, y: 370 };
+  const w = r.w * kOf("a2-reach"), h = r.h * kOf("a2-reach");
+  return { x: 800 - r.cx * w + r.hand[0] * w, y: 640 - h + r.hand[1] * h };
+})();
 
 function Pending({ x, feetY, w, h, label }) {
   return (
@@ -57,7 +70,7 @@ function Figure({ name, x, feetY, scale = 1, className = "", hidden = false, lab
     );
   }
   const p = POSES[name];
-  const w = p.w * K * scale, h = p.h * K * scale;
+  const w = p.w * kOf(name) * scale, h = p.h * kOf(name) * scale;
   return <image href={src(name)} x={x - p.cx * w} y={feetY - h} width={w} height={h} data-pose={name} className={`fig ${className}`} style={hidden ? { opacity: 0 } : undefined} />;
 }
 
@@ -159,11 +172,13 @@ export default function IntroFilm({ onDone }) {
         onUpdate: (self) => {
           const p = self.progress * 100;
           // scene 1: standing, then reaching as the umbrella arrives; she holds it from then on and looks up
-          show(q(".s1 .who"), p < 9 ? ART.stand : p < 12.5 ? ART.reach : p < 16 ? "p4-open" : "p5-back");
+          show(q(".s1 .who"), p < 5 ? ART.stand : p < 9 ? "a1b-look" : p < 12.5 ? ART.reach : p < 16 ? "p4-open" : "p5-back");
           show(q(".umbrella > *"), p < 6 ? ART.umbClosed : p < 9.5 ? ART.umbHalf : ART.umbOpen);
           q(".umbrella").forEach((el) => { el.style.opacity = p < 12.5 ? 1 : 0; });
           // scene 3: one walk frame at a time, stepped by the scroll
           show(q(".s3 .fig"), WALK[Math.floor(Math.max(0, p - 32) * 1.25) % WALK.length]);
+          // scene 4: walking away along the IAM path
+          show(q(".s4 .walker .fig"), AWAY[Math.floor(Math.max(0, p - 78) * 1.4) % AWAY.length]);
           // scene 5: facing the visitor, pulling the sheet, then walking out of the frame
           show(q(".s5 > .who"), p < 89 ? ART.front : p < 95 ? ART.pull : "none");
           show(q(".s5 .exit .fig"), WALK[Math.floor(Math.max(0, p - 95) * 4) % WALK.length]);
@@ -208,11 +223,11 @@ export default function IntroFilm({ onDone }) {
           <g className="s1">
             <g className="umbrella">
               {[ART.umbClosed, ART.umbHalf, ART.umbOpen].map((n) => has(n)
-                ? <image key={n} data-pose={n} href={src(n)} x={830 - (POSES[n].w * K) / 2} y={640 - 300 - POSES[n].h * K} width={POSES[n].w * K} height={POSES[n].h * K} />
+                ? <image key={n} data-pose={n} href={src(n)} x={HAND.x - POSES[n].cx * POSES[n].w * UK} y={HAND.y - POSES[n].h * UK} width={POSES[n].w * UK} height={POSES[n].h * UK} />
                 : <g key={n} data-pose={n}><Pending x={830} feetY={330} w={170} h={170} label={n.replace(/^u\d-/, "umbrella, ")} /></g>)}
             </g>
             <g className="s1__who">
-              {[ART.stand, ART.reach, "p4-open", "p5-back"].map((n, i) => (
+              {[ART.stand, "a1b-look", ART.reach, "p4-open", "p5-back"].map((n, i) => (
                 <Figure key={n} name={n} x={800} feetY={640} className="who" hidden={i > 0}
                   label={{ [ART.stand]: "standing, empty-handed", [ART.reach]: "reaching up" }[n]} />
               ))}
@@ -255,7 +270,7 @@ export default function IntroFilm({ onDone }) {
           {/* 4 finding a direction */}
           <g className="s4" style={{ opacity: 0 }}>
             {CROSS.map((d, i) => <path key={i} className={`ink draw path ${i === IAM_PATH ? "is-iam" : ""}`} d={d} pathLength="1" />)}
-            <g className="walker"><Figure name="p5-back" x={800} feetY={880} scale={0.62} /></g>
+            <g className="walker">{AWAY.map((n, i) => <Figure key={n} name={n} x={800} feetY={880} scale={0.62} hidden={i > 0} />)}</g>
           </g>
 
           {/* 5 the reveal: the sheet she pulls down, drawn in code */}

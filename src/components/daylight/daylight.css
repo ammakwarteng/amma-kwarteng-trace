@@ -56,3 +56,13 @@
 .dhero__replay:hover, .dhero__replay:focus-visible { color: var(--white); border-color: var(--white); }
 /* Leave your trace on phones: just above the intro, as it originally sat, in the hero's flow */
 @media (max-width: 760px) { .dhero .hero__player { position: static; order: 0; } }
+
+/* ---------- reading text inside the opened sections ----------
+   Same fonts (Inter Tight for reading, JetBrains Mono for labels); only the setting changes:
+   sentences get a little more air than the giant titles, long text in the right-hand sections
+   reads left-aligned, and the contact email sits a step below the section title. */
+/* (":root" keeps these ahead of the section stylesheets, which load after this one) */
+:root :is(.about__text p, .resume__lead, .project__summary, .trail__body, .road__goal, .cert__name, .shot__figure figcaption) { letter-spacing: -0.01em; }
+:root .trail__sec.is-right .resume__lead { text-align: left; }
+:root .trail__contact .email a { font-size: clamp(16px, 1.7vw, 22px); letter-spacing: -0.015em; }
+:root .trail__links a { font-size: 16px; letter-spacing: -0.015em; }

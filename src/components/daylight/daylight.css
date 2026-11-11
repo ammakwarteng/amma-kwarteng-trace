@@ -28,8 +28,8 @@
 }
 .dhero__word { margin: 0 0 clamp(10px, 2vh, 24px); font-weight: 400; font-size: clamp(92px, min(19vw, 30vh), 280px); line-height: 0.82; letter-spacing: -0.055em; text-transform: uppercase; }
 /* the fingerprint in its frame */
-.dhero__frame { margin: 0; width: min(100%, 460px); padding: 12px; background: var(--black-2); border: 1px solid var(--line); box-shadow: 0 30px 60px -42px rgba(0, 0, 0, 0.6); }
-.fingerprint { display: block; width: 100%; aspect-ratio: 4 / 3; color: var(--white); background: var(--black-2); }
+.dhero__frame { margin: 0; width: min(100%, 460px); padding: 12px; background: var(--black); border: 1px solid var(--line); box-shadow: 0 30px 60px -42px rgba(0, 0, 0, 0.6); }
+.fingerprint { display: block; width: 100%; aspect-ratio: 4 / 3; color: var(--white); background: var(--black); }
 .dhero__frame figcaption { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white-faint); }
 .dhero__scan { display: inline-flex; align-items: center; gap: 7px; transition: color 0.3s; }
 .dhero__scan::before { content: ""; width: 6px; height: 6px; background: currentColor; }

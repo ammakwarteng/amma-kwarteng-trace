@@ -19,7 +19,7 @@ function drawRidges(ctx, w, h, ink) {
   // never cross; small breaks and a slight drift make it read as a real print
   for (let k = 1; k * step < R * 1.3; k++) {
     const rad = k * step;
-    ctx.lineWidth = Math.max(1, step * 0.4);
+    ctx.lineWidth = Math.max(1.2, step * 0.5);
     let drawing = true, run = 0;
     ctx.beginPath();
     for (let i = 0; i <= 320; i++) {
@@ -62,7 +62,7 @@ export default function Fingerprint({ className = "", onResult }) {
       raf = 0;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.globalAlpha = reduce ? 0.85 : 0.42; ctx.drawImage(ridges, 0, 0);
+      ctx.globalAlpha = reduce ? 1 : 0.78; ctx.drawImage(ridges, 0, 0);
       if (!reduce) {
         const period = 6400, pass = Math.floor(now / period), p = (now % period) / period;
         const SCAN = 0.68;                                  // scanning, then the result lights up
@@ -70,12 +70,13 @@ export default function Fingerprint({ className = "", onResult }) {
           const q = p / SCAN, band = canvas.height * 0.16, y = (q * 1.3 - 0.15) * canvas.height;
           ctx.save(); ctx.beginPath(); ctx.rect(0, y - band, canvas.width, band * 2); ctx.clip();
           ctx.globalAlpha = 1; ctx.drawImage(ridges, 0, 0); ctx.restore();
-          ctx.globalAlpha = 0.5; ctx.fillStyle = ink; ctx.fillRect(0, y, canvas.width, Math.max(1, dpr));
+          ctx.globalAlpha = 0.85; ctx.fillStyle = ink; ctx.fillRect(0, y, canvas.width, Math.max(1.5, dpr * 1.5));
           if (lastPass !== -2) { lastPass = -2; onResult?.("scanning"); }
         } else {
           const denied = pass % 3 === 2;
           const r = (p - SCAN) / (1 - SCAN);              // 0..1 across the result
-          ctx.globalAlpha = Math.sin(Math.PI * Math.min(1, r * 1.15)) * 0.95;
+          ctx.globalAlpha = 0.35; ctx.drawImage(ridges, 0, 0);
+          ctx.globalAlpha = Math.min(1, Math.sin(Math.PI * Math.min(1, r * 1.15)) * 1.3);
           ctx.drawImage(denied ? red : green, 0, 0);
           if (lastPass !== pass) { lastPass = pass; onResult?.(denied ? "denied" : "verified"); }
         }

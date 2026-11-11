@@ -1,5 +1,6 @@
 import Header from "./components/Header.jsx";
-import Loader from "./components/loader/Loader.jsx";
+import { useCallback, useState } from "react";
+import IntroFilm from "./components/intro/IntroFilm.jsx";
 import HeroDaylight from "./components/daylight/HeroDaylight.jsx";
 import { AboutText } from "./components/sections/About.jsx";
 import Trail from "./components/trail/Trail.jsx";
@@ -43,14 +44,32 @@ const sections = navItems.map((item) => ({
     ) : null,
 }));
 
+// The intro film plays on the first visit in a browser session. It is skipped for visitors who prefer
+// reduced motion and for links straight to a section (like #projects); "replay intro" brings it back.
+const SEEN = "trace-intro-seen";
+const seen = () => { try { return sessionStorage.getItem(SEEN) === "1"; } catch { return false; } };
+const markSeen = (v) => { try { v ? sessionStorage.setItem(SEEN, "1") : sessionStorage.removeItem(SEEN); } catch { /* storage blocked */ } };
+
 export default function App() {
+  const [intro, setIntro] = useState(() =>
+    !seen() && !location.hash && !matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const done = useCallback(() => markSeen(true), []);
+  const replay = () => {
+    markSeen(false);
+    setIntro(true);
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  };
+  const reduce = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   return (
     <>
-      <Loader />
       <a className="skip-link" href="#about">Skip to content</a>
-      <Header />
       <main>
-        <HeroDaylight />
+        {intro && <IntroFilm onDone={done} />}
+        <div className={intro ? "after-intro" : undefined} style={{ position: "relative" }}>
+          <Header />
+          <HeroDaylight onReplay={reduce ? undefined : replay} />
+        </div>
         <Trail sections={sections} />
       </main>
       <footer className="site-footer mono">© {new Date().getFullYear()} amma kwarteng. all rights reserved.</footer>

@@ -27,9 +27,13 @@
   padding: calc(120px + env(safe-area-inset-top, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px)) calc(110px + env(safe-area-inset-bottom, 0px)) max(var(--gutter), env(safe-area-inset-left, 0px));
 }
 .dhero__word { margin: 0 0 clamp(10px, 2vh, 24px); font-weight: 400; font-size: clamp(92px, min(19vw, 30vh), 280px); line-height: 0.82; letter-spacing: -0.055em; text-transform: uppercase; }
-.dhero__frame { margin: 0; width: min(100%, 460px); padding: 12px; background: var(--black-2); border: 1px solid var(--line); box-shadow: 0 30px 60px -42px rgba(0, 0, 0, 0.4); }
-.fingerprint { display: block; width: 100%; aspect-ratio: 4 / 3; color: var(--white); background: var(--black-2); }
-.dhero__frame figcaption { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white-faint); }
+/* the fingerprint sits straight on the page: no box, no edge, its outer ridges fade into the paper */
+.dhero__frame { margin: 0; width: min(100%, 420px); padding: 0; background: none; border: 0; box-shadow: none; }
+.fingerprint {
+  display: block; width: 100%; aspect-ratio: 4 / 3; color: var(--white); background: transparent;
+  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+}
+.dhero__frame figcaption { display: flex; justify-content: center; gap: 12px; margin-top: 6px; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white-faint); }
 .dhero__lede { margin: 0; max-width: 36ch; font-size: 12.5px; line-height: 1.6; letter-spacing: 0.1em; text-transform: uppercase; }
 .dhero__links { list-style: none; margin: 0; padding: 0; display: flex; gap: 22px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
 .dhero__links a { text-decoration: none; border-bottom: 1px solid var(--white); }

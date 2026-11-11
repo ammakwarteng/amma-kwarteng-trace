@@ -192,10 +192,7 @@ export default function IntroFilm({ onDone }) {
         },
       });
     }, stage);
-    const noise = stage.current.querySelector(".ink-noise");
-    let seed = 3;
-    const boil = setInterval(() => { seed = (seed % 9) + 1; noise?.setAttribute("seed", String(seed)); }, 125);
-    return () => { clearInterval(boil); ctx.revert(); document.documentElement.classList.remove("intro-playing"); };
+    return () => { ctx.revert(); document.documentElement.classList.remove("intro-playing"); };
   }, [onDone]);
 
   const skip = () => {
@@ -211,10 +208,6 @@ export default function IntroFilm({ onDone }) {
         <p className="visually-hidden">An illustrated short film. A woman stands in the dark; an umbrella descends and opens above her. It grows into a world of pathways leading through network security, cloud security, digital forensics, governance and risk, and identity and access. At a crossroads she follows the path of identity and access. She turns to the visitor and pulls down a sheet of paper, on which the word TRACE appears.</p>
         <svg className="intro__canvas" ref={canvas} viewBox="0 0 1600 900" aria-hidden="true">
           <defs>
-            <filter id="ink" filterUnits="userSpaceOnUse" x="-400" y="-400" width="2400" height="1700">
-              <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" className="ink-noise" />
-              <feDisplacementMap in="SourceGraphic" scale="2.2" />
-            </filter>
             {WORLDS.map((w) => (
               <clipPath key={w.name} id={`clip-${w.name}`}><rect className="reveal" x="-100" y="640" width={(w.to - w.from) * PANO_SCALE + 200} height="0" /></clipPath>
             ))}

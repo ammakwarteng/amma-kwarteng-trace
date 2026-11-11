@@ -24,7 +24,7 @@ const src = (n) => `${BASE}intro/${n}.webp`;
 // so artwork pixels are converted per sheet (body height in pixels on that sheet -> 252 canvas units)
 const BODY_PX = { p: 700, a: 835, b: 835, e: 595, w: 635 };
 const kOf = (name) => 252 / (BODY_PX[name[0]] || 700);
-const UK = 165 / 706;                             // the umbrella on its own: open, its canopy is a little wider than her shoulders and reach
+const UK = 230 / 706;                             // the umbrella on its own: open, it is wide enough to shelter her
 const WALK = ["e2", "e3", "e4", "e5", "e6", "e7"];           // empty-handed walk (the umbrella has become the world)
 const AWAY = ["b1", "b2", "b3", "b4"];                         // walking away, seen from behind
 // the artwork each moment needs; names missing from poses.json are still to be generated in Higgsfield
@@ -39,7 +39,7 @@ const WORLDS = [
   { name: "forensics", from: 1840, to: 2310 },
   { name: "governance", from: 2310, to: 3200 },
 ];
-const IAM_W = 2560;                               // the identity and access world (doors): the doors stand taller than her
+const IAM_W = 3200;                               // the identity and access world (doors): even the smallest door is taller than her
 const STRIP_W = PANO_W * PANO_SCALE + 160 + IAM_W;
 
 // where her raised hand is in the reaching pose: the umbrella's crook comes to rest there
@@ -167,9 +167,9 @@ export default function IntroFilm({ onDone }) {
         onUpdate: (self) => {
           const p = self.progress * 100;
           // scene 1: standing, then reaching as the umbrella arrives; she holds it from then on and looks up
-          show(q(".s1 .who"), p < 5 ? ART.stand : p < 9 ? "a1b-look" : p < 12.5 ? ART.reach : p < 16 ? "p4-open" : "p5-back");
+          show(q(".s1 .who"), p < 5 ? ART.stand : p < 9 ? "a1b-look" : ART.reach);   // she keeps holding the big umbrella until it fills the screen
           show(q(".umbrella > *"), p < 6 ? ART.umbClosed : p < 9.5 ? ART.umbHalf : ART.umbOpen);
-          q(".umbrella").forEach((el) => { el.style.opacity = p < 12.5 ? 1 : 0; });
+          q(".umbrella").forEach((el) => { el.style.opacity = 1; });
           // scene 3: one walk frame at a time, stepped by the scroll
           show(q(".s3 .fig"), WALK[Math.floor(Math.max(0, p - 32) * 1.25) % WALK.length]);
           // scene 4: walking away along the IAM path
@@ -208,7 +208,7 @@ export default function IntroFilm({ onDone }) {
                 : <g key={n} data-pose={n}><Pending x={830} feetY={330} w={170} h={170} label={n.replace(/^u\d-/, "umbrella, ")} /></g>)}
             </g>
             <g className="s1__who">
-              {[ART.stand, "a1b-look", ART.reach, "p4-open", "p5-back"].map((n, i) => (
+              {[ART.stand, "a1b-look", ART.reach].map((n, i) => (
                 <Figure key={n} name={n} x={800} feetY={640} className="who" hidden={i > 0}
                   label={{ [ART.stand]: "standing, empty-handed", [ART.reach]: "reaching up" }[n]} />
               ))}

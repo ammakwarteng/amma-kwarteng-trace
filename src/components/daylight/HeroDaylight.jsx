@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { owner, links } from "../../data/site.js";
 import EmailLink from "../EmailLink.jsx";
 import Fingerprint from "./Fingerprint.jsx";
@@ -8,14 +9,15 @@ import "./daylight.css";
 // Daylight hero: the TRACE wordmark with the crosshair locked on its A, a framed generated
 // fingerprint being scanned, and the intro line with links.
 export default function HeroDaylight() {
+  const [scan, setScan] = useState("scanning");   // scanning | verified | denied
   return (
     <section className="dhero" id="top" aria-labelledby="hero-title">
       <h1 id="hero-title" className="dhero__word">
         <LockWord text="trace" at={2} /><span className="visually-hidden">, the portfolio of {owner.name}</span>
       </h1>
       <figure className="dhero__frame">
-        <Fingerprint />
-        <figcaption className="mono"><span>fig. 00 · trace</span></figcaption>
+        <Fingerprint onResult={setScan} />
+        <figcaption className="mono"><span>fig. 00 · trace</span><span className={`dhero__scan is-${scan}`} aria-hidden="true">{scan}</span></figcaption>
       </figure>
       <p className="dhero__lede mono">{owner.headline} {owner.subline}</p>
       <ul className="dhero__links mono">

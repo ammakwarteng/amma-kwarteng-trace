@@ -5,8 +5,8 @@
   gap: 10px;
   padding: 12px 14px 14px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(22, 22, 22, 0.06);
+  border: 1px solid rgba(22, 22, 22, 0.16);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 20px 40px -24px rgba(0, 0, 0, 0.9);
@@ -24,14 +24,14 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(22, 22, 22, 0.35);
   background: transparent;
   color: var(--white);
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s;
 }
 .doodle__pin svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.doodle__pin:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); }
+.doodle__pin:hover:not(:disabled) { background: rgba(22, 22, 22, 0.12); }
 .doodle__pin.is-done { background: var(--secure); border-color: var(--secure); color: #0a0a0a; }
 .doodle__pin:disabled { opacity: 0.35; cursor: not-allowed; }
 
@@ -42,9 +42,9 @@
   margin: 0 auto;
   border-radius: 14px;
   background:
-    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.09) 1px, transparent 1.4px) 0 0 / 14px 14px,
+    radial-gradient(circle at 1px 1px, rgba(22, 22, 22, 0.09) 1px, transparent 1.4px) 0 0 / 14px 14px,
     #111;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(22, 22, 22, 0.1);
   overflow: visible;
 }
 .doodle__canvas { display: block; border-radius: 14px; touch-action: none; cursor: crosshair; }
@@ -55,7 +55,7 @@
   place-items: center;
   font-family: var(--font-mono);
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(22, 22, 22, 0.3);
   pointer-events: none;
 }
 
@@ -76,7 +76,7 @@
   left: 0;
   width: 36px;
   border-radius: 14px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  background: linear-gradient(90deg, transparent, rgba(22, 22, 22, 0.35), transparent);
   pointer-events: none;
   animation: sweep 0.42s cubic-bezier(0.6, 0, 0.3, 1) forwards;
 }
@@ -91,13 +91,13 @@
   place-items: center;
   border-radius: 50%;
   border: 0;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(22, 22, 22, 0.08);
   color: var(--white);
   cursor: pointer;
   transition: background 0.2s, opacity 0.2s;
 }
 .doodle__tool svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.doodle__tool:hover:not(:disabled) { background: rgba(255, 255, 255, 0.16); }
+.doodle__tool:hover:not(:disabled) { background: rgba(22, 22, 22, 0.16); }
 .doodle__tool:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .doodle__colors {
@@ -108,7 +108,7 @@
   padding: 8px 12px;
   margin: 0 auto;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(22, 22, 22, 0.06);
 }
 .doodle__swatch {
   width: 14px;
@@ -120,7 +120,7 @@
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.doodle__swatch.is-on { transform: scale(1.35); box-shadow: 0 0 0 3px #0a0a0a, 0 0 0 4.5px rgba(255, 255, 255, 0.7); }
+.doodle__swatch.is-on { transform: scale(1.35); box-shadow: 0 0 0 3px #0a0a0a, 0 0 0 4.5px rgba(22, 22, 22, 0.7); }
 
 /* the pinned doodle: a floating sticker on the page */
 .pinned {
@@ -147,7 +147,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(22, 22, 22, 0.4);
   background: #0a0a0a;
   color: var(--white);
   font-size: 14px;

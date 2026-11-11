@@ -10,7 +10,7 @@
   pointer-events: none;
   overflow: visible;
 }
-.trail__ghost { fill: none; stroke: rgba(255, 255, 255, 0.08); stroke-width: 1; stroke-dasharray: 2 6; }
+.trail__ghost { fill: none; stroke: rgba(22, 22, 22, 0.08); stroke-width: 1; stroke-dasharray: 2 6; }
 .trail__path { fill: none; stroke: var(--white); stroke-width: 1.2; stroke-linejoin: round; }
 .trail__head { transition: opacity 0.2s; }
 .trail__head circle { fill: var(--black); stroke: var(--white); stroke-width: 1.2; }
@@ -67,7 +67,7 @@
 .trail__sec.is-open .trail__icon { transform: rotate(45deg); opacity: 1; }
 
 .trail__hint { margin: -6px 0 0; color: var(--white-faint); cursor: default; }
-.trail__sec.is-open .trail__hint { color: rgba(255, 255, 255, 0.3); }
+.trail__sec.is-open .trail__hint { color: rgba(22, 22, 22, 0.3); }
 .trail__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--ease); }
 .trail__panel-inner { overflow: hidden; }
 .trail__sec.is-open .trail__panel { grid-template-rows: 1fr; }
@@ -92,7 +92,7 @@
 .trail__sec.is-reached .trail__node {
   background: var(--white);
   border-color: var(--white);
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 6px rgba(22, 22, 22, 0.12);
 }
 .trail__hop { color: var(--white-faint); transition: color 0.3s; }
 .trail__sec.is-reached .trail__hop { color: var(--white); }

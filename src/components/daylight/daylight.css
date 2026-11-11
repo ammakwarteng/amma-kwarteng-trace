@@ -1,0 +1,46 @@
+/* TRACE — Daylight. A light, airy page in the site's own type (Inter Tight + JetBrains Mono).
+   Signature: the trace crosshair locks onto one letter of each big word (LockWord). */
+
+/* ---------- the crosshair on one letter ---------- */
+.lockword { white-space: nowrap; }
+.lock { position: relative; display: inline-block; color: transparent; -webkit-text-stroke: max(1px, 0.012em) var(--white); padding: 0 0.02em; }
+.lock::before, .lock::after { content: ""; position: absolute; opacity: 0; transition: opacity 0.5s ease 0.4s; pointer-events: none; }
+.lock::before { left: 50%; top: -0.06em; bottom: -0.06em; width: max(1px, 0.012em); transform: translateX(-50%); background: linear-gradient(var(--white) 0 16%, transparent 16% 84%, var(--white) 84%); }
+.lock::after { top: 52%; left: -0.08em; right: -0.08em; height: max(1px, 0.012em); background: linear-gradient(90deg, var(--white) 0 16%, transparent 16% 84%, var(--white) 84%); }
+.lock > i {
+  --b: max(1px, 0.012em); --a: 0.15em;
+  position: absolute; inset: -0.1em -0.1em; pointer-events: none; opacity: 0; transform: scale(1.6);
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
+  background:
+    linear-gradient(var(--white), var(--white)) left top / var(--a) var(--b) no-repeat, linear-gradient(var(--white), var(--white)) left top / var(--b) var(--a) no-repeat,
+    linear-gradient(var(--white), var(--white)) right top / var(--a) var(--b) no-repeat, linear-gradient(var(--white), var(--white)) right top / var(--b) var(--a) no-repeat,
+    linear-gradient(var(--white), var(--white)) left bottom / var(--a) var(--b) no-repeat, linear-gradient(var(--white), var(--white)) left bottom / var(--b) var(--a) no-repeat,
+    linear-gradient(var(--white), var(--white)) right bottom / var(--a) var(--b) no-repeat, linear-gradient(var(--white), var(--white)) right bottom / var(--b) var(--a) no-repeat;
+}
+.lockword.is-in .lock > i { opacity: 1; transform: none; }
+.lockword.is-in .lock::before, .lockword.is-in .lock::after { opacity: 0.9; }
+@media (prefers-reduced-motion: reduce) { .lock > i, .lock::before, .lock::after { transition: none; } }
+
+/* ---------- hero ---------- */
+.dhero {
+  position: relative; display: grid; justify-items: center; text-align: center; gap: clamp(20px, 3vh, 30px);
+  padding: calc(120px + env(safe-area-inset-top, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px)) calc(110px + env(safe-area-inset-bottom, 0px)) max(var(--gutter), env(safe-area-inset-left, 0px));
+}
+.dhero__word { margin: 0 0 clamp(10px, 2vh, 24px); font-weight: 400; font-size: clamp(92px, min(19vw, 30vh), 280px); line-height: 0.82; letter-spacing: -0.055em; text-transform: uppercase; }
+.dhero__frame { margin: 0; width: min(100%, 460px); padding: 12px; background: var(--black-2); border: 1px solid var(--line); box-shadow: 0 30px 60px -42px rgba(0, 0, 0, 0.4); }
+.fingerprint { display: block; width: 100%; aspect-ratio: 4 / 3; color: var(--white); background: var(--black-2); }
+.dhero__frame figcaption { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white-faint); }
+.dhero__lede { margin: 0; max-width: 36ch; font-size: 12.5px; line-height: 1.6; letter-spacing: 0.1em; text-transform: uppercase; }
+.dhero__links { list-style: none; margin: 0; padding: 0; display: flex; gap: 22px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+.dhero__links a { text-decoration: none; border-bottom: 1px solid var(--white); }
+.dhero .hero__scroll { height: 70px; }
+@media (max-width: 760px) {
+  .dhero { padding: calc(96px + env(safe-area-inset-top, 0px)) 16px 40px; }
+  .dhero__word { font-size: 27vw; }
+  .dhero .hero__scroll { display: none; }
+}
+
+/* ---------- section openers: big sans capitals with the crosshair ---------- */
+.trail__title { font-family: var(--font-display); font-style: normal; text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.88; font-size: clamp(54px, 9vw, 150px); }
+.trail__hop { font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; }
+@media (max-width: 760px) { .trail__title { font-size: 11.6vw; } }

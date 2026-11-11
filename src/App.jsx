@@ -1,6 +1,7 @@
 import Header from "./components/Header.jsx";
 import Loader from "./components/loader/Loader.jsx";
-import Hero from "./components/Hero.jsx";
+import HeroDaylight from "./components/daylight/HeroDaylight.jsx";
+import { AboutText } from "./components/sections/About.jsx";
 import Trail from "./components/trail/Trail.jsx";
 import EmailLink from "./components/EmailLink.jsx";
 import Certifications from "./components/sections/Certifications.jsx";
@@ -13,10 +14,12 @@ import { navItems, links } from "./data/site.js";
 
 // Each section that is ready (see navItems in site.js). About is part of the hero stage
 // (Hero.jsx), so the numbered sections below it start at 02.
-const sections = navItems.filter((item) => item.id !== "about").map((item) => ({
+const sections = navItems.map((item) => ({
   ...item,
   body:
-    item.id === "projects" ? (
+    item.id === "about" ? (
+      <div className="about"><AboutText /></div>
+    ) : item.id === "projects" ? (
       <Projects />
     ) : item.id === "skills" ? (
       <Skills />
@@ -47,8 +50,8 @@ export default function App() {
       <a className="skip-link" href="#about">Skip to content</a>
       <Header />
       <main>
-        <Hero />
-        <Trail sections={sections} start={2} />
+        <HeroDaylight />
+        <Trail sections={sections} />
       </main>
       <footer className="site-footer mono">© {new Date().getFullYear()} amma kwarteng. all rights reserved.</footer>
     </>

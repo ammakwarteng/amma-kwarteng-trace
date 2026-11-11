@@ -9,11 +9,11 @@
   --blue: var(--black);       /* kept so older rules resolve */
   --blue-deep: var(--black-2);
   --white: #ffffff;
-  --white-dim: rgba(255, 255, 255, 0.72);
-  --white-faint: rgba(255, 255, 255, 0.4);
-  --line: rgba(255, 255, 255, 0.28);
-  --glass: rgba(255, 255, 255, 0.06);
-  --glass-edge: rgba(255, 255, 255, 0.22);
+  --white-dim: rgba(22, 22, 22, 0.72);
+  --white-faint: rgba(22, 22, 22, 0.4);
+  --line: rgba(22, 22, 22, 0.28);
+  --glass: rgba(22, 22, 22, 0.06);
+  --glass-edge: rgba(22, 22, 22, 0.22);
   --ink: #0b0b0b;
   --signal: #ffffff;
   --threat: #ff2b2b;          /* red: threats and access denied */

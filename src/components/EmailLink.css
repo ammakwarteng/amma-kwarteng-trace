@@ -9,4 +9,4 @@
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 }
-.email__copy:hover { border-color: var(--white); background: rgba(255, 255, 255, 0.08); }
+.email__copy:hover { border-color: var(--white); background: rgba(22, 22, 22, 0.08); }

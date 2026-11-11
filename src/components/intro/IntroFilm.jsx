@@ -128,8 +128,10 @@ export default function IntroFilm({ onDone }) {
       const atStrip = (x) => 32 + (38 * (stripStart - x)) / (stripStart - stripEnd);   // when the strip reaches x
 
       // 1 the beginning: the figure appears; the umbrella descends from above and opens
-      tl.fromTo(q(".s1__who"), { opacity: 0 }, { opacity: 1, duration: 3 }, 0)
-        .fromTo(q(".umbrella"), { y: -560 }, { y: 0, duration: 9, ease: "power1.out" }, 2)
+      // she is on screen from the first frame; the umbrella starts well above the top edge,
+      // so a tall phone screen does not show its tip before the visitor scrolls
+      tl.set(q(".s1__who"), { opacity: 1 }, 0)
+        .fromTo(q(".umbrella"), { y: -1400 }, { y: 0, duration: 9, ease: "power1.out" }, 2)
       // 2 entering the umbrella: she looks up; it grows to fill the screen
         .to(q(".s1"), { scale: 7, transformOrigin: "800px 300px", duration: 9, ease: "power2.in" }, 17)
         .to(q(".s1"), { opacity: 0, duration: 3 }, 23.5)

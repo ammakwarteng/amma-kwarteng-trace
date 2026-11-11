@@ -40,7 +40,7 @@
 .dhero__links a { text-decoration: none; border-bottom: 1px solid var(--white); }
 .dhero .hero__scroll { height: 70px; }
 @media (max-width: 760px) {
-  .dhero { padding: calc(96px + env(safe-area-inset-top, 0px)) 16px 96px; }
+  .dhero { padding: calc(156px + env(safe-area-inset-top, 0px)) 16px 96px; }   /* clear room under her name before TRACE */
   .dhero__word { font-size: 27vw; }
   .dhero .hero__scroll { display: none; }
 }

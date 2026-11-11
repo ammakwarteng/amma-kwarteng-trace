@@ -12,6 +12,8 @@ import "./daylight.css";
 // Daylight hero: the TRACE wordmark with the crosshair locked on its A, a framed generated
 // fingerprint being scanned, and the intro line with links.
 const PIN_KEY = "trace-pinned-doodle";
+// Leave your trace is off for now (Amma's call); set to true to bring it back as it was.
+const LEAVE_TRACE = false;
 
 export default function HeroDaylight({ onReplay }) {
   // Leave your trace: a visitor's pinned doodle floats on the page and is remembered on their device.
@@ -49,7 +51,7 @@ export default function HeroDaylight({ onReplay }) {
       <h1 id="hero-title" className="dhero__word">
         <LockWord text="trace" at={2} /><span className="visually-hidden">, the portfolio of {owner.name}</span>
       </h1>
-      {pinned && (
+      {LEAVE_TRACE && pinned && (
         <figure className="pinned">
           <img src={pinned} alt="Your pinned doodle" />
           <figcaption className="pinned__label">your trace</figcaption>
@@ -57,14 +59,14 @@ export default function HeroDaylight({ onReplay }) {
         </figure>
       )}
 
-      <div className="hero__player" onPointerDown={(e) => e.stopPropagation()}>
+      {LEAVE_TRACE && <div className="hero__player" onPointerDown={(e) => e.stopPropagation()}>
         <button type="button" className="hero__pen" onClick={() => { setPadOpen(true); track("leave-your-trace-opened", "Leave your trace: pad opened"); }} aria-expanded={padOpen} aria-haspopup="dialog">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 16l1-4 8.5-8.5a2.1 2.1 0 0 1 3 3L8 15l-4 1zM12 5l3 3" /></svg>
           leave your trace
         </button>
-      </div>
+      </div>}
 
-      {padOpen && createPortal(
+      {LEAVE_TRACE && padOpen && createPortal(
         // The pad drops in from the top of the screen like a sheet.
         <div className={`sheet ${closing ? "is-closing" : ""}`} role="dialog" aria-modal="true" aria-label="Leave your trace">
           <div className="sheet__backdrop" onClick={closePad} />

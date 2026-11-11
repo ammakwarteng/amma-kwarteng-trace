@@ -39,7 +39,7 @@ const WORLDS = [
   { name: "forensics", from: 1840, to: 2310 },
   { name: "governance", from: 2310, to: 3200 },
 ];
-const IAM_W = 900;                                // room on the strip for the identity and access world
+const IAM_W = 1300;                               // the identity and access world (doors), at the same scale as her
 const STRIP_W = PANO_W * PANO_SCALE + 160 + IAM_W;
 
 // where her raised hand is in the reaching pose: the umbrella's crook comes to rest there
@@ -259,7 +259,7 @@ export default function IntroFilm({ onDone }) {
               <g className="world" data-a={offset + 160} data-b={offset + 160 + IAM_W} data-clip="clip-iam" transform={`translate(${offset + 160} 0)`}>
                 <g clipPath="url(#clip-iam)">
                   {has(ART.iam)
-                    ? <image href={src(ART.iam)} x="0" y={640 - HORIZON * 1100} width={IAM_W} height="1100" />
+                    ? <image href={src(ART.iam)} x="0" y={640 - POSES[ART.iam].horizon * (IAM_W * POSES[ART.iam].h / POSES[ART.iam].w)} width={IAM_W} height={IAM_W * POSES[ART.iam].h / POSES[ART.iam].w} />
                     : <Pending x={IAM_W / 2} feetY={636} w={IAM_W - 80} h={380} label="identity and access world" />}
                 </g>
               </g>

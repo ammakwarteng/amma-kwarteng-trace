@@ -117,8 +117,8 @@
 .resume__label.idl { display: block; letter-spacing: 0.14em; }
 .resume__label .resume__dot { margin-right: 10px; }
 .resume__field .resume__box { display: block; color: inherit; letter-spacing: normal; font-size: inherit; }
-.resume__box input { border-radius: 0; border-color: rgba(22, 22, 22, 0.14); }
-.resume__box input:focus { border-color: rgba(22, 22, 22, 0.3); }
+.resume__box input { border-radius: 0; border-color: rgba(255, 255, 255, 0.14); }
+.resume__box input:focus { border-color: rgba(255, 255, 255, 0.3); }
 .resume__box.tf--threat input { border-color: rgba(255, 43, 43, 0.35); }
 .resume__box::before { z-index: 1; }
 
@@ -127,6 +127,6 @@
 .project__meta .project__status.idl { gap: 8px; color: var(--white-faint); }
 .project__meta span.project__status.idl b { color: var(--white-dim); }
 .cert { border-radius: 2px; --tf-inset: -1px; --tf-from: -9px; }
-.cert.is-earned { border-color: rgba(22, 22, 22, 0.16); } /* the frame marks it as verified */
+.cert.is-earned { border-color: rgba(255, 255, 255, 0.16); } /* the frame marks it as verified */
 .cert__top.idl { font-size: 10px; }
 .community__badge.idl { padding: 0; border: 0; border-radius: 0; font-size: 11px; letter-spacing: 0.14em; color: var(--white-faint); }

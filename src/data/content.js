@@ -26,20 +26,22 @@ export const roadmap = [
       "access requests and approvals",
       "access reviews and audit evidence",
       "Microsoft Entra ID",
+      "Microsoft SC-900",
       "Microsoft SC-300",
+      "Okta Certified Professional",
     ],
   },
   {
     phase: "iam engineer",
     when: "then",
     goal: "Design and run identity and privileged access systems, including CyberArk PAM.",
-    items: ["CyberArk Trustee", "CyberArk Defender: PAM", "CyberArk Sentry: PAM", "vaulting", "password rotation", "session monitoring"],
+    items: ["CyberArk Trustee", "CyberArk Defender: PAM", "CyberArk Sentry: PAM", "Okta Certified Administrator", "vaulting", "password rotation", "session monitoring"],
   },
   {
     phase: "iam architect",
     when: "long term",
     goal: "Design how a whole organisation handles identity and access, from strategy to the systems that run it.",
-    items: ["identity architecture and strategy", "zero trust", "identity governance (IGA)", "privileged access strategy", "cloud identity across platforms", "identity standards and policy"],
+    items: ["identity architecture and strategy", "zero trust", "identity governance (IGA)", "privileged access strategy", "cloud identity across platforms", "identity standards and policy", "CyberArk Guardian", "CISSP"],
   },
 ];
 
@@ -51,9 +53,13 @@ export const certifications = [
   { name: "CompTIA Security+", code: "Sec+", issuer: "CompTIA", status: "next" },
   { name: "Microsoft SC-900", code: "SC-900", issuer: "Microsoft", status: "planned" },
   { name: "Microsoft SC-300: Identity and Access Administrator", code: "SC-300", issuer: "Microsoft", status: "next" },
+  { name: "Okta Certified Professional", code: "Okta Pro", issuer: "Okta", status: "planned" },
   { name: "CyberArk Certified Trustee", code: "Trustee", issuer: "CyberArk", status: "planned" },
   { name: "CyberArk Defender: PAM", code: "Defender", issuer: "CyberArk", status: "planned" },
   { name: "CyberArk Sentry: PAM", code: "Sentry", issuer: "CyberArk", status: "planned" },
+  { name: "Okta Certified Administrator", code: "Okta Admin", issuer: "Okta", status: "planned" },
+  { name: "CyberArk Certified Guardian", code: "Guardian", issuer: "CyberArk", status: "planned" },
+  { name: "CISSP", code: "CISSP", issuer: "ISC2", status: "planned" },
 ];
 
 // Projects, newest first. Add a new object at the top of the list for each

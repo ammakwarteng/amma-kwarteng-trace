@@ -4,11 +4,11 @@ import "./sections.css";
 
 const LABEL = { studying: "currently studying", next: "next goal", planned: "planned", earned: "earned" };
 
-// Shown publicly: earned certifications plus the one being studied and the
-// next goal. "planned" ones stay in content.js. Change a status to "earned"
-// only once the exam is passed. The strip always scrolls; with only a few
+// Shown publicly: every certification on Amma's pathway, earned first, then the one
+// being studied, the next goals, and the planned ones, each labelled. Change a status
+// to "earned" only once the exam is passed. The strip always scrolls; with only a few
 // cards they are repeated so the loop fills even a wide screen.
-const ORDER = { earned: 0, studying: 1, next: 2 };
+const ORDER = { earned: 0, studying: 1, next: 2, planned: 3 };
 const shown = certifications
   .filter((c) => c.status in ORDER)
   .sort((a, b) => ORDER[a.status] - ORDER[b.status]);

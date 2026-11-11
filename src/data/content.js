@@ -97,38 +97,6 @@ export const projects = [
     ],
     tags: ["Active Directory", "Windows Server 2022", "Group Policy", "DNS", "VMware", "PowerShell", "IAM", "troubleshooting"],
   },
-  {
-    name: "TRACE — this portfolio",
-    type: "project",
-    year: "2026",
-    status: "live",
-    summary:
-      "An interactive cybersecurity portfolio on my own domain, with a living typographic hero, an employer-only encrypted resume and an access-card sign-out that ends in a session audit log.",
-    points: [
-      "Designed the concept and look of an interactive cybersecurity portfolio",
-      "Designed the full visual identity: layout, interactions and logo",
-      "Registered a custom domain and configured DNS records (A, CNAME, TXT) for GitHub Pages hosting and HTTPS",
-      "Locked my resume behind an access code using AES-256 encryption, so only employers I share it with can open it",
-      "Set up privacy-friendly analytics with the dashboard restricted to me only",
-      "Verified domain ownership and set up automatic publishing on every update",
-      "Designed TRACE IMPRINT: the wordmark reconstructs itself on load and leaves faint silver imprints of its letterforms wherever you move or click",
-      "Designed a \"leave your trace\" doodle pad where visitors draw and pin their own doodle",
-      "Designed an access-card sign-out: a brushed-silver magnetic-stripe credential that visitors drag through a swipe reader, with a swipe sound, a reader beep and a green access light",
-      "Designed a session audit log that closes the visit the way an IAM system records it: credential read, authentication, least-privilege authorization, sign-out and token revocation",
-      "Added private event counts for doodles, resume unlocks and badge swipes, so I can see how visitors use the site without collecting personal data",
-      "Designed the TRACE visual identity: corner-bracket frames, record-style labels (PRJ-01, CERT, MBR) and a target-lock animation used across the site",
-      "Added a loading screen that replays when a visitor starts a new session",
-    ],
-    gallery: [
-      { src: "projects/trace/01.webp", caption: "The hero: an animated portrait behind ribbed glass, with the serif trace title" },
-      { src: "projects/trace/02.webp", caption: "One small scroll: the portrait glides out of the hero" },
-      { src: "projects/trace/03.webp", caption: "It settles beside About, opened here to its pull quote" },
-      { src: "projects/trace/04.webp", caption: "Section openers set like a magazine, joined by the tracing line" },
-      { src: "projects/trace/05.webp", caption: "Projects read as articles, each with a captioned lead picture" },
-    ],
-    image: { src: "projects/logo.svg", alt: "My logo: a tracking reticle", caption: "my logo" },
-    tags: ["DNS", "HTTPS", "encryption", "access control", "GitHub", "UX/UI"],
-  },
 ];
 
 // Skills, grouped. Only skills with proof (a project, lab, certification or

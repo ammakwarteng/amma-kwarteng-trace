@@ -6,5 +6,5 @@
 .project__lead figcaption { font-family: var(--font-mono); font-style: normal; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
 .project__lead img { border: 1px solid var(--line); }
 .about__text p:first-child { font-size: clamp(24px, 3.4vw, 44px); line-height: 1.05; letter-spacing: -0.035em; text-transform: uppercase; }
-.about__text p + p { color: var(--white-faint); }
+.about__text p + p { color: var(--white); }   /* the About paragraph reads in full white */
 @media (max-width: 760px) { .trail__title { font-size: 11.6vw; } }

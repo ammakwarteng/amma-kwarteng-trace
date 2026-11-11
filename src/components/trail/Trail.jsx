@@ -119,7 +119,10 @@ export default function Trail({ sections, start = 1 }) {
     const update = () => {
       raf = 0;
       const box = wrapRef.current.getBoundingClientRect();
-      const lineY = reduceMotion() ? Infinity : window.innerHeight * 0.6 - box.top;
+      // at the bottom of the page the last sections can never reach the reading line, so the
+      // whole route is drawn and every section counts as reached
+      const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      const lineY = reduceMotion() || atEnd ? Infinity : window.innerHeight * 0.6 - box.top;
       const L = lineY === Infinity ? total : Math.max(0, lengthAtY(lineY));
       path.style.strokeDashoffset = `${total - L}`;
       const p = path.getPointAtLength(L);

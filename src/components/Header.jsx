@@ -39,7 +39,7 @@ export default function Header() {
     <header className="header">
       <a className="header__brand" href="#top" aria-label={`${owner.name}, home`}>
         <Mark />
-        <span>{owner.brand}</span>
+        <span className="visually-hidden">{owner.brand}</span>{/* just the mark at the top; the name stays for screen readers */}
       </a>
 
 

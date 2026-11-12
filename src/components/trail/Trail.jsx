@@ -17,6 +17,7 @@ export default function Trail({ sections, start = 1 }) {
   const wrapRef = useRef(null);
   const pathRef = useRef(null);
   const headRef = useRef(null);
+  const introDone = useRef(false);   // the load-in draw plays once, not again on every layout change
   const [geo, setGeo] = useState({ d: "", w: 0, h: 0, nodes: [] });
   const [reached, setReached] = useState(-1);
   // Every section starts closed; the visitor opens what they want to read.
@@ -68,9 +69,11 @@ export default function Trail({ sections, start = 1 }) {
         return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top, prevBottom };
       });
       const w = wrap.clientWidth, h = wrap.scrollHeight;
-      // phones: the line starts at the first section's marker; laptops: from the hero's centred scroll cue
-      const phone = w < 761 && pts[0];
-      let x = phone ? pts[0].x : w / 2, y = phone ? pts[0].y : 0;
+      // the line starts just under "replay intro" in the hero (centred), so it fills the space
+      // between the hero and the first section; without that link, at the top of the trail
+      const replay = document.querySelector(".dhero__replay");
+      const startY = replay ? replay.getBoundingClientRect().bottom - box.top + 22 : 0;
+      let x = w / 2, y = Math.min(startY, (pts[0]?.y ?? 0) - 40);
       let d = `M ${x} ${y}`;
       pts.forEach((p) => {
         // orthogonal hop: down, across, down, with small chamfered corners.
@@ -92,7 +95,7 @@ export default function Trail({ sections, start = 1 }) {
         const lastBottom = Math.max(...[...lastSec.children].map((c) => c.getBoundingClientRect().bottom)) - box.top;
         if (lastBottom + 28 > y) { d += ` L ${x} ${lastBottom + 28}`; y = lastBottom + 28; }
       }
-      setGeo({ d, w, h, nodes: pts.map(({ x, y }) => ({ x, y })) });
+      setGeo({ d, w, h, nodes: pts.map(({ x, y }) => ({ x, y })), first: pts[0]?.y ?? 0 });
     };
     // Rebuild whenever the page or anything inside a section changes size
     // (a section or a roadmap step opening grows its content without
@@ -124,6 +127,23 @@ export default function Trail({ sections, start = 1 }) {
       return lo;
     };
 
+    // As the page loads, the line draws itself from under "replay intro" down to About's marker
+    // (once the intro film, if any, has finished). After that, scrolling takes over.
+    const firstLen = lengthAtY(geo.first);
+    let introT = null, introL = reduceMotion() || introDone.current ? firstLen : 0, stopped = false;
+    const INTRO_MS = 1600;
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    const tickIntro = (now) => {
+      if (stopped) return;
+      if (document.documentElement.classList.contains("intro-playing")) { introT = null; requestAnimationFrame(tickIntro); return; }
+      if (introT === null) introT = now + 250;
+      const k = Math.min(1, Math.max(0, (now - introT) / INTRO_MS));
+      introL = firstLen * ease(k);
+      update();
+      if (k < 1) requestAnimationFrame(tickIntro); else introDone.current = true;
+    };
+    if (!reduceMotion() && !introDone.current) requestAnimationFrame(tickIntro);
+
     // Once the line has reached its end under Contact, it stays there (ball included) until the
     // visitor deliberately scrolls back up; small bounces and Safari's toolbar don't pull it back.
     let endY = null;
@@ -138,7 +158,7 @@ export default function Trail({ sections, start = 1 }) {
       else if (endY !== null && window.scrollY < endY - 140) endY = null;   // scrolled back up on purpose
       const atEnd = endY !== null;
       const lineY = reduceMotion() || atEnd ? Infinity : window.innerHeight * 0.6 - box.top;
-      const L = lineY === Infinity ? total : Math.max(0, lengthAtY(lineY));
+      const L = lineY === Infinity ? total : Math.max(introL, lengthAtY(lineY));
       path.style.strokeDashoffset = `${total - L}`;
       const p = path.getPointAtLength(L);
       if (headRef.current) {
@@ -154,6 +174,7 @@ export default function Trail({ sections, start = 1 }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
+      stopped = true;
       cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);

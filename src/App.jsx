@@ -74,7 +74,10 @@ export default function App() {
         </div>
         <Trail sections={sections} />
       </main>
-      <footer className="site-footer mono">© {new Date().getFullYear()} amma kwarteng. all rights reserved.</footer>
+      <footer className="site-footer mono">
+        <span>© {new Date().getFullYear()} amma kwarteng. all rights reserved.</span>
+        <span className="site-footer__updated">last updated {__UPDATED__.toLowerCase()}</span>
+      </footer>
     </>
   );
 }

@@ -92,3 +92,5 @@
 :root .trail__sec.is-right .resume__msg { text-align: left; justify-self: stretch; }
 /* "employer access" reads in full white, like the status beside it */
 :root .resume__label.idl { color: var(--white); }
+/* footer: the copyright line, with when the site was last updated beneath it */
+:root .site-footer { display: grid; gap: 6px; justify-items: center; }

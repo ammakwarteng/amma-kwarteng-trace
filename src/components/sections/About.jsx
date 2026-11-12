@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { about, roadmap } from "../../data/content.js";
 import "./sections.css";
 import { usePointerVerb } from "../../pointer.js";
@@ -34,6 +34,26 @@ const CERT = /ITIL|Security\+|SC-\d|Okta Certified|CyberArk|CISSP/;
 
 export function Roadmap() {
   const { verb, fine } = usePointerVerb();
+  // "You are here": the current stage's marker stays empty until the scroll line reaches it
+  // (the same reading line the trail uses, 60% down the screen), then slowly flashes green.
+  const hereRef = useRef(null);
+  const [here, setHere] = useState(false);
+  useEffect(() => {
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      const d = hereRef.current;
+      if (!d || !d.offsetParent) return setHere(false);
+      setHere(d.getBoundingClientRect().top <= innerHeight * 0.6);
+    };
+    const on = () => { if (!raf) raf = requestAnimationFrame(check); };
+    on();
+    addEventListener("scroll", on, { passive: true });
+    addEventListener("resize", on);
+    const ro = new ResizeObserver(on);
+    if (hereRef.current?.parentElement) ro.observe(hereRef.current.closest(".road") || document.body);
+    return () => { removeEventListener("scroll", on); removeEventListener("resize", on); ro.disconnect(); cancelAnimationFrame(raf); };
+  }, []);
   // the phase Amma is in starts open; the rest start closed
   const [open, setOpen] = useState(() => new Set(roadmap.filter((r) => r.now).map((r) => r.phase)));
   const toggle = (phase) =>
@@ -51,8 +71,8 @@ export function Roadmap() {
             const isOpen = open.has(r.phase);
             const panelId = `road-panel-${i}`;
             return (
-              <li key={r.phase} className={`road__step ${r.now ? "is-now" : ""} ${isOpen ? "is-open" : ""}`}>
-                <span className="road__dot" aria-hidden="true" />
+              <li key={r.phase} className={`road__step ${r.now ? "is-now" : ""} ${r.now && here ? "is-here" : ""} ${isOpen ? "is-open" : ""}`}>
+                <span className="road__dot" aria-hidden="true" ref={r.now ? hereRef : undefined} />
                 <button
                   type="button"
                   className="road__toggle"

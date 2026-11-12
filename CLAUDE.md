@@ -8,8 +8,9 @@ Amma's standing preferences. Follow them for every change, including new pages a
   (see the end of `src/components/daylight/daylight.css`). Use `var(--white)` for text. Only fine
   lines and borders may stay subtle (`var(--line)`).
 - Black-and-white editorial style: fine lines, mono labels, crosshair/targeting marks, restrained
-  transitions. Green (`--secure`) means granted/verified and red (`--threat`) means denied, and
-  nothing else. No glow, neon, colourful cards, dashboards or game-like UI.
+  transitions. Green (`--secure`) is only for granted/verified and the roadmap's "you are here"
+  marker (a slow green flash once the scroll line reaches it); red (`--threat`) is only for denied.
+  No glow, neon, colourful cards, dashboards or game-like UI.
 - Proper sentence case for sentences and messages; lowercase is fine for short labels.
 - Canadian spelling (colour, centre, organization).
 - Support phone and laptop layouts and `prefers-reduced-motion`.

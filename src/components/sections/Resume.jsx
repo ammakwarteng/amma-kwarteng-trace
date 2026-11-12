@@ -38,6 +38,7 @@ export default function Resume() {
   const [code, setCode] = useState("");
   const [state, setState] = useState("locked"); // locked | checking | denied | unavailable | granted
   const [url, setUrl] = useState("");
+  const [tries, setTries] = useState(0);   // a new key per failed attempt, so the red flash replays each time
   const inputRef = useRef(null);
 
   useEffect(() => () => url && URL.revokeObjectURL(url), [url]);
@@ -54,6 +55,7 @@ export default function Resume() {
       setCode("");
     } catch (err) {
       setState(err.message === "unavailable" ? "unavailable" : "denied");
+      setTries((n) => n + 1);
       if (err.message !== "unavailable") leaveTrace("authn.code_attempt", "resume access code rejected", "denied");
       inputRef.current?.select();
     }
@@ -61,9 +63,9 @@ export default function Resume() {
 
   if (state === "granted") {
     return (
-      <div className="resume">
+      <div className="resume is-granted">
         <p className="resume__label idl"><i className="resume__dot is-open" aria-hidden="true" />employer access · <span className="st is-secure">access granted</span></p>
-        <p className="resume__lead">thanks for your interest. my resume is ready.</p>
+        <p className="resume__lead">Thanks for your interest. My resume is ready.</p>
         <div className="resume__actions">
           <a className="resume__btn" href={url} target="_blank" rel="noopener">view resume</a>
           <a className="resume__btn resume__btn--ghost" href={url} download="Amma-Kwarteng-Resume.pdf">download pdf</a>
@@ -73,16 +75,16 @@ export default function Resume() {
   }
 
   const msg = {
-    checking: "verifying…",
-    denied: "access denied: that code didn't work. check it and try again.",
-    unavailable: "the resume couldn't be loaded right now. please try again later.",
+    checking: "Verifying…",
+    denied: "Access denied. That code didn't work, so please check it and try again.",
+    unavailable: "The resume couldn't be loaded right now. Please try again later.",
   }[state];
 
   return (
     <div className="resume">
       <p className="resume__label idl">
         <i className="resume__dot" aria-hidden="true" />employer access ·{" "}
-        <span className={`st ${state === "denied" ? "is-threat" : ""}`}>
+        <span key={state === "denied" ? `d${tries}` : "s"} className={`st ${state === "denied" ? "is-threat" : ""}`}>
           {{ checking: "verifying…", denied: "access denied", unavailable: "unavailable" }[state] || "restricted"}
         </span>
       </p>
@@ -90,7 +92,7 @@ export default function Resume() {
       <form className="resume__form" onSubmit={submit}>
         <label className="resume__field">
           <span className="visually-hidden">access code</span>{/* the label stays for screen readers only */}
-          <span className={`resume__box tf tf-scan ${state === "checking" ? "is-scanning" : ""} ${state === "denied" ? "tf--threat" : ""}`}>
+          <span key={state === "denied" ? `b${tries}` : "b"} className={`resume__box tf tf-scan ${state === "checking" ? "is-scanning" : ""} ${state === "denied" ? "tf--threat" : ""}`}>
           <input
             ref={inputRef}
             id="resume-code"
@@ -106,7 +108,7 @@ export default function Resume() {
         </label>
         <button className="resume__btn" type="submit" disabled={!code.trim() || state === "checking"}>unlock</button>
       </form>
-      <p id="resume-msg" className={`resume__msg mono ${state === "denied" ? "is-denied" : ""}`} role="status" aria-live="polite">
+      <p id="resume-msg" key={state === "denied" ? `m${tries}` : "m"} className={`resume__msg ${state === "denied" ? "is-denied" : ""}`} role="status" aria-live="polite">
         {msg || " "}
       </p>
       <p className="resume__request">no code? request one: <EmailLink variant="full" /></p>

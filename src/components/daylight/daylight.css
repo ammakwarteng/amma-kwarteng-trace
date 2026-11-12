@@ -40,7 +40,11 @@
 .dhero__links a { text-decoration: none; border-bottom: 1px solid var(--white); }
 .dhero .hero__scroll { height: 70px; }
 @media (max-width: 760px) {
-  .dhero { padding: calc(156px + env(safe-area-inset-top, 0px)) 16px 96px; }   /* clear room under her name before TRACE */
+  .dhero { padding: calc(156px + env(safe-area-inset-top, 0px)) 16px 48px; gap: 38px; }   /* clear room under her name before TRACE */
+  /* the words under TRACE are larger and spaced out, so they fill the screen down to About */
+  .dhero__lede { font-size: 15px; line-height: 1.65; max-width: 30ch; }
+  .dhero__links { font-size: 14px; gap: 26px; }
+  .dhero__replay { font-size: 12px; margin-top: 6px; }
   .dhero__word { font-size: 27vw; }
   .dhero .hero__scroll { display: none; }
 }

@@ -111,7 +111,7 @@ export default function Resume() {
       <p id="resume-msg" key={state === "denied" ? `m${tries}` : "m"} className={`resume__msg ${state === "denied" ? "is-denied" : ""}`} role="status" aria-live="polite">
         {msg || " "}
       </p>
-      <p className="resume__request">no code? request one: <EmailLink variant="full" /></p>
+      <p className="resume__request">No code? Request one: <EmailLink variant="full" /></p>
     </div>
   );
 }

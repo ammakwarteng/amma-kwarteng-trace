@@ -40,7 +40,7 @@ export const roadmap = [
   {
     phase: "iam architect",
     when: "long term",
-    goal: "Design how a whole organisation handles identity and access, from strategy to the systems that run it.",
+    goal: "Design how a whole organization handles identity and access, from strategy to the systems that run it.",
     items: ["identity architecture and strategy", "zero trust", "identity governance (IGA)", "privileged access strategy", "cloud identity across platforms", "identity standards and policy", "CyberArk Guardian", "CISSP"],
   },
 ];

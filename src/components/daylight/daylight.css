@@ -98,3 +98,16 @@
 :root .site-footer__top:hover, :root .site-footer__top:focus-visible { border-bottom-color: var(--white); }
 /* reading text and tags in full white across Projects, Skills and Community */
 :root .project__summary, :root .project__tags li, :root .skills__items li, :root .community__about { color: var(--white); }
+
+/* roadmap: certifications are filled white tags, so they stand out from the topics */
+:root .road .road__items li.is-cert { background: var(--white); color: var(--black); border-color: var(--white); }
+/* roadmap: on phones each step's description uses the full width */
+@media (max-width: 760px) { :root .road__goal { max-width: none; } }
+
+/* laptop hero: the words under TRACE are larger and spaced out, filling the first screen */
+@media (min-width: 761px) {
+  :root .dhero { min-height: 100svh; align-content: center; gap: clamp(26px, 4.2vh, 44px); padding-bottom: 72px; }
+  :root .dhero__lede { font-size: clamp(15px, 1.2vw, 18px); line-height: 1.7; max-width: 40ch; }
+  :root .dhero__links { font-size: clamp(13px, 1vw, 15px); gap: 32px; }
+  :root .dhero__replay { font-size: 12px; margin-top: 4px; }
+}

@@ -2,6 +2,7 @@ import { leaveTrace } from "../../trace.js";
 import { useEffect, useRef, useState } from "react";
 import LockWord from "../daylight/LockWord.jsx";
 import "./Trail.css";
+import { usePointerVerb } from "../../pointer.js";
 
 /*
   The trace continues below the hero: a white route draws itself down the
@@ -12,6 +13,7 @@ import "./Trail.css";
 const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export default function Trail({ sections, start = 1 }) {
+  const { verb } = usePointerVerb();
   const wrapRef = useRef(null);
   const pathRef = useRef(null);
   const headRef = useRef(null);
@@ -189,7 +191,7 @@ export default function Trail({ sections, start = 1 }) {
                 <span className="trail__icon" aria-hidden="true" />
               </button>
             </h2>
-            {i === 0 && <p className="trail__hint mono" aria-hidden="true">{isOpen ? "tap the title to close" : "tap to open"}</p>}
+            {i === 0 && <p className="trail__hint mono" aria-hidden="true">{isOpen ? `${verb} the title to close` : `${verb} to open`}</p>}
             <div className="trail__panel" id={panelId} {...(isOpen ? {} : { inert: "" })}>
               <div className="trail__panel-inner">
                 <div className="trail__body">{s.body}</div>

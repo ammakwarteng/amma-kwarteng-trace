@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { projects } from "../../data/content.js";
 import "./sections.css";
+import { usePointerVerb } from "../../pointer.js";
 
 const url = (src) => `${import.meta.env.BASE_URL}${src}`;
 
 // Projects, newest first. Content lives in src/data/content.js.
 // A project's gallery shows thumbnails; tapping one opens it large.
 export default function Projects() {
+  const { verb, fine } = usePointerVerb();
   const [shot, setShot] = useState(null); // { list, index }
   const [openCards, setOpenCards] = useState(() => new Set()); // cards showing full details
   const toggleCard = (name) =>
@@ -83,7 +85,7 @@ export default function Projects() {
             </ul>
           )}
           {p.gallery?.length > 1 && (
-            <p className="project__gallery-hint mono" aria-hidden="true">{p.gallery.length - 1} more · scroll sideways, tap to enlarge</p>
+            <p className="project__gallery-hint mono" aria-hidden="true">{p.gallery.length - 1} more · scroll sideways, {verb} to enlarge</p>
           )}
           {p.image && (
             <figure className="project__figure">

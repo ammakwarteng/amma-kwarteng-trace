@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { certifications } from "../../data/content.js";
 import "./sections.css";
+import { usePointerVerb } from "../../pointer.js";
 
 const LABEL = { studying: "currently studying", next: "next goal", planned: "planned", earned: "earned" };
 
@@ -25,6 +26,7 @@ const loop = Array.from({ length: Math.ceil(LOOP_MIN / Math.max(1, shown.length)
   Screen readers get the plain list instead of the moving copy.
 */
 export default function Certifications() {
+  const { verb, fine } = usePointerVerb();
   const wrapRef = useRef(null);
   const trackRef = useRef(null);
 
@@ -108,7 +110,7 @@ export default function Certifications() {
           {loop.map((c, i) => card(c, `b-${i}`))}
         </div>
       </div>
-      <p className="marquee__hint mono" aria-hidden="true">move your mouse over the strip to steer it · swipe on touch</p>
+      <p className="marquee__hint mono" aria-hidden="true">{fine ? "move your mouse over the strip to steer it" : "swipe to move it"}</p>
 
       <ul className="visually-hidden">
         {shown.map((c) => (

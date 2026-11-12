@@ -42,3 +42,5 @@
 
 /* while the film plays, the site's own title waits underneath; the film's TRACE hands over to it at the very end */
 html.intro-playing .dhero__word { opacity: 0; }
+/* skip: a short fade through black instead of a hard cut */
+.intro__fade { position: absolute; inset: 0; background: var(--black, #0a0a0a); opacity: 0; pointer-events: none; z-index: 5; }

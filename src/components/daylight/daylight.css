@@ -155,3 +155,6 @@
 :root .trail__sec.is-right .resume__lead, :root .trail__sec.is-right .resume__msg { text-align: left; justify-self: stretch; }
 :root .trail__sec.is-right .resume__request { justify-content: flex-start; justify-self: stretch; text-align: left; }
 :root .trail__sec.is-right .resume__form { justify-self: stretch; }
+
+/* the tracing line now starts under "replay intro" itself, so the old scroll cue is not needed */
+:root .dhero .hero__scroll { display: none; }

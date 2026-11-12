@@ -11,7 +11,7 @@ export default function Community() {
             <span className="community__badge idl"><b>MBR-{String(n + 1).padStart(2, "0")}</b> · <span className="st">{c.role.toLowerCase()}</span></span>
             <h3 className="community__name">
               <a href={c.url} target="_blank" rel="noopener noreferrer">
-                {c.name.toLowerCase()}{c.short ? ` (${c.short.toLowerCase()})` : ""}
+                {c.name}{c.short ? ` (${c.short})` : ""}
               </a>
             </h3>
             {c.note && <p className="community__note mono">{c.note}</p>}

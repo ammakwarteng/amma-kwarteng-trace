@@ -96,3 +96,5 @@
 :root .site-footer { display: grid; gap: 6px; justify-items: center; }
 :root .site-footer__top { margin-bottom: 18px; padding: 4px 0; color: var(--white); text-decoration: none; border-bottom: 1px solid var(--white-faint); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
 :root .site-footer__top:hover, :root .site-footer__top:focus-visible { border-bottom-color: var(--white); }
+/* reading text and tags in full white across Projects, Skills and Community */
+:root .project__summary, :root .project__tags li, :root .skills__items li, :root .community__about { color: var(--white); }

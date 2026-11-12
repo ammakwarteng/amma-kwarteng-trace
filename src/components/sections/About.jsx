@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { about, roadmap } from "../../data/content.js";
 import "./sections.css";
+import { usePointerVerb } from "../../pointer.js";
 
 // the About introduction (all paragraphs, or a range of them): shown beside the portrait at the
 // end of the hero transformation (see Hero.jsx)
@@ -28,7 +29,11 @@ export function AboutText({ from = 0, to }) {
 }
 
 // the career roadmap, which continues the About section below the hero stage
+// Certifications in a roadmap step stand out from the topics beside them (a filled tag).
+const CERT = /ITIL|Security\+|SC-\d|Okta Certified|CyberArk|CISSP/;
+
 export function Roadmap() {
+  const { verb, fine } = usePointerVerb();
   // the phase Amma is in starts open; the rest start closed
   const [open, setOpen] = useState(() => new Set(roadmap.filter((r) => r.now).map((r) => r.phase)));
   const toggle = (phase) =>
@@ -40,7 +45,7 @@ export function Roadmap() {
 
   return (
       <div className="road" aria-label="Career roadmap">
-        <p className="road__label mono">roadmap · tap a step to open it</p>
+        <p className="road__label mono">roadmap · {verb} a step to open it</p>
         <ol className="road__list">
           {roadmap.map((r, i) => {
             const isOpen = open.has(r.phase);
@@ -66,7 +71,7 @@ export function Roadmap() {
                   <div className="road__panel-inner">
                     <p className="road__goal">{r.goal}</p>
                     <ul className="road__items">
-                      {r.items.map((it) => <li key={it}>{it}</li>)}
+                      {r.items.map((it) => <li key={it} className={CERT.test(it) ? "is-cert" : undefined}>{it}</li>)}
                     </ul>
                   </div>
                 </div>

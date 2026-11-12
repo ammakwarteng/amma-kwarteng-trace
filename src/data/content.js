@@ -111,7 +111,7 @@ export const skills = [
   {
     group: "identity & access",
     proof: "Active Directory home lab",
-    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy (Group Policy)"],
+    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy"],
   },
   {
     group: "support",

@@ -144,3 +144,9 @@
 :root .road__step.is-now.is-here .road__dot { background: var(--secure); border-color: var(--secure); animation: road-here 2.8s ease-in-out infinite; }
 @keyframes road-here { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
 @media (prefers-reduced-motion: reduce) { :root .road__step.is-now.is-here .road__dot { animation: none; } }
+
+/* certification cards: the status sits on the same line as the issuer ("CERT · CYBERARK · PLANNED"),
+   wrapping onto the next line only when the issuer's name is too long to fit */
+:root .cert__top { display: block; line-height: 1.7; }
+:root .cert__top > span { white-space: normal; overflow-wrap: normal; }
+:root .cert__top .cert__status { white-space: nowrap; }

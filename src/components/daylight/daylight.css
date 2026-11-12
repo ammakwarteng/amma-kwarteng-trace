@@ -72,3 +72,21 @@
 :root .trail__links a { font-size: 16px; letter-spacing: -0.015em; }
 /* the roadmap step's description reads in full white, like the About paragraph */
 :root .road__goal { color: var(--white); }
+
+/* ---------- resume access: the result flashes ----------
+   Denied: the status, the code box and the message flash red (replays on every wrong attempt).
+   Granted: the status flashes green and the panel's contents settle in. Messages read in
+   sentence case in the site's sans, like the sentence above them. */
+:root .resume__msg { font-family: var(--font-ui); font-size: 15px; line-height: 1.45; letter-spacing: -0.01em; text-transform: none; }
+@keyframes access-flash { 0%, 36%, 72% { opacity: 1; } 18%, 54% { opacity: 0.15; } 100% { opacity: 1; } }
+@keyframes access-box-deny { 0%, 36%, 72% { box-shadow: 0 0 0 1px var(--threat); } 18%, 54%, 100% { box-shadow: 0 0 0 1px rgba(255, 43, 43, 0); } }
+@keyframes access-in { from { opacity: 0; transform: translate3d(0, 6px, 0); } to { opacity: 1; transform: none; } }
+.idl .st.is-threat, .resume__msg.is-denied { animation: access-flash 0.9s steps(1, end) both; }
+.resume__box.tf--threat { border-radius: 2px; animation: access-box-deny 0.9s steps(1, end) both; }
+.resume.is-granted .st.is-secure { animation: access-flash 0.9s steps(1, end) both; }
+.resume.is-granted .resume__lead, .resume.is-granted .resume__actions { animation: access-in 0.5s 0.5s var(--ease, ease) both; }
+@media (prefers-reduced-motion: reduce) {
+  .idl .st.is-threat, .resume__msg.is-denied, .resume__box.tf--threat, .resume.is-granted .st.is-secure,
+  .resume.is-granted .resume__lead, .resume.is-granted .resume__actions { animation: none; }
+}
+:root .trail__sec.is-right .resume__msg { text-align: left; justify-self: stretch; }

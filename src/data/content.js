@@ -126,7 +126,7 @@ export const skills = [
   {
     group: "Governance",
     proof: "ISO/IEC 27001:2022 Lead Auditor · GRC Analyst Master Class (in progress)",
-    items: ["ISO/IEC 27001", "access control", "auditing"],
+    items: ["ISO/IEC 27001", "access control", "auditing", "GRC fundamentals", "cybersecurity frameworks", "threat basics"],
   },
   {
     group: "Web & Design",

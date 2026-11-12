@@ -73,6 +73,7 @@ export function Roadmap() {
                     <ul className="road__items">
                       {r.items.map((it) => <li key={it} className={CERT.test(it) ? "is-cert" : undefined}>{it}</li>)}
                     </ul>
+                    <a className="road__more mono" href={`/roadmap/${r.phase.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>open the full {r.phase} roadmap →</a>
                   </div>
                 </div>
               </li>

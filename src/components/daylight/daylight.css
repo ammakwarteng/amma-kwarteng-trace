@@ -111,3 +111,7 @@
   :root .dhero__links { font-size: clamp(13px, 1vw, 15px); gap: 32px; }
   :root .dhero__replay { font-size: 12px; margin-top: 4px; }
 }
+
+/* roadmap: each open step links to its full career page */
+:root .road__more { justify-self: start; margin-top: 6px; padding-bottom: 3px; color: var(--white); text-decoration: none; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid var(--white-faint); }
+:root .road__more:hover, :root .road__more:focus-visible { border-bottom-color: var(--white); }

@@ -137,3 +137,10 @@
 :root :is(.mono, .road__items li, .skills__items li, .project__tags li, .email__copy, .resume__btn, .rm-btn, .ms__seg button,
   .rm-progress__count, .rm-progress__all, .rm-empty, .ms__facts dd, .site-footer, .site-footer *, .intro__line, .intro__skip,
   .marquee__hint, .skills__proof, .project__next, .project__more, .project__gallery-hint) { text-transform: uppercase; }
+
+/* roadmap "you are here": the current stage's marker is empty like the others until the scroll
+   line reaches it, then it fills green and slowly flashes (the only stage that does). */
+:root .road__step.is-now .road__dot { background: var(--black); border-color: var(--white); box-shadow: none; transition: background 0.6s, border-color 0.6s; }
+:root .road__step.is-now.is-here .road__dot { background: var(--secure); border-color: var(--secure); animation: road-here 2.8s ease-in-out infinite; }
+@keyframes road-here { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { :root .road__step.is-now.is-here .road__dot { animation: none; } }

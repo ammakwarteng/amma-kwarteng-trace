@@ -115,3 +115,9 @@
 /* roadmap: each open step links to its full career page */
 :root .road__more { justify-self: start; margin-top: 6px; padding-bottom: 3px; color: var(--white); text-decoration: none; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid var(--white-faint); }
 :root .road__more:hover, :root .road__more:focus-visible { border-bottom-color: var(--white); }
+
+/* Projects: every piece of text in full white (captions, hints, details, notes, buttons) */
+:root .projects-wrap :is(.projects-hint, .project__meta, .project__meta .project__status.idl, .project__meta span.project__status.idl b,
+  .project__points, .project__figure figcaption, .project__lead figcaption, .project__lead figcaption .mono, .project__gallery-hint,
+  .project__next, .shot__figure figcaption, .shot__figure figcaption .mono, .project__type, .project__more, .project__details, .project__details *) { color: var(--white); }
+:root .projects-wrap .project__more { border-color: var(--white); }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { STAGES, stageBySlug, loadRoadmap, checkOwner, setLocked, saveAndLock, supabase, fmtDate, PROJECTS, projectName } from "./data.js";
+import { STAGES, stageBySlug, loadRoadmap, checkOwner, setLocked, saveAndLock, supabase, fmtDate, PROJECTS, projectName, cap } from "./data.js";
 import Progress from "./Progress.jsx";
 import Milestone from "./Milestone.jsx";
 
@@ -107,7 +107,7 @@ export default function StagePage({ slug }) {
                 {history.map((m) => (
                   <li key={m.id || m.tmp}>
                     <time className="mono" dateTime={m.completed_on}>{fmtDate(m.completed_on)}</time>
-                    <span>{m.title}</span>
+                    <span>{cap(m.title)}</span>
                     {m.projects?.length > 0 && <span className="rm-history__proj mono">{m.projects.map(projectName).join(" · ")}</span>}
                   </li>
                 ))}

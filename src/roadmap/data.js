@@ -80,4 +80,7 @@ export async function saveAndLock(slug, changes, added) {
   if (!(await setLocked(slug, true))) throw new Error("Saved, but the stage could not be locked. Try Save & Lock again.");
 }
 
+// sentence case for names stored in lowercase ("zero trust" -> "Zero trust"); acronyms and names are kept
+export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
+
 export const fmtDate = (d) => (d ? new Date(`${d}T12:00:00`).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }) : "");

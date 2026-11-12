@@ -128,3 +128,12 @@
    and borders that should stay subtle use var(--line) instead. */
 :root:root { --white-dim: #ffffff; --white-faint: #ffffff; }
 :root .trail__title, :root .trail__hop, :root .trail__hop .st, :root .trail__hint, :root .trail__sec .trail__hint, :root .trail__sec.is-open .trail__hint, :root .stage__about .stage__hint { opacity: 1; color: var(--white); }
+
+/* ---------- consistent letter case ----------
+   1 big titles: UPPERCASE · 2 headings and names: Sentence case · 3 sentences: Sentence case ·
+   4 everything in the mono (typewriter) face, i.e. labels, tags, buttons, hints, statuses,
+   captions, notes and the footer: UPPERCASE. */
+:root .project__name { text-transform: none; }
+:root :is(.mono, .road__items li, .skills__items li, .project__tags li, .email__copy, .resume__btn, .rm-btn, .ms__seg button,
+  .rm-progress__count, .rm-progress__all, .rm-empty, .ms__facts dd, .site-footer, .site-footer *, .intro__line, .intro__skip,
+  .marquee__hint, .skills__proof, .project__next, .project__more, .project__gallery-hint) { text-transform: uppercase; }

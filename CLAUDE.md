@@ -26,3 +26,12 @@ Amma's standing preferences. Follow them for every change, including new pages a
 - Data lives in Supabase (`supabase/schema.sql`): public read; owner-only, MFA-required writes,
   and only while a stage is unlocked, all enforced by row level security. Only the publishable
   key belongs in the code; never the secret/service_role key or any password.
+
+## Letter case (one rule everywhere)
+- Big titles (TRACE, section titles, roadmap page titles): UPPERCASE.
+- Headings and names (projects, skill groups, roadmap stages, milestones, communities, menu): Sentence case,
+  keeping proper names and acronyms (Active Directory, IAM, WiCyS).
+- Sentences: Sentence case.
+- Everything in the mono (typewriter) face (labels, tags, buttons, hints, statuses, captions, notes, footer,
+  intro storyline): UPPERCASE.
+- Exceptions: the "amma kwarteng" wordmark (logo) and email addresses stay lowercase.

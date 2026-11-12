@@ -1,7 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-import { copyFileSync } from "node:fs";
+import { copyFileSync, mkdirSync } from "node:fs";
+
+const ROADMAP_PAGES = ["help-desk", "iam-analyst", "iam-engineer", "iam-architect"];
 
 // base "/": the site is served from the root of ammakwarteng.com, and pages like
 // /roadmap/iam-analyst need absolute asset paths. GitHub Pages serves 404.html for any address
@@ -10,7 +12,18 @@ import { copyFileSync } from "node:fs";
 const UPDATED = new Date().toLocaleDateString("en-CA", { month: "long", year: "numeric", timeZone: "America/Toronto" });
 
 export default defineConfig({
-  plugins: [react(), { name: "spa-404", closeBundle() { copyFileSync("dist/index.html", "dist/404.html"); } }],
+  plugins: [react(), {
+    // each roadmap page and /owner also gets its own real file, so they load with a normal
+    // "200 OK" (search engines and link previews treat 404.html pages as missing)
+    name: "spa-pages",
+    closeBundle() {
+      copyFileSync("dist/index.html", "dist/404.html");
+      for (const page of [...ROADMAP_PAGES.map((s) => `roadmap/${s}`), "owner"]) {
+        mkdirSync(`dist/${page}`, { recursive: true });
+        copyFileSync("dist/index.html", `dist/${page}/index.html`);
+      }
+    },
+  }],
   base: "/",
   define: { __UPDATED__: JSON.stringify(UPDATED) },
 });

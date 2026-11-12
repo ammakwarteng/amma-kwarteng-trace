@@ -124,13 +124,19 @@ export default function Trail({ sections, start = 1 }) {
       return lo;
     };
 
+    // Once the line has reached its end under Contact, it stays there (ball included) until the
+    // visitor deliberately scrolls back up; small bounces and Safari's toolbar don't pull it back.
+    let endY = null;
     const update = () => {
       raf = 0;
       const box = wrapRef.current.getBoundingClientRect();
       // at the bottom of the page the last sections can never reach the reading line, so the
       // whole route is drawn and every section counts as reached
       // (with some slack: on iPhone, Safari's toolbar can keep the very last pixels out of reach)
-      const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 80;
+      const nearEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 80;
+      if (nearEnd) endY = Math.max(endY ?? 0, window.scrollY);
+      else if (endY !== null && window.scrollY < endY - 140) endY = null;   // scrolled back up on purpose
+      const atEnd = endY !== null;
       const lineY = reduceMotion() || atEnd ? Infinity : window.innerHeight * 0.6 - box.top;
       const L = lineY === Infinity ? total : Math.max(0, lengthAtY(lineY));
       path.style.strokeDashoffset = `${total - L}`;

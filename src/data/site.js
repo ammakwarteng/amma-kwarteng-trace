@@ -14,8 +14,8 @@ export const owner = {
 export const email = { user: "ammaafram.kwarteng", domain: "gmail.com" };
 
 export const links = [
-  { label: "linkedin", url: "https://www.linkedin.com/in/amma-kwarteng-8b1b98a3" },
-  { label: "github", url: "https://github.com/ammakwarteng" },
+  { label: "LinkedIn", url: "https://www.linkedin.com/in/amma-kwarteng-8b1b98a3" },
+  { label: "GitHub", url: "https://github.com/ammakwarteng" },
 ];
 
 // Homepage hero media (the frosted-glass editorial portrait).
@@ -41,13 +41,13 @@ export const heroMedia = {
 // once joined; add events under a community only once attended.
 export const communities = [
   { name: "Women in CyberSecurity", short: "WiCyS", role: "Member", url: "https://www.wicys.org/",
-    about: "a nonprofit dedicated to recruiting, retaining and advancing women in cybersecurity" },
+    about: "A nonprofit dedicated to recruiting, retaining and advancing women in cybersecurity." },
   { name: "Women in Security and Privacy", short: "WISP", role: "Member", url: "https://www.wisporg.com/",
-    about: "advancing women and underrepresented communities to lead the future of privacy and security" },
+    about: "Advancing women and underrepresented communities to lead the future of privacy and security." },
   { name: "Rewriting the Code", role: "Member", url: "https://rewritingthecode.org/",
-    about: "a community supporting women in tech, from students to early career" },
+    about: "A community supporting women in tech, from students to early career." },
   { name: "Women's Society of Cyberjutsu", short: "WSC", role: "Member", url: "https://www.womenscyberjutsu.org/",
-    about: "a nonprofit helping women advance in cybersecurity through hands-on training, mentoring and community" },
+    about: "A nonprofit helping women advance in cybersecurity through hands-on training, mentoring and community." },
 ];
 
 // Volunteer roles, shown in the volunteer section (hidden until it's switched on in navItems).

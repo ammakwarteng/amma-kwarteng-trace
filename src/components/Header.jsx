@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { navItems, owner } from "../data/site.js";
-import SystemStatus from "./SystemStatus.jsx";
 import "./Header.css";
 
 // Small reticle mark used as the logo.
@@ -43,7 +42,6 @@ export default function Header() {
         <span>{owner.brand}</span>
       </a>
 
-      <SystemStatus className="header__status" />
 
       <button
         ref={toggleRef}
@@ -74,7 +72,6 @@ export default function Header() {
             ))}
           </ol>
         </nav>
-        <SystemStatus />
       </div>
     </header>
   );

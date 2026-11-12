@@ -77,7 +77,7 @@ export default function App() {
       <footer className="site-footer mono">
         {/* back to the hero (not the page top: while the intro is on the page, that is the film's start) */}
         <a className="site-footer__top" href="#top" onClick={(e) => { e.preventDefault(); document.getElementById("top")?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); }}>back to top</a>
-        <span>© {new Date().getFullYear()} amma kwarteng. all rights reserved.</span>
+        <span>© {new Date().getFullYear()} Amma Kwarteng. All rights reserved.</span>
         <span className="site-footer__updated">last updated {__UPDATED__.toLowerCase()}</span>
       </footer>
     </>

@@ -2,7 +2,7 @@
 
 export const owner = {
   name: "Amma Kwarteng",
-  brand: "amma kwarteng",
+  brand: "Amma Kwarteng",
   headline: "an evolving archive",
   subline: "of my projects, technical exploration, skills, and professional journey.",
   tagline: "An evolving archive of my projects, technical exploration, skills, and professional journey.",

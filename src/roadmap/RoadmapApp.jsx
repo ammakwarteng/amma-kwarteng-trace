@@ -13,7 +13,7 @@ export default function RoadmapApp({ path }) {
       <header className="rm-bar">
         <a className="rm-bar__home" href="/">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5.5" /><path d="M12 3v5M12 16v5M3 12h5M16 12h5" /></svg>
-          amma kwarteng
+          Amma Kwarteng
         </a>
         <a className="rm-bar__back mono" href="/#about">← about · roadmap</a>
       </header>

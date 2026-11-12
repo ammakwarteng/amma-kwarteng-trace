@@ -34,4 +34,4 @@ Amma's standing preferences. Follow them for every change, including new pages a
 - Sentences: Sentence case.
 - Everything in the mono (typewriter) face (labels, tags, buttons, hints, statuses, captions, notes, footer,
   intro storyline): UPPERCASE.
-- Exceptions: the "amma kwarteng" wordmark (logo) and email addresses stay lowercase.
+- Your name is written "Amma Kwarteng" everywhere. Only email addresses stay lowercase.

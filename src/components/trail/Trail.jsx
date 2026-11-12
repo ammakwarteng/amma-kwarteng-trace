@@ -83,7 +83,13 @@ export default function Trail({ sections, start = 1 }) {
         d += ` L ${x} ${midY - 14} L ${x + c} ${midY} L ${p.x - c} ${midY} L ${p.x} ${midY + 14} L ${p.x} ${p.y}`;
         x = p.x; y = p.y;
       });
-      // the line ends at the last section's marker (no tail running on into empty space)
+      // the line carries on past the last section's heading (and its content, when open), ending
+      // just below it rather than at the marker
+      const lastSec = secs[secs.length - 1];
+      if (lastSec) {
+        const lastBottom = Math.max(...[...lastSec.children].map((c) => c.getBoundingClientRect().bottom)) - box.top;
+        if (lastBottom + 28 > y) { d += ` L ${x} ${lastBottom + 28}`; y = lastBottom + 28; }
+      }
       setGeo({ d, w, h, nodes: pts.map(({ x, y }) => ({ x, y })) });
     };
     // Rebuild whenever the page or anything inside a section changes size

@@ -40,7 +40,7 @@
 .rm-progress__ticks i.is-completed::after { height: 100%; }
 .rm-progress__count { margin: 0; font-size: 12px; letter-spacing: 0.06em; color: var(--white); }
 .rm-progress__count b { font-weight: 500; color: var(--white); }
-.rm-progress__all { color: var(--white); }
+.rm-progress__all { display: block; margin-top: 4px; color: var(--white); }
 
 /* sections */
 .rm-sec { margin-top: clamp(40px, 7vh, 72px); }
@@ -62,7 +62,6 @@
 .ms.is-planned .ms__title { color: var(--white); }
 .ms__status { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--white); white-space: nowrap; }
 .ms.is-completed .ms__status { color: var(--white); }
-.ms.is-cert .ms__title::after { content: "cert"; margin-left: 10px; padding: 1px 6px; border-radius: 999px; background: var(--white); color: var(--black); font: 10px var(--font-mono); letter-spacing: 0.06em; vertical-align: 3px; }
 /* hover: the title steps in and corner marks frame the row */
 .ms__row::before, .ms__row::after { content: ""; position: absolute; width: 8px; height: 8px; opacity: 0; transition: opacity 0.25s; border: 1px solid var(--white); }
 .ms__row::before { left: -14px; top: 8px; border-right: 0; border-bottom: 0; }

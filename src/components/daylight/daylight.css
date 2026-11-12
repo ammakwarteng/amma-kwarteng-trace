@@ -150,3 +150,8 @@
 :root .cert__top { display: block; line-height: 1.7; }
 :root .cert__top > span { white-space: normal; overflow-wrap: normal; }
 :root .cert__top .cert__status { white-space: nowrap; }
+
+/* Resume: everything below the heading lines up on the left, on phones and laptops */
+:root .trail__sec.is-right .resume__lead, :root .trail__sec.is-right .resume__msg { text-align: left; justify-self: stretch; }
+:root .trail__sec.is-right .resume__request { justify-content: flex-start; justify-self: stretch; text-align: left; }
+:root .trail__sec.is-right .resume__form { justify-self: stretch; }

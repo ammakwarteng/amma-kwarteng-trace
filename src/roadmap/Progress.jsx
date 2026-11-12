@@ -15,7 +15,7 @@ export default function Progress({ items, overall, live }) {
       </div>
       <p className="rm-progress__count mono">
         <b>{pad(done)}</b> / {pad(items.length)} completed{learning ? ` · ${learning} learning` : ""}
-        {live && <span className="rm-progress__all"> · whole roadmap {pad(allDone)} / {pad(overall.length)}</span>}
+        {live && <span className="rm-progress__all">whole roadmap {pad(allDone)} / {pad(overall.length)}</span>}
       </p>
     </div>
   );

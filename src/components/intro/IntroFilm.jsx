@@ -210,10 +210,24 @@ export default function IntroFilm({ onDone }) {
     return () => { ctx.revert(); document.documentElement.classList.remove("intro-playing"); };
   }, [onDone]);
 
+  // Skip: the film fades to black, the page moves to the end of the intro behind the black,
+  // then the black fades away to reveal the hero (about a second in all, no hard cut).
+  const fade = useRef(null);
   const skip = () => {
-    const el = wrap.current;
-    window.scrollTo({ top: el.offsetTop + el.offsetHeight - stage.current.clientHeight, behavior: "instant" });
-    onDone?.();
+    const el = wrap.current, f = fade.current;
+    if (!f || f.dataset.busy) return;
+    f.dataset.busy = "1";
+    f.style.transition = "opacity 0.4s ease";
+    f.style.opacity = "1";
+    setTimeout(() => {
+      window.scrollTo({ top: el.offsetTop + el.offsetHeight - stage.current.clientHeight, behavior: "instant" });
+      onDone?.();
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        f.style.transition = "opacity 0.6s ease";
+        f.style.opacity = "0";
+        setTimeout(() => { delete f.dataset.busy; }, 650);
+      }));
+    }, 420);
   };
 
   let offset = 0;
@@ -298,6 +312,7 @@ export default function IntroFilm({ onDone }) {
           ))}
         </div>
         <span className="intro__word" ref={word} aria-hidden="true">trace</span>
+        <div className="intro__fade" ref={fade} aria-hidden="true" />
         {skipVisible && <button type="button" className="intro__skip mono" onClick={skip}>skip intro</button>}
       </div>
     </section>

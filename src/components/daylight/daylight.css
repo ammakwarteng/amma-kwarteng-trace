@@ -121,3 +121,10 @@
   .project__points, .project__figure figcaption, .project__lead figcaption, .project__lead figcaption .mono, .project__gallery-hint,
   .project__next, .shot__figure figcaption, .shot__figure figcaption .mono, .project__type, .project__more, .project__details, .project__details *) { color: var(--white); }
 :root .projects-wrap .project__more { border-color: var(--white); }
+
+/* ---------- all text is white ----------
+   Amma's rule: every piece of writing on the site is full white (no grey or faded text),
+   including anything added later. The two softer text tones now resolve to white; fine lines
+   and borders that should stay subtle use var(--line) instead. */
+:root:root { --white-dim: #ffffff; --white-faint: #ffffff; }
+:root .trail__title, :root .trail__hop, :root .trail__hop .st, :root .trail__hint, :root .trail__sec .trail__hint, :root .trail__sec.is-open .trail__hint, :root .stage__about .stage__hint { opacity: 1; color: var(--white); }

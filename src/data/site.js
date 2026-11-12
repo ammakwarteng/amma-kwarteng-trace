@@ -45,7 +45,7 @@ export const communities = [
   { name: "Women in Security and Privacy", short: "WISP", role: "Member", url: "https://www.wisporg.com/",
     about: "Advancing women and underrepresented communities to lead the future of privacy and security." },
   { name: "Rewriting the Code", role: "Member", url: "https://rewritingthecode.org/",
-    about: "A community supporting women in tech, from students to early career." },
+    about: "A community supporting people in tech, from students to early career." },
   { name: "Women's Society of Cyberjutsu", short: "WSC", role: "Member", url: "https://www.womenscyberjutsu.org/",
     about: "A nonprofit helping women advance in cybersecurity through hands-on training, mentoring and community." },
 ];

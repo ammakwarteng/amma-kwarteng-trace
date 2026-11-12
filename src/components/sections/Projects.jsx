@@ -48,8 +48,7 @@ export default function Projects() {
         <article key={p.name} className={`project tf tf-hover ${isOpen ? "is-open" : ""}`}>
           <p className="project__meta mono">
             <span className="project__status idl">
-              <b>PRJ-{String(n + 1).padStart(2, "0")}</b>
-              {p.type && <span>· {p.type} ·</span>}
+              {p.type && <span>{p.type} ·</span>}
               <i className={`project__dot is-${p.status.replace(/\s+/g, "-")}`} aria-hidden="true" />
               <span className={`st ${p.status === "live" ? "is-secure" : ""}`}>{p.status}</span>
             </span>

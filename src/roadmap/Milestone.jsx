@@ -42,7 +42,7 @@ export default function Milestone({ m, n, editing, edit, remove, projects }) {
         <div className="ms__inner">
           {!editing && (
             <dl className="ms__facts mono">
-              <div><dt>status</dt><dd>{m.status}{isCert && m.status === "completed" && m.earned_confirmed ? " · earned" : ""}</dd></div>
+              {isCert && m.status === "completed" && m.earned_confirmed && <div><dt>certification</dt><dd>earned</dd></div>}
               {m.started_on && <div><dt>started</dt><dd>{fmtDate(m.started_on)}</dd></div>}
               {m.completed_on && <div><dt>completed</dt><dd>{fmtDate(m.completed_on)}</dd></div>}
               <div><dt>projects</dt><dd>{m.projects?.length ? m.projects.map((p) => <a key={p} href="/#projects">{projectName(p)}</a>) : "none linked yet"}</dd></div>

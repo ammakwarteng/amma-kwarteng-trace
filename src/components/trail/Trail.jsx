@@ -129,14 +129,15 @@ export default function Trail({ sections, start = 1 }) {
       const box = wrapRef.current.getBoundingClientRect();
       // at the bottom of the page the last sections can never reach the reading line, so the
       // whole route is drawn and every section counts as reached
-      const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      // (with some slack: on iPhone, Safari's toolbar can keep the very last pixels out of reach)
+      const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 80;
       const lineY = reduceMotion() || atEnd ? Infinity : window.innerHeight * 0.6 - box.top;
       const L = lineY === Infinity ? total : Math.max(0, lengthAtY(lineY));
       path.style.strokeDashoffset = `${total - L}`;
       const p = path.getPointAtLength(L);
       if (headRef.current) {
         headRef.current.setAttribute("transform", `translate(${p.x} ${p.y})`);
-        headRef.current.style.opacity = L > 2 && L < total - 2 ? 1 : 0;
+        headRef.current.style.opacity = L > 2 ? 1 : 0;   // it stays on at the end, marking where the line finishes
       }
       let last = -1;
       geo.nodes.forEach((n, i) => { if ((L > 2 && p.y >= n.y - 1) || lineY === Infinity) last = i; });   // a section is reached once the line has actually arrived

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fmtDate, projectName } from "./data.js";
+import { fmtDate, projectName, cap } from "./data.js";
 
 const STATUSES = ["planned", "learning", "completed"];
 const today = () => new Date().toLocaleDateString("en-CA");   // YYYY-MM-DD, local
@@ -34,7 +34,7 @@ export default function Milestone({ m, n, editing, edit, remove, projects }) {
       <button type="button" className="ms__row" aria-expanded={open || editing} aria-controls={id} onClick={() => setOpen((v) => !v)} disabled={editing}>
         <span className="ms__mark" aria-hidden="true" />
         <span className="ms__no mono" aria-hidden="true">{String(n).padStart(2, "0")}</span>
-        <span className="ms__title">{m.title}</span>
+        <span className="ms__title">{cap(m.title)}</span>
         <span className="ms__status mono">{label}</span>
       </button>
 

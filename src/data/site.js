@@ -58,13 +58,13 @@ export const volunteering = [];
 // Sections in the menu and on the page. Set ready: true once a section has
 // real content; sections that are not ready stay hidden everywhere.
 export const navItems = [
-  { id: "about", label: "about", kicker: "the profile", ready: true },
-  { id: "portfolio", label: "portfolio", kicker: "the portfolio", ready: false },
-  { id: "projects", label: "projects", kicker: "the work", ready: true },
-  { id: "skills", label: "skills", kicker: "the craft", ready: true },
-  { id: "certifications", label: "certifications", kicker: "the credentials", ready: true },
-  { id: "community", label: "community", kicker: "the community", ready: true },
-  { id: "volunteer", label: "volunteer", kicker: "giving back", ready: false }, // switch to true once there's a role in volunteering below
-  { id: "resume", label: "resume", kicker: "the record", ready: true },
-  { id: "contact", label: "contact", kicker: "get in touch", ready: true },
+  { id: "about", label: "About", kicker: "the profile", ready: true },
+  { id: "portfolio", label: "Portfolio", kicker: "the portfolio", ready: false },
+  { id: "projects", label: "Projects", kicker: "the work", ready: true },
+  { id: "skills", label: "Skills", kicker: "the craft", ready: true },
+  { id: "certifications", label: "Certifications", kicker: "the credentials", ready: true },
+  { id: "community", label: "Community", kicker: "the community", ready: true },
+  { id: "volunteer", label: "Volunteer", kicker: "giving back", ready: false }, // switch to true once there's a role in volunteering below
+  { id: "resume", label: "Resume", kicker: "the record", ready: true },
+  { id: "contact", label: "Contact", kicker: "get in touch", ready: true },
 ].filter((item) => item.ready);

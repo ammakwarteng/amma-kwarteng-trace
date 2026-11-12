@@ -89,7 +89,7 @@ export default function Resume() {
       <p className="resume__lead">My resume is encrypted. Employers can unlock it with the access code I share.</p>
       <form className="resume__form" onSubmit={submit}>
         <label className="resume__field">
-          <span className="mono">access code</span>
+          <span className="visually-hidden">access code</span>{/* the label stays for screen readers only */}
           <span className={`resume__box tf tf-scan ${state === "checking" ? "is-scanning" : ""} ${state === "denied" ? "tf--threat" : ""}`}>
           <input
             ref={inputRef}

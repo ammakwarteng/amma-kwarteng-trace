@@ -8,14 +8,14 @@ export const about = [
 // Career roadmap. Set `now: true` on the phase Amma is in.
 export const roadmap = [
   {
-    phase: "Help desk",
+    phase: "Help Desk",
     when: "now",
     now: true,
     goal: "Get hands-on IT support experience in the next 3 to 6 months while learning how accounts and access work day to day.",
     items: ["ITIL 4 Foundation", "CompTIA Security+", "Active Directory", "password resets and account requests", "PowerShell basics"],
   },
   {
-    phase: "IAM analyst",
+    phase: "IAM Analyst",
     when: "next",
     goal: "Manage identities and access full time, following my Master IAM roadmap.",
     items: [
@@ -32,13 +32,13 @@ export const roadmap = [
     ],
   },
   {
-    phase: "IAM engineer",
+    phase: "IAM Engineer",
     when: "then",
     goal: "Design and run identity and privileged access systems, including CyberArk PAM.",
     items: ["CyberArk Trustee", "CyberArk Defender: PAM", "CyberArk Sentry: PAM", "Okta Certified Administrator", "vaulting", "password rotation", "session monitoring"],
   },
   {
-    phase: "IAM architect",
+    phase: "IAM Architect",
     when: "long term",
     goal: "Design how a whole organization handles identity and access, from strategy to the systems that run it.",
     items: ["identity architecture and strategy", "zero trust", "identity governance (IGA)", "privileged access strategy", "cloud identity across platforms", "identity standards and policy", "CyberArk Guardian", "CISSP"],
@@ -66,7 +66,7 @@ export const certifications = [
 // project; the section shows them in this order.
 export const projects = [
   {
-    name: "Active Directory home lab",
+    name: "Active Directory Home Lab",
     type: "lab",
     year: "2026",
     status: "complete",
@@ -109,8 +109,8 @@ export const projects = [
 // job). Things still being learned stay in the roadmap until they're done.
 export const skills = [
   {
-    group: "Identity & access",
-    proof: "Active Directory home lab",
+    group: "Identity & Access",
+    proof: "Active Directory Home Lab",
     items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy"],
   },
   {
@@ -119,7 +119,7 @@ export const skills = [
     items: ["password resets", "account unlocks", "device and network troubleshooting", "ticketing", "AV equipment setup"],
   },
   {
-    group: "Systems & tools",
+    group: "Systems & Tools",
     proof: "home lab",
     items: ["Windows Server 2022", "PowerShell", "DNS", "VMware Workstation", "Microsoft 365"],
   },
@@ -129,7 +129,7 @@ export const skills = [
     items: ["ISO/IEC 27001", "access control", "auditing"],
   },
   {
-    group: "Web & design",
+    group: "Web & Design",
     proof: "TRACE, this portfolio",
     items: ["custom domains", "DNS records", "HTTPS", "GitHub Pages", "UX/UI"],
   },

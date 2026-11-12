@@ -29,8 +29,9 @@ Amma's standing preferences. Follow them for every change, including new pages a
 
 ## Letter case (one rule everywhere)
 - Big titles (TRACE, section titles, roadmap page titles): UPPERCASE.
-- Headings and names (projects, skill groups, roadmap stages, milestones, communities, menu): Sentence case,
-  keeping proper names and acronyms (Active Directory, IAM, WiCyS).
+- Headings and names (projects, skill groups, roadmap stages, milestones, communities, menu): Title Case,
+  with small joining words lowercase and acronyms kept (Help Desk, IAM Analyst, Systems & Tools,
+  Access Requests and Approvals, Active Directory Home Lab).
 - Sentences: Sentence case.
 - Everything in the mono (typewriter) face (labels, tags, buttons, hints, statuses, captions, notes, footer,
   intro storyline): UPPERCASE.

@@ -80,7 +80,9 @@ export async function saveAndLock(slug, changes, added) {
   if (!(await setLocked(slug, true))) throw new Error("Saved, but the stage could not be locked. Try Save & Lock again.");
 }
 
-// sentence case for names stored in lowercase ("zero trust" -> "Zero trust"); acronyms and names are kept
-export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
+// Title Case for names stored in lowercase ("access requests and approvals" -> "Access Requests and
+// Approvals"); small joining words stay lowercase, acronyms and existing capitals are kept.
+const SMALL = new Set(["a", "an", "and", "as", "at", "by", "for", "from", "in", "of", "on", "or", "the", "to", "with", "&"]);
+export const cap = (s) => (s || "").split(" ").map((w, i) => (i > 0 && SMALL.has(w) ? w : w.replace(/^(\(?)([a-z])/, (_, p, c) => p + c.toUpperCase()))).join(" ");
 
 export const fmtDate = (d) => (d ? new Date(`${d}T12:00:00`).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }) : "");

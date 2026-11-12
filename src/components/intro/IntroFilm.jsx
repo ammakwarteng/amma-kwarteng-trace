@@ -211,23 +211,25 @@ export default function IntroFilm({ onDone }) {
   }, [onDone]);
 
   // Skip: the film fades to black, the page moves to the end of the intro behind the black,
-  // then the black fades away to reveal the hero (about a second in all, no hard cut).
+  // then the black fades away to reveal the hero (about two and a half seconds, unhurried).
   const fade = useRef(null);
   const skip = () => {
     const el = wrap.current, f = fade.current;
     if (!f || f.dataset.busy) return;
     f.dataset.busy = "1";
-    f.style.transition = "opacity 0.4s ease";
+    f.style.transition = "opacity 0.9s ease";
     f.style.opacity = "1";
     setTimeout(() => {
       window.scrollTo({ top: el.offsetTop + el.offsetHeight - stage.current.clientHeight, behavior: "instant" });
       onDone?.();
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        f.style.transition = "opacity 0.6s ease";
-        f.style.opacity = "0";
-        setTimeout(() => { delete f.dataset.busy; }, 650);
+        setTimeout(() => {                     // a short hold on black, then the hero fades in
+          f.style.transition = "opacity 1.2s ease";
+          f.style.opacity = "0";
+          setTimeout(() => { delete f.dataset.busy; }, 1250);
+        }, 300);
       }));
-    }, 420);
+    }, 950);
   };
 
   let offset = 0;

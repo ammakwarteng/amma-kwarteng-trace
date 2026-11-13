@@ -64,6 +64,11 @@ export const certifications = [
 
 // Projects, newest first. Add a new object at the top of the list for each
 // project; the section shows them in this order.
+// Schoolwork, shown on the quiet /school page (linked from the footer). One entry per course:
+// { name, code, term, about, skills: [], work: [{ title, note, image }] }. Only Amma's own work
+// and descriptions: no full assignment answers, classmates' names or instructor comments.
+export const school = [];
+
 export const projects = [
   {
     name: "Keycloak MFA Lab",

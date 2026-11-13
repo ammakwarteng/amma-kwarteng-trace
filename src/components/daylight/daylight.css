@@ -171,3 +171,6 @@
   :root .projects::-webkit-scrollbar { display: none; }
   :root .projects > .project { flex: 0 0 86%; width: 86%; max-width: none; margin-left: 0; scroll-snap-align: start; }
 }
+/* the quiet link to the schoolwork page, in the footer only */
+:root .site-footer__school { color: var(--white); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 2px; margin-bottom: 6px; }
+:root .site-footer__school:hover, :root .site-footer__school:focus-visible { border-bottom-color: var(--white); }

@@ -1,6 +1,7 @@
 import { stageBySlug } from "./data.js";
 import StagePage from "./StagePage.jsx";
 import OwnerPage from "./OwnerPage.jsx";
+import SchoolPage from "./SchoolPage.jsx";
 import "./roadmap.css";
 
 // The career roadmap pages: /roadmap/<stage> for everyone, /owner for the owner's sign-in.
@@ -15,9 +16,9 @@ export default function RoadmapApp({ path }) {
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5.5" /><path d="M12 3v5M12 16v5M3 12h5M16 12h5" /></svg>
           <span className="visually-hidden">Amma Kwarteng, home</span>
         </a>
-        <a className="rm-bar__back mono" href="/#about">← about · roadmap</a>
+        <a className="rm-bar__back mono" href={path.startsWith("/school") ? "/" : "/#about"}>{path.startsWith("/school") ? "← portfolio" : "← about · roadmap"}</a>
       </header>
-      {path.replace(/\/$/, "") === "/owner" ? <OwnerPage /> : slug ? <StagePage slug={slug} /> : (
+      {path.replace(/\/$/, "") === "/owner" ? <OwnerPage /> : path.replace(/\/$/, "") === "/school" ? <SchoolPage /> : slug ? <StagePage slug={slug} /> : (
         <main className="rm" id="main">
           <header className="rm-head">
             <p className="rm-kicker mono">404 · not found</p>

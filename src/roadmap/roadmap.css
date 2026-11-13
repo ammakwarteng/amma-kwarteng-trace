@@ -188,3 +188,6 @@
 @media (max-width: 760px) { .sch-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .sch-item { padding: 14px 10px 16px; } .sch-name { font-size: 15px; } }
 @media (prefers-reduced-motion: reduce) { .sch-flap, .sch-item, .sch-item::before, .sch-item::after { transition: none; } .sch-grid, .sch-open { animation: none; } .sch-item:hover .sch-flap { transform: none; } }
 @media (min-width: 900px) { .sch-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* folders show only the course code; the full name appears once the folder is opened */
+.sch-item--folder { justify-items: center; text-align: center; }
+.sch-item--folder .sch-code { font-size: 12px; }

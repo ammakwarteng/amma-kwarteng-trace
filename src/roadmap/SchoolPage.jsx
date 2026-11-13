@@ -55,10 +55,9 @@ export default function SchoolPage() {
         <ul className="sch-grid" key="folders">
           {school.map((s, i) => (
             <li key={s.code}>
-              <button type="button" className="sch-item" onClick={() => setCourse(i)}>
+              <button type="button" className="sch-item sch-item--folder" onClick={() => setCourse(i)} aria-label={`${s.code}, ${s.name}`}>
                 <Folder />
                 <span className="sch-code mono">{s.code}</span>
-                <span className="sch-name">{s.name}</span>
               </button>
             </li>
           ))}

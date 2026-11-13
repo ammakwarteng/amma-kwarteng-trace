@@ -164,3 +164,10 @@
   :root .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 3vw, 48px); align-items: start; }
   :root .projects > .project { max-width: none; margin-left: 0; }
 }
+/* phones and narrow windows: the labs sit side by side in a sideways swipe row */
+@media (max-width: 899px) {
+  :root .projects { display: flex; flex-direction: row; align-items: stretch; gap: 16px; overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding: 0 0 10px; scrollbar-width: none; }
+  :root .projects::-webkit-scrollbar { display: none; }
+  :root .projects > .project { flex: 0 0 86%; width: 86%; max-width: none; margin-left: 0; scroll-snap-align: start; }
+}

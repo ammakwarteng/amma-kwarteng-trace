@@ -159,6 +159,6 @@ export const skills = [
   {
     group: "Web & Design",
     proof: "TRACE, this portfolio",
-    items: ["HTML", "CSS", "React", "GSAP", "custom domains", "DNS records", "HTTPS", "GitHub Pages", "UX/UI"],
+    items: ["HTML", "CSS", "React", "GSAP", "SVG", "custom domains", "DNS records", "HTTPS", "GitHub Pages", "UX/UI"],
   },
 ];

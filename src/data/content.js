@@ -65,9 +65,14 @@ export const certifications = [
 // Projects, newest first. Add a new object at the top of the list for each
 // project; the section shows them in this order.
 // Schoolwork, shown on the quiet /school page (linked from the footer). One entry per course:
-// { name, code, term, about, skills: [], work: [{ title, note, image }] }. Only Amma's own work
+// { name, code, files: [{ title, note, image }] } (image: a path under public/, e.g. "school/syst/lab1.webp"). Only Amma's own work
 // and descriptions: no full assignment answers, classmates' names or instructor comments.
-export const school = [];
+export const school = [
+  { name: "Crime Fiction Narratives", code: "LITT19601G", files: [] },
+  { name: "Essential Communication Skills", code: "COMM19999", files: [] },
+  { name: "Operating Systems Technologies (A+ Certification Prep)", code: "SYST19866", files: [] },
+  { name: "Introduction to Data Communications and Networking", code: "TELE13167", files: [] },
+];
 
 export const projects = [
   {

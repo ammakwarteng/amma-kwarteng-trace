@@ -157,3 +157,10 @@
 @media (prefers-reduced-motion: reduce) {
   .ms__detail, .ms__title, .rm-progress__ticks i::after, .ms__mark, .rm-btn { transition: none; }
 }
+
+/* schoolwork page */
+.school__skills { margin-top: 12px; }
+.school__work { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 14px; }
+.school__work li { display: grid; gap: 6px; font-size: 16px; }
+.school__note { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+.school__work img { width: 100%; max-width: 640px; border: 1px solid var(--line); }

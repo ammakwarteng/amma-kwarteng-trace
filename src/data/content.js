@@ -64,6 +64,17 @@ export const certifications = [
 
 // Projects, newest first. Add a new object at the top of the list for each
 // project; the section shows them in this order.
+// Coursework, shown on the /school page. Only the course folders are public here. What's inside them
+// (notes and screenshots) is encrypted in public/coursework.enc.json until Amma unlocks it; the
+// readable copy lives in private/coursework/ (never committed). See scripts/lock-coursework.mjs.
+// Only Amma's own work and descriptions: no full assignment answers, classmates' names or instructor comments.
+export const school = [
+  { name: "Crime Fiction Narratives", code: "LITT19601G" },
+  { name: "Essential Communication Skills", code: "COMM19999" },
+  { name: "Operating Systems Technologies (A+ Certification Prep)", code: "SYST19866" },
+  { name: "Introduction to Data Communications and Networking", code: "TELE13167" },
+];
+
 export const projects = [
   {
     name: "Keycloak MFA Lab",

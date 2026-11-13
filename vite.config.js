@@ -18,7 +18,7 @@ export default defineConfig({
     name: "spa-pages",
     closeBundle() {
       copyFileSync("dist/index.html", "dist/404.html");
-      for (const page of [...ROADMAP_PAGES.map((s) => `roadmap/${s}`), "owner"]) {
+      for (const page of [...ROADMAP_PAGES.map((s) => `roadmap/${s}`), "owner", "school"]) {
         mkdirSync(`dist/${page}`, { recursive: true });
         copyFileSync("dist/index.html", `dist/${page}/index.html`);
       }

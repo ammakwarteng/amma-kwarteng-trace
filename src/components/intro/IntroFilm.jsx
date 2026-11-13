@@ -60,8 +60,6 @@ const IAM_W = 2200;                               // the identity and access wor
 const STRIP_W = PANO_W * PANO_SCALE + 160 + IAM_W;
 
 // where her raised hand is in the reaching pose: the umbrella's crook comes to rest there
-// how far she and the umbrella ease left once it lands, so the pair is centred on screen
-const FRAME_SHIFT = 49;
 const HAND = (() => {
   const r = POSES["a2-reach"];
   if (!r) return { x: 850, y: 370 };
@@ -150,11 +148,8 @@ export default function IntroFilm({ onDone }) {
       // so a tall phone screen does not show its tip before the visitor scrolls
       tl.set(q(".s1__who"), { opacity: 1 }, 0)
         .fromTo(q(".umbrella"), { y: -1400 }, { y: 0, duration: 9, ease: "power1.out" }, 2)
-      // as the umbrella comes down into her raised hand, she and the umbrella ease left together so
-      // the pair stays centred on screen (she is centred while she stands alone)
-        .fromTo(q(".s1__frame"), { x: 0 }, { x: -FRAME_SHIFT, duration: 9, ease: "power1.out" }, 2)
       // 2 entering the umbrella: she looks up; it grows to fill the screen
-        .to(q(".s1"), { scale: 7, svgOrigin: `${HAND.x - FRAME_SHIFT} ${HAND.y - 0.82 * POSES[ART.umbOpen].h * UK}`, duration: 9, ease: "power2.in" }, 17)
+        .to(q(".s1"), { scale: 7, transformOrigin: "800px 300px", duration: 9, ease: "power2.in" }, 17)
         .to(q(".s1"), { opacity: 0, duration: 3 }, 23.5)
         .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 22)
         .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 22);
@@ -245,7 +240,6 @@ export default function IntroFilm({ onDone }) {
         <svg className="intro__canvas" ref={canvas} viewBox="0 0 1600 900" aria-hidden="true">
           {/* 1 the beginning */}
           <g className="s1">
-           <g className="s1__frame">
             <g className="umbrella">
               {[ART.umbClosed, ART.umbHalf, ART.umbOpen].map((n) => has(n)
                 ? <image key={n} data-pose={n} href={src(n)} x={HAND.x - POSES[n].cx * POSES[n].w * UK} y={HAND.y - POSES[n].h * UK} width={POSES[n].w * UK} height={POSES[n].h * UK} />
@@ -257,7 +251,6 @@ export default function IntroFilm({ onDone }) {
                   label={{ [ART.stand]: "standing, empty-handed", [ART.reach]: "reaching up" }[n]} />
               ))}
             </g>
-           </g>
           </g>
 
           {/* 2 the ribs that become pathways */}

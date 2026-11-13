@@ -83,7 +83,7 @@ export const projects = [
     ],
     next: "Next: connect a web app to the realm with OIDC to demonstrate single sign-on.",
     gallery: [
-      { src: "projects/keycloak-lab/01.webp", caption: "MFA in place: jdoe signs in with a password and an authenticator app" },
+      { src: "projects/keycloak-lab/01.webp", caption: "MFA set up: jdoe has a password and a registered authenticator app" },
       { src: "projects/keycloak-lab/02.webp", caption: "Network fixed: the VM reaches the internet after switching to bridged networking" },
       { src: "projects/keycloak-lab/03.webp", caption: "Keycloak 26.8.2 running in Docker, listening on port 8080" },
       { src: "projects/keycloak-lab/04.webp", caption: "A separate my-company realm alongside the admin realm" },

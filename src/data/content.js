@@ -66,6 +66,34 @@ export const certifications = [
 // project; the section shows them in this order.
 export const projects = [
   {
+    name: "Keycloak MFA Lab",
+    type: "lab",
+    year: "2026",
+    status: "complete",
+    summary:
+      "An identity provider running on Linux: Keycloak in Docker on an Ubuntu VM, with its own company realm, a test user and enforced multi-factor authentication through an authenticator app.",
+    points: [
+      "Built an Ubuntu 24.04 virtual machine in VMware Workstation",
+      "Diagnosed why the VM had no network (no IP address, no route), then fixed it by switching the adapter to bridged networking and confirmed it with ping",
+      "Installed Docker and ran Keycloak 26.8.2 as a container",
+      "Created a separate my-company realm, keeping company users apart from the admin realm",
+      "Onboarded a test user, jdoe, with a permanent password",
+      "Enforced MFA by making Configure OTP a default required action for the realm",
+      "Enrolled the user's TOTP authenticator with Microsoft Authenticator and confirmed the device was registered",
+    ],
+    next: "Next: connect a web app to the realm with OIDC to demonstrate single sign-on.",
+    gallery: [
+      { src: "projects/keycloak-lab/01.webp", caption: "MFA in place: jdoe signs in with a password and an authenticator app" },
+      { src: "projects/keycloak-lab/02.webp", caption: "Network fixed: the VM reaches the internet after switching to bridged networking" },
+      { src: "projects/keycloak-lab/03.webp", caption: "Keycloak 26.8.2 running in Docker, listening on port 8080" },
+      { src: "projects/keycloak-lab/04.webp", caption: "A separate my-company realm alongside the admin realm" },
+      { src: "projects/keycloak-lab/05.webp", caption: "Onboarding the test user jdoe in my-company" },
+      { src: "projects/keycloak-lab/06.webp", caption: "A permanent password set for jdoe" },
+      { src: "projects/keycloak-lab/07.webp", caption: "Configure OTP enabled as a default required action: MFA enforced" },
+    ],
+    tags: ["Keycloak", "MFA", "TOTP", "Docker", "Ubuntu", "Linux", "VMware", "IAM", "troubleshooting"],
+  },
+  {
     name: "Active Directory Home Lab",
     type: "lab",
     year: "2026",

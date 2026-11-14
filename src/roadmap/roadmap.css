@@ -191,3 +191,4 @@
 /* folders show only the course code; the full name appears once the folder is opened */
 .sch-item--folder { justify-items: center; text-align: center; }
 .sch-item--folder .sch-code { font-size: 12px; }
+.rm-course__by { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }

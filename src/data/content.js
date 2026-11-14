@@ -18,6 +18,11 @@ export const roadmap = [
     phase: "IAM Analyst",
     when: "next",
     goal: "Manage identities and access full time, following my Master IAM roadmap.",
+    // courses for this stage, shown on its roadmap page only (status: "in progress" | "complete")
+    courses: [
+      { name: "IAM Essentials", provider: "All Things Identity", status: "in progress",
+        done: ["Identity basics & user lifecycle management"] },
+    ],
     items: [
       "authentication and MFA",
       "SSO and federation (SAML, OIDC)",

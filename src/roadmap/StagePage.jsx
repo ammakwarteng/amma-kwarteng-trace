@@ -100,6 +100,29 @@ export default function StagePage({ slug }) {
           <Group label="milestones" items={skills} editing={editing} edit={edit} remove={remove} add={(t) => add(t, "skill")} />
           <Group label="certification goals" items={certs} editing={editing} edit={edit} remove={remove} add={(t) => add(t, "certification")} />
 
+          {meta.courses.length > 0 && (
+            <section className="rm-sec" aria-labelledby="rm-courses">
+              <h2 className="rm-sec__label mono" id="rm-courses">courses</h2>
+              <ol className="rm-list">
+                {meta.courses.map((c) => (
+                  <li key={c.name} className={`ms is-open ${c.status === "complete" ? "is-completed" : "is-learning"}`}>
+                    <div className="ms__row" style={{ cursor: "default" }}>
+                      <span className="ms__mark" aria-hidden="true" />
+                      <span className="ms__no mono" aria-hidden="true" />
+                      <span className="ms__title">{c.name}<span className="rm-course__by mono"> · {c.provider}</span></span>
+                      <span className="ms__status mono">{c.status}</span>
+                    </div>
+                    {c.done?.length > 0 && (
+                      <div className="ms__detail"><div className="ms__inner">
+                        <dl className="ms__facts mono"><div><dt>completed</dt><dd>{c.done.join(" · ")}</dd></div></dl>
+                      </div></div>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+
           <section className="rm-sec" aria-labelledby="rm-history">
             <h2 className="rm-sec__label mono" id="rm-history">history</h2>
             {history.length ? (

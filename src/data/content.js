@@ -159,8 +159,8 @@ export const projects = [
 export const skills = [
   {
     group: "Identity & Access",
-    proof: "Active Directory Home Lab · Keycloak SSO & MFA Lab · IAM Essentials, All Things Identity (in progress)",
-    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy", "Keycloak", "MFA (TOTP)", "SSO", "OpenID Connect (OIDC)", "identity provider realms", "CIA triad", "AAA framework"],
+    proof: "Active Directory Home Lab · Keycloak SSO & MFA Lab",
+    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy", "Keycloak", "MFA (TOTP)", "SSO", "OpenID Connect (OIDC)", "identity provider realms"],
   },
   {
     group: "Support",

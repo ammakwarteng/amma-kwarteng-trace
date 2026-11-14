@@ -174,3 +174,5 @@
 /* the quiet link to the schoolwork page, in the footer only */
 :root .site-footer__school { color: var(--white); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 2px; margin-bottom: 6px; }
 :root .site-footer__school:hover, :root .site-footer__school:focus-visible { border-bottom-color: var(--white); }
+/* the footer sits lower: more room between Contact and the footer, and it reaches the bottom of the screen */
+:root .site-footer { margin-top: clamp(80px, 16svh, 180px); padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }

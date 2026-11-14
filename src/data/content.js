@@ -76,12 +76,12 @@ export const school = [
 
 export const projects = [
   {
-    name: "Keycloak MFA Lab",
+    name: "Keycloak SSO & MFA Lab",
     type: "lab",
     year: "2026",
     status: "complete",
     summary:
-      "An identity provider running on Linux: Keycloak in Docker on an Ubuntu VM, with its own company realm, a test user and enforced multi-factor authentication through an authenticator app.",
+      "An identity provider running on Linux: Keycloak in Docker on an Ubuntu VM, with its own company realm, enforced multi-factor authentication, and single sign-on into a web app (Grafana) over OpenID Connect.",
     points: [
       "Built an Ubuntu 24.04 virtual machine in VMware Workstation",
       "Diagnosed why the VM had no network (no IP address, no route), then fixed it by switching the adapter to bridged networking and confirmed it with ping",
@@ -90,9 +90,15 @@ export const projects = [
       "Onboarded a test user, jdoe, with a permanent password",
       "Enforced MFA by making Configure OTP a default required action for the realm",
       "Enrolled the user's TOTP authenticator with Microsoft Authenticator and confirmed the device was registered",
+      "Registered Grafana as a confidential OIDC client in the realm, with an exact redirect URI and web origin",
+      "Retrieved the client secret with Keycloak's admin CLI instead of copying it by hand, and regenerated it after it was exposed in a screenshot",
+      "Ran Grafana in Docker and connected it to Keycloak with OpenID Connect",
+      "Signed in to Grafana as jdoe through Keycloak (password plus TOTP); Grafana created the account from the identity Keycloak sent, with no Grafana password",
     ],
-    next: "Next: connect a web app to the realm with OIDC to demonstrate single sign-on.",
+    next: "Covers the core of an IAM analyst's work: a central identity provider, enforced MFA and single sign-on into an application.",
     gallery: [
+      { src: "projects/keycloak-lab/sso-01.webp", caption: "Single sign-on: Grafana's profile for jdoe, synced from Keycloak over OpenID Connect" },
+      { src: "projects/keycloak-lab/sso-02.webp", caption: "Signed in to Grafana through Keycloak, with no Grafana password" },
       { src: "projects/keycloak-lab/01.webp", caption: "MFA set up: jdoe has a password and a registered authenticator app" },
       { src: "projects/keycloak-lab/02.webp", caption: "Network fixed: the VM reaches the internet after switching to bridged networking" },
       { src: "projects/keycloak-lab/03.webp", caption: "Keycloak 26.8.2 running in Docker, listening on port 8080" },
@@ -100,8 +106,10 @@ export const projects = [
       { src: "projects/keycloak-lab/05.webp", caption: "Onboarding the test user jdoe in my-company" },
       { src: "projects/keycloak-lab/06.webp", caption: "A permanent password set for jdoe" },
       { src: "projects/keycloak-lab/07.webp", caption: "Configure OTP enabled as a default required action: MFA enforced" },
+      { src: "projects/keycloak-lab/sso-04.webp", caption: "Grafana registered as a confidential OIDC client using the standard flow" },
+      { src: "projects/keycloak-lab/sso-03.webp", caption: "An exact redirect URI and web origin for Grafana" },
     ],
-    tags: ["Keycloak", "MFA", "TOTP", "Docker", "Ubuntu", "Linux", "VMware", "IAM", "troubleshooting"],
+    tags: ["Keycloak", "SSO", "OIDC", "MFA", "TOTP", "Grafana", "Docker", "Ubuntu", "Linux", "VMware", "IAM", "troubleshooting"],
   },
   {
     name: "Active Directory Home Lab",
@@ -148,8 +156,8 @@ export const projects = [
 export const skills = [
   {
     group: "Identity & Access",
-    proof: "Active Directory Home Lab · Keycloak MFA Lab",
-    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy", "Keycloak", "MFA (TOTP)", "identity provider realms"],
+    proof: "Active Directory Home Lab · Keycloak SSO & MFA Lab",
+    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy", "Keycloak", "MFA (TOTP)", "SSO", "OpenID Connect (OIDC)", "identity provider realms"],
   },
   {
     group: "Support",

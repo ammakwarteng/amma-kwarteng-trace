@@ -148,18 +148,18 @@ export const projects = [
 export const skills = [
   {
     group: "Identity & Access",
-    proof: "Active Directory Home Lab",
-    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy"],
+    proof: "Active Directory Home Lab · Keycloak MFA Lab",
+    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy", "Keycloak", "MFA (TOTP)", "identity provider realms"],
   },
   {
     group: "Support",
     proof: "home lab and work history",
-    items: ["password resets", "account unlocks", "device and network troubleshooting", "ticketing", "AV equipment setup"],
+    items: ["password resets", "account unlocks", "device and network troubleshooting", "VM network troubleshooting", "ticketing", "AV equipment setup"],
   },
   {
     group: "Systems & Tools",
-    proof: "home lab",
-    items: ["Windows Server 2022", "PowerShell", "DNS", "VMware Workstation", "Microsoft 365"],
+    proof: "home labs",
+    items: ["Windows Server 2022", "PowerShell", "DNS", "VMware Workstation", "Microsoft 365", "Ubuntu Linux", "Linux command line", "Docker"],
   },
   {
     group: "Governance",

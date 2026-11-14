@@ -21,7 +21,7 @@ export const roadmap = [
     // courses for this stage, shown on its roadmap page only (status: "in progress" | "complete")
     courses: [
       { name: "IAM Essentials", provider: "All Things Identity", status: "in progress",
-        done: ["Identity basics & user lifecycle management"] },
+        done: ["Identity basics & user lifecycle management", "Authentication and MFA"] },
     ],
     items: [
       "authentication and MFA",

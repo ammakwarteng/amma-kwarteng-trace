@@ -91,8 +91,14 @@ export default function SchoolPage() {
               <span>{c.code} / {f.title}</span>
               <button type="button" onClick={() => setFile(null)} aria-label="Close">×</button>
             </div>
-            {f.image && <img src={`/${f.image}`} alt={f.title} />}
             {f.note && <p className="rm-goal">{f.note}</p>}
+            {f.image && <img src={`/${f.image}`} alt={f.title} />}
+            {f.images?.map((im, n) => (
+              <figure key={im.src} className="sch-shot">
+                <img src={`/${im.src}`} alt={im.alt} loading="lazy" />
+                <figcaption className="mono">{String(n + 1).padStart(2, "0")} · {im.alt}</figcaption>
+              </figure>
+            ))}
           </div>
         </div>
       )}

@@ -110,6 +110,7 @@ const CROSS = [
 const IAM_PATH = 2;
 
 export default function IntroFilm({ onDone }) {
+  const stRef = useRef(null);   // the ScrollTrigger driving the film
   const wrap = useRef(null);
   const stage = useRef(null);
   const canvas = useRef(null);
@@ -179,7 +180,7 @@ export default function IntroFilm({ onDone }) {
         .to(stage.current, { "--bg": 0, duration: 2.5 }, 97.3)
         .to(word.current, { opacity: 0, duration: 0.2 }, 99.8);
 
-      ScrollTrigger.create({
+      stRef.current = ScrollTrigger.create({
         trigger: wrap.current, start: "top top", end: "bottom bottom", scrub: 0.6, animation: tl,
         onUpdate: (self) => {
           const p = self.progress * 100;
@@ -213,6 +214,15 @@ export default function IntroFilm({ onDone }) {
   // Skip: the film fades to black, the page moves to the end of the intro behind the black,
   // then the black fades away to reveal the hero (about two and a half seconds, unhurried).
   const fade = useRef(null);
+  // lands the film on its last frame at once (no fast catch-up of the final scenes)
+  const finish = () => {
+    const st = stRef.current;
+    if (!st) return;
+    st.update();
+    st.getTween?.()?.progress(1);
+    st.animation?.progress(1);
+    st.update();
+  };
   const skip = () => {
     const el = wrap.current, f = fade.current;
     if (!f || f.dataset.busy) return;
@@ -221,14 +231,16 @@ export default function IntroFilm({ onDone }) {
     f.style.opacity = "1";
     setTimeout(() => {
       window.scrollTo({ top: el.offsetTop + el.offsetHeight - stage.current.clientHeight, behavior: "instant" });
+      finish();
       onDone?.();
-      requestAnimationFrame(() => requestAnimationFrame(() => {
+      // a few frames for the page to settle on the hero (and the film's last frame), all behind the black
+      requestAnimationFrame(() => requestAnimationFrame(() => { finish(); requestAnimationFrame(() => {
         setTimeout(() => {                     // a short hold on black, then the hero fades in
           f.style.transition = "opacity 1.2s ease";
           f.style.opacity = "0";
           setTimeout(() => { delete f.dataset.busy; }, 1250);
         }, 300);
-      }));
+      }); }));
     }, 950);
   };
 

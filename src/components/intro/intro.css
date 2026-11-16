@@ -6,7 +6,11 @@
   background: rgba(10, 10, 10, var(--bg));
   pointer-events: none;
 }
-.intro__canvas { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform: translate(-50%, -50%) scale(var(--s, 0.8)); overflow: visible; }
+.intro__canvas { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform: translate(-50%, calc(-50% - var(--lift, 0px))) scale(var(--s, 0.8)); overflow: visible; }
+/* the worlds, scaled about the point where the horizon crosses the centre (--wz is 1 on laptops) */
+/* her, walking through the worlds, scaled from her feet (--fz is 1 on laptops) */
+.intro .s3-walker { transform: translate(560px, 646px) scale(var(--fz, 1)) translate(-560px, -646px); }
+.intro .strip-zoom { transform: translate(800px, 640px) scale(var(--wz, 1)) translate(-800px, -640px); }
 .intro .ink { fill: none; stroke: var(--white); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .intro .fig { transition: opacity 0.12s linear; }
 /* identity and access: brighter white with a faint sage tint, never glowing */

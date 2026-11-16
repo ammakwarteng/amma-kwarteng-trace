@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { school } from "../data/content.js";
+import LockWord from "../components/daylight/LockWord.jsx";
 
 /*
   Coursework, set out like a computer's file browser: a folder per course; open a folder to see
@@ -42,7 +43,7 @@ export default function SchoolPage() {
     <main className="rm sch" id="main">
       <header className="rm-head">
         <p className="rm-kicker mono">the schoolwork</p>
-        <h1 className="rm-title">Coursework</h1>
+        <h1 className="rm-title"><LockWord text="Coursework" at={1} /></h1>
       </header>
 
       <nav className="sch-path mono" aria-label="Location">

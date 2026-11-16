@@ -178,3 +178,10 @@
 :root .site-footer { margin-top: clamp(80px, 16svh, 180px); padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
 /* the quiet link to the schoolwork page, under the projects */
 :root .projects-school { margin-top: 14px; border-bottom-color: var(--line); }
+/* a fine divider between labs, so each one reads as its own entry */
+:root .projects > .project + .project { border-left: 1px solid var(--line); border-radius: 0; }
+@media (min-width: 900px) { :root .projects > .project + .project { padding-left: clamp(24px, 3vw, 48px); } }
+@media (max-width: 899px) {
+  :root .projects { gap: 22px; }
+  :root .projects > .project + .project { padding-left: 22px; }
+}

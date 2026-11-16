@@ -122,6 +122,8 @@ export default function Projects() {
       })}
     </div>
 
+      {/* a quiet way to the schoolwork page: findable, not shouted */}
+      <a className="road__more mono projects-school" href="/school">schoolwork →</a>
 
       <dialog
         ref={dialogRef}

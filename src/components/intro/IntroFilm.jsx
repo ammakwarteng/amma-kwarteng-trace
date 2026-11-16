@@ -123,12 +123,6 @@ export default function IntroFilm({ onDone }) {
       const vw = innerWidth, vh = stage.current.clientHeight;
       const s = vh > vw ? Math.min(vw / 820, vh / 900) : Math.min(vw / 1600, vh / 900) * 1.02;
       canvas.current.style.setProperty("--s", s.toFixed(4));
-      // phones (portrait): lift the drawing a little and bring the worlds closer, so the small
-      // figures in them read; laptops keep the original framing
-      const portrait = vh > vw;
-      canvas.current.style.setProperty("--lift", portrait ? `${Math.round(vh * 0.07)}px` : "0px");
-      canvas.current.style.setProperty("--wz", portrait ? "1.3" : "1");
-      canvas.current.style.setProperty("--fz", portrait ? "1.2" : "1");
       const title = document.querySelector(".dhero__word"), hero = document.querySelector(".dhero");
       if (title && hero && word.current) {
         const t = title.getBoundingClientRect(), h = hero.getBoundingClientRect(), cs = getComputedStyle(title);
@@ -279,7 +273,7 @@ export default function IntroFilm({ onDone }) {
           {/* 3 the worlds, on one horizon */}
           <g className="s3" style={{ opacity: 0 }}>
             <line className="ink draw horizon" x1="0" y1="640" x2="1600" y2="640" pathLength="1" />
-            <g className="strip-zoom"><g className="strip">
+            <g className="strip">
               {WORLDS.map((w) => {
                 const width = (w.to - w.from) * PANO_SCALE, x = offset;
                 offset += width;
@@ -296,8 +290,8 @@ export default function IntroFilm({ onDone }) {
                     ? <image href={src(ART.iam)} x="0" y={640 - POSES[ART.iam].horizon * (IAM_W * POSES[ART.iam].h / POSES[ART.iam].w)} width={IAM_W} height={IAM_W * POSES[ART.iam].h / POSES[ART.iam].w} />
                     : <Pending x={IAM_W / 2} feetY={636} w={IAM_W - 80} h={380} label="identity and access world" />}
               </g>
-            </g></g>
-            <g className="s3-walker">{WALK.map((n, i) => <Figure key={n} name={n} x={560} feetY={646} scale={1.06} hidden={i > 0} />)}</g>
+            </g>
+            {WALK.map((n, i) => <Figure key={n} name={n} x={560} feetY={646} scale={1.06} hidden={i > 0} />)}
           </g>
 
           {/* 4 finding a direction */}

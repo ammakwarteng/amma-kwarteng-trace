@@ -202,3 +202,7 @@
 .sch-shots .sch-shot { flex: 0 0 100%; scroll-snap-align: start; border-top: 0; }
 .sch-shots .sch-shot img { display: block; width: 100%; }
 @media (prefers-reduced-motion: no-preference) { .sch-shots { scroll-behavior: smooth; } }
+/* locked coursework: the access-code form inside a folder */
+.sch-lock { display: grid; gap: 14px; max-width: 520px; margin-top: 8px; }
+.sch-lock__msg { margin: 0; font-size: 17px; line-height: 1.45; color: var(--white); }
+.sch-lock__msg.is-denied { color: var(--threat); }

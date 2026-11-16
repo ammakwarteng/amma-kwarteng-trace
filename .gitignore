@@ -153,3 +153,6 @@ vite.config.ts.timestamp-*
 
 # Never publish a readable résumé; only public/resume.enc.json (encrypted)
 *.pdf
+
+# Readable coursework (screenshots and notes) stays local; only public/coursework.enc.json is published
+/private/

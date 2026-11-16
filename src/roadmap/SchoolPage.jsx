@@ -1,13 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { school } from "../data/content.js";
 import LockWord from "../components/daylight/LockWord.jsx";
 
 /*
   Coursework, set out like a computer's file browser: a folder per course; open a folder to see
   the files (pieces of coursework) inside; open a file to preview it. A path bar at the top
-  (SCHOOLWORK / CODE) leads back. Content lives in content.js (`school`): only Amma's own work and
-  descriptions, never full assignment answers, classmates' names or instructor comments.
+  (COURSEWORK / CODE) leads back.
+
+  Only the folder names are public. The files (notes and screenshots) are encrypted in
+  coursework.enc.json (AES-256-GCM, key from the access code via PBKDF2-SHA-256) and decrypted
+  here in the browser with Amma's access code, so nothing readable is published until she
+  unlocks it. See scripts/lock-coursework.mjs. Only her own work: never full assignment answers,
+  classmates' names or instructor comments.
 */
+const FILE = `${import.meta.env.BASE_URL}coursework.enc.json`;
+const fromB64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+
+async function unlock(code) {
+  const res = await fetch(FILE, { cache: "no-store" });
+  if (!res.ok) throw new Error("unavailable");
+  const box = await res.json();
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", hash: box.kdf.hash, salt: fromB64(box.kdf.salt), iterations: box.kdf.iterations },
+    base,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["decrypt"]
+  );
+  try {
+    const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64(box.cipher.iv) }, key, fromB64(box.data));
+    return JSON.parse(new TextDecoder().decode(plain));
+  } catch {
+    throw new Error("denied");
+  }
+}
+
 function Folder() {
   return (
     <svg className="sch-ico sch-ico--folder" viewBox="0 0 64 50" aria-hidden="true">
@@ -25,7 +53,45 @@ function File() {
   );
 }
 
+function LockForm({ onOpen }) {
+  const [code, setCode] = useState("");
+  const [state, setState] = useState("locked"); // locked | checking | denied | unavailable
+  const inputRef = useRef(null);
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  async function submit(e) {
+    e.preventDefault();
+    if (!code.trim() || state === "checking") return;
+    setState("checking");
+    try {
+      onOpen(await unlock(code.trim()));
+    } catch (err) {
+      setState(err.message === "unavailable" ? "unavailable" : "denied");
+      inputRef.current?.select();
+    }
+  }
+
+  const msg = {
+    locked: "This coursework is private for now. Enter the access code to open it.",
+    checking: "Verifying…",
+    denied: "Access denied. That code didn't work, so please check it and try again.",
+    unavailable: "The coursework couldn't be loaded right now. Please try again later.",
+  }[state];
+
+  return (
+    <form className="sch-lock" onSubmit={submit}>
+      <p className={`sch-lock__msg ${state === "denied" ? "is-denied" : ""}`} role={state === "locked" ? undefined : "status"}>{msg}</p>
+      <div className="rm-add">
+        <label className="visually-hidden" htmlFor="sch-code">Access code</label>
+        <input id="sch-code" ref={inputRef} type="password" autoComplete="off" value={code} onChange={(e) => setCode(e.target.value)} placeholder="access code" />
+        <button type="submit" className="rm-btn" disabled={!code.trim() || state === "checking"}>{state === "checking" ? "opening…" : "open"}</button>
+      </div>
+    </form>
+  );
+}
+
 export default function SchoolPage() {
+  const [files, setFiles] = useState(null);     // decrypted: { CODE: [files] }, or null while locked
   const [course, setCourse] = useState(null);   // index of the open folder
   const [file, setFile] = useState(null);       // index of the open file
   useEffect(() => { document.title = "Coursework · TRACE"; }, []);
@@ -36,8 +102,10 @@ export default function SchoolPage() {
     return () => removeEventListener("keydown", onKey);
   }, [file]);
 
+  const open = (list) => setFiles(Object.fromEntries(list.map((c) => [c.code, c.files || []])));
   const c = course === null ? null : school[course];
-  const f = c && file !== null ? c.files[file] : null;
+  const items = c && files ? files[c.code] || [] : [];
+  const f = c && files && file !== null ? items[file] : null;
 
   return (
     <main className="rm sch" id="main">
@@ -49,7 +117,7 @@ export default function SchoolPage() {
       <nav className="sch-path mono" aria-label="Location">
         <button type="button" onClick={() => { setCourse(null); setFile(null); }} disabled={!c}>Coursework</button>
         {c && <><span aria-hidden="true">/</span><span aria-current="page">{c.code}</span></>}
-        <span className="sch-count">{c ? `${c.files.length} ${c.files.length === 1 ? "item" : "items"}` : `${school.length} folders`}</span>
+        <span className="sch-count">{c ? (files ? `${items.length} ${items.length === 1 ? "item" : "items"}` : "locked") : `${school.length} folders`}</span>
       </nav>
 
       {!c && (
@@ -68,11 +136,13 @@ export default function SchoolPage() {
       {c && (
         <section className="sch-open" key={c.code} aria-label={c.name}>
           <h2 className="sch-title">{c.name}</h2>
-          {c.files.length === 0 ? (
+          {!files ? (
+            <LockForm onOpen={open} />
+          ) : items.length === 0 ? (
             <p className="rm-empty mono">This folder is empty for now. Coursework will be added here.</p>
           ) : (
             <ul className="sch-grid sch-grid--files">
-              {c.files.map((x, i) => (
+              {items.map((x, i) => (
                 <li key={x.title}>
                   <button type="button" className="sch-item" onClick={() => setFile(i)}>
                     <File />
@@ -93,14 +163,13 @@ export default function SchoolPage() {
               <button type="button" onClick={() => setFile(null)} aria-label="Close">×</button>
             </div>
             {f.note && <p className="rm-goal">{f.note}</p>}
-            {f.image && <img src={`/${f.image}`} alt={f.title} />}
             {f.images?.length > 0 && (
               <>
                 <p className="sch-hint mono">{f.images.length} screenshots · scroll sideways</p>
                 <div className="sch-shots" tabIndex={0} aria-label="Screenshots">
                   {f.images.map((im, n) => (
                     <figure key={im.src} className="sch-shot">
-                      <img src={`/${im.src}`} alt={im.alt} loading="lazy" />
+                      <img src={im.data} alt={im.alt} />
                       <figcaption className="mono">{String(n + 1).padStart(2, "0")} / {String(f.images.length).padStart(2, "0")} · {im.alt}</figcaption>
                     </figure>
                   ))}

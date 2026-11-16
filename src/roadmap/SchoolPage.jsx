@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { school } from "../data/content.js";
 
 /*
-  Schoolwork, set out like a computer's file browser: a folder per course; open a folder to see
+  Coursework, set out like a computer's file browser: a folder per course; open a folder to see
   the files (pieces of coursework) inside; open a file to preview it. A path bar at the top
   (SCHOOLWORK / CODE) leads back. Content lives in content.js (`school`): only Amma's own work and
   descriptions, never full assignment answers, classmates' names or instructor comments.
@@ -27,7 +27,7 @@ function File() {
 export default function SchoolPage() {
   const [course, setCourse] = useState(null);   // index of the open folder
   const [file, setFile] = useState(null);       // index of the open file
-  useEffect(() => { document.title = "Schoolwork · TRACE"; }, []);
+  useEffect(() => { document.title = "Coursework · TRACE"; }, []);
   useEffect(() => {
     if (file === null) return;
     const onKey = (e) => { if (e.key === "Escape") setFile(null); };
@@ -41,12 +41,12 @@ export default function SchoolPage() {
   return (
     <main className="rm sch" id="main">
       <header className="rm-head">
-        <p className="rm-kicker mono">the coursework</p>
-        <h1 className="rm-title">Schoolwork</h1>
+        <p className="rm-kicker mono">the schoolwork</p>
+        <h1 className="rm-title">Coursework</h1>
       </header>
 
       <nav className="sch-path mono" aria-label="Location">
-        <button type="button" onClick={() => { setCourse(null); setFile(null); }} disabled={!c}>Schoolwork</button>
+        <button type="button" onClick={() => { setCourse(null); setFile(null); }} disabled={!c}>Coursework</button>
         {c && <><span aria-hidden="true">/</span><span aria-current="page">{c.code}</span></>}
         <span className="sch-count">{c ? `${c.files.length} ${c.files.length === 1 ? "item" : "items"}` : `${school.length} folders`}</span>
       </nav>

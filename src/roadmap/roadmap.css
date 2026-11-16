@@ -195,3 +195,10 @@
 /* a file with several screenshots: each with a numbered caption, divided by fine lines */
 .sch-shot { margin: 0; border-top: 1px solid var(--line); }
 .sch-shot figcaption { padding: 10px 14px 14px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); }
+/* screenshots in a file sit side by side: swipe or scroll sideways, one at a time */
+.sch-hint { margin: 0; padding: 12px 14px 0; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); border-top: 1px solid var(--line); }
+.sch-shots { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.sch-shots:focus-visible { outline: 1px solid var(--white); outline-offset: -1px; }
+.sch-shots .sch-shot { flex: 0 0 100%; scroll-snap-align: start; border-top: 0; }
+.sch-shots .sch-shot img { display: block; width: 100%; }
+@media (prefers-reduced-motion: no-preference) { .sch-shots { scroll-behavior: smooth; } }

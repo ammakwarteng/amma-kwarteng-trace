@@ -93,12 +93,19 @@ export default function SchoolPage() {
             </div>
             {f.note && <p className="rm-goal">{f.note}</p>}
             {f.image && <img src={`/${f.image}`} alt={f.title} />}
-            {f.images?.map((im, n) => (
-              <figure key={im.src} className="sch-shot">
-                <img src={`/${im.src}`} alt={im.alt} loading="lazy" />
-                <figcaption className="mono">{String(n + 1).padStart(2, "0")} · {im.alt}</figcaption>
-              </figure>
-            ))}
+            {f.images?.length > 0 && (
+              <>
+                <p className="sch-hint mono">{f.images.length} screenshots · scroll sideways</p>
+                <div className="sch-shots" tabIndex={0} aria-label="Screenshots">
+                  {f.images.map((im, n) => (
+                    <figure key={im.src} className="sch-shot">
+                      <img src={`/${im.src}`} alt={im.alt} loading="lazy" />
+                      <figcaption className="mono">{String(n + 1).padStart(2, "0")} / {String(f.images.length).padStart(2, "0")} · {im.alt}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

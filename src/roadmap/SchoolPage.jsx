@@ -42,7 +42,7 @@ export default function SchoolPage() {
   return (
     <main className="rm sch" id="main">
       <header className="rm-head">
-        <p className="rm-kicker mono">the schoolwork</p>
+        <p className="rm-kicker mono">the classroom</p>
         <h1 className="rm-title"><LockWord text="Coursework" at={1} /></h1>
       </header>
 

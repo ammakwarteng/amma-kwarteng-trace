@@ -175,7 +175,7 @@ export default function IntroFilm({ onDone }) {
         .fromTo(q(".paper__sheet"), { attr: { height: 0 } }, { attr: { height: 900 }, duration: 6, ease: "power2.inOut" }, 89)
         .fromTo(q(".paper__roll"), { y: -900 }, { y: 0, duration: 6, ease: "power2.inOut" }, 89)
         .fromTo(word.current, { opacity: 0 }, { opacity: 1, duration: 2.5, ease: "power1.out" }, 94)
-        .fromTo(q(".s5 .exit"), { x: 0 }, { x: 980, duration: 4, ease: "power1.in" }, 95)
+        .fromTo(q(".s5 .exit"), { x: 0 }, { x: 1700, duration: 4, ease: "power1.in" }, 95)   // far enough to leave even a wide laptop screen
         .to(q(".paper"), { opacity: 0, duration: 2.5 }, 97)
         .to(stage.current, { "--bg": 0, duration: 2.5 }, 97.3)
         .to(word.current, { opacity: 0, duration: 0.2 }, 99.8);
@@ -195,7 +195,7 @@ export default function IntroFilm({ onDone }) {
           // scene 5: facing the visitor, pulling the sheet, then walking out of the frame
           show(q(".s5 > .who"), p < 89 ? ART.front : p < 95 ? ART.pull : "none");
           show(q(".s5 .exit .fig"), WALK[Math.floor(Math.max(0, p - 95) * 4) % WALK.length]);
-          q(".s5 .exit").forEach((el) => { el.style.opacity = p >= 95 ? 1 : 0; });
+          q(".s5 .exit").forEach((el) => { el.style.opacity = p >= 95 && p < 99.5 ? 1 : 0; });   // gone once the film hands over to the site
           // the storyline: each line fades in and out over FADE units at its edges
           q(".intro__line").forEach((el, i) => {
             const { from, to } = STORY[i];

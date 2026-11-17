@@ -13,7 +13,7 @@
 
   To get the readable files back (e.g. in a fresh checkout), see scripts/unlock-coursework.mjs.
 */
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import { webcrypto as crypto } from "node:crypto";
 import path from "node:path";
 
@@ -43,6 +43,30 @@ for (const c of courses) {
   }
 }
 
+// downloadable files (e.g. a Word document) are encrypted on their own, so the page only fetches
+// one when it is clicked: public/coursework/<n>.enc.json, listed in the bundle as { name, file }
+const b64 = (bytes) => Buffer.from(bytes).toString("base64");
+async function seal(bytes) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey({ name: "PBKDF2", hash: "SHA-256", salt, iterations: ITERATIONS }, base, { name: "AES-GCM", length: 256 }, false, ["encrypt"]);
+  const data = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, bytes));
+  return { v: 1, kdf: { name: "PBKDF2", hash: "SHA-256", iterations: ITERATIONS, salt: b64(salt) }, cipher: { name: "AES-GCM", iv: b64(iv) }, data: b64(data) };
+}
+await rm("public/coursework", { recursive: true, force: true });
+let downloads = 0;
+for (const c of courses) {
+  for (const f of c.files) {
+    if (!f.download) continue;
+    const bytes = await readFile(path.join(DIR, f.download.src));
+    await mkdir("public/coursework", { recursive: true });
+    const file = `coursework/${++downloads}.enc.json`;
+    await writeFile(`public/${file}`, JSON.stringify(await seal(bytes)));
+    f.download = { name: f.download.name, label: f.download.label, src: f.download.src, file };
+  }
+}
+
 const plain = new TextEncoder().encode(JSON.stringify(courses));
 const salt = crypto.getRandomValues(new Uint8Array(16));
 const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -56,11 +80,10 @@ const key = await crypto.subtle.deriveKey(
 );
 const data = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plain));
 
-const b64 = (bytes) => Buffer.from(bytes).toString("base64");
 await writeFile("public/coursework.enc.json", JSON.stringify({
   v: 1,
   kdf: { name: "PBKDF2", hash: "SHA-256", iterations: ITERATIONS, salt: b64(salt) },
   cipher: { name: "AES-GCM", iv: b64(iv) },
   data: b64(data),
 }));
-console.log(`Locked ${courses.reduce((n, c) => n + c.files.length, 0)} files and ${count} screenshots into public/coursework.enc.json`);
+console.log(`Locked ${courses.reduce((n, c) => n + c.files.length, 0)} files, ${count} screenshots and ${downloads} downloads`);

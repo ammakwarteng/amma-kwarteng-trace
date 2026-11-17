@@ -206,3 +206,5 @@
 .sch-lock { display: grid; gap: 14px; max-width: 520px; margin-top: 8px; }
 .sch-lock__msg { margin: 0; font-size: 17px; line-height: 1.45; color: var(--white); }
 .sch-lock__msg.is-denied { color: var(--threat); }
+/* a downloadable document inside a coursework file */
+.sch-dl-row { margin: 0; padding: 0 16px 16px; }

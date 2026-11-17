@@ -16,8 +16,8 @@ import LockWord from "../components/daylight/LockWord.jsx";
 const FILE = `${import.meta.env.BASE_URL}coursework.enc.json`;
 const fromB64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 
-async function unlock(code) {
-  const res = await fetch(FILE, { cache: "no-store" });
+async function openBox(url, code) {
+  const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error("unavailable");
   const box = await res.json();
   const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveKey"]);
@@ -29,11 +29,28 @@ async function unlock(code) {
     ["decrypt"]
   );
   try {
-    const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64(box.cipher.iv) }, key, fromB64(box.data));
-    return JSON.parse(new TextDecoder().decode(plain));
+    return await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64(box.cipher.iv) }, key, fromB64(box.data));
   } catch {
     throw new Error("denied");
   }
+}
+const unlock = async (code) => JSON.parse(new TextDecoder().decode(await openBox(FILE, code)));
+
+// a downloadable file (e.g. the Word document), decrypted only when it's clicked
+function Download({ file, code }) {
+  const [busy, setBusy] = useState(false);
+  const get = async () => {
+    setBusy(true);
+    try {
+      const bytes = await openBox(`${import.meta.env.BASE_URL}${file.file}`, code);
+      const url = URL.createObjectURL(new Blob([bytes]));
+      const a = Object.assign(document.createElement("a"), { href: url, download: file.name });
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch { /* leave the button as it was */ }
+    setBusy(false);
+  };
+  return <button type="button" className="rm-btn sch-dl" onClick={get} disabled={busy}>{busy ? "opening…" : `download ${file.label || "file"}`}</button>;
 }
 
 function Folder() {
@@ -64,7 +81,7 @@ function LockForm({ onOpen }) {
     if (!code.trim() || state === "checking") return;
     setState("checking");
     try {
-      onOpen(await unlock(code.trim()));
+      onOpen(await unlock(code.trim()), code.trim());
     } catch (err) {
       setState(err.message === "unavailable" ? "unavailable" : "denied");
       inputRef.current?.select();
@@ -92,6 +109,7 @@ function LockForm({ onOpen }) {
 
 export default function SchoolPage() {
   const [files, setFiles] = useState(null);     // decrypted: { CODE: [files] }, or null while locked
+  const [key, setKey] = useState("");           // the access code, kept in memory only, for downloads
   const [course, setCourse] = useState(null);   // index of the open folder
   const [file, setFile] = useState(null);       // index of the open file
   useEffect(() => { document.title = "Coursework · TRACE"; }, []);
@@ -102,7 +120,7 @@ export default function SchoolPage() {
     return () => removeEventListener("keydown", onKey);
   }, [file]);
 
-  const open = (list) => setFiles(Object.fromEntries(list.map((c) => [c.code, c.files || []])));
+  const open = (list, code) => { setKey(code); setFiles(Object.fromEntries(list.map((c) => [c.code, c.files || []]))); };
   const c = course === null ? null : school[course];
   const items = c && files ? files[c.code] || [] : [];
   const f = c && files && file !== null ? items[file] : null;
@@ -163,6 +181,7 @@ export default function SchoolPage() {
               <button type="button" onClick={() => setFile(null)} aria-label="Close">×</button>
             </div>
             {f.note && <p className="rm-goal">{f.note}</p>}
+            {f.download?.file && <p className="sch-dl-row"><Download file={f.download} code={key} /></p>}
             {f.images?.length > 0 && (
               <>
                 <p className="sch-hint mono">{f.images.length} screenshots · scroll sideways</p>

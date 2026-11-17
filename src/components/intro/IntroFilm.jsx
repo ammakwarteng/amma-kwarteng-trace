@@ -211,6 +211,30 @@ export default function IntroFilm({ onDone }) {
     return () => { ctx.revert(); document.documentElement.classList.remove("intro-playing"); };
   }, [onDone]);
 
+  // Space / Page Down jump a whole screen, which races through the film. While the film is on
+  // screen, those keys move a quarter of a screen instead, with the browser's own smooth scroll
+  // (no extra animation work). Shift + Space / Page Up go back the same way. Keys typed into
+  // buttons, links and fields are left alone.
+  useEffect(() => {
+    const onKey = (e) => {
+      const el = wrap.current;
+      if (!el || e.altKey || e.ctrlKey || e.metaKey) return;
+      const t = e.target;
+      if (t.closest?.("input, textarea, select, button, a, [contenteditable='true']")) return;
+      const back = e.key === "PageUp" || (e.key === " " && e.shiftKey);
+      const fwd = e.key === "PageDown" || (e.key === " " && !e.shiftKey);
+      if (!back && !fwd) return;
+      const end = el.offsetTop + el.offsetHeight - stage.current.clientHeight;
+      if (scrollY >= end - 2 && fwd) return;            // past the film: normal page behaviour
+      e.preventDefault();
+      const step = Math.round(innerHeight * 0.25) * (back ? -1 : 1);
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      scrollBy({ top: fwd ? Math.min(step, end - scrollY) : step, behavior: reduce ? "auto" : "smooth" });
+    };
+    addEventListener("keydown", onKey);
+    return () => removeEventListener("keydown", onKey);
+  }, []);
+
   // Skip: the film fades to black, the page moves to the end of the intro behind the black,
   // then the black fades away to reveal the hero (about two and a half seconds, unhurried).
   const fade = useRef(null);

@@ -100,7 +100,7 @@ function LockForm({ onOpen }) {
       <p className={`sch-lock__msg ${state === "denied" ? "is-denied" : ""}`} role={state === "locked" ? undefined : "status"}>{msg}</p>
       <div className="rm-add">
         <label className="visually-hidden" htmlFor="sch-code">Access code</label>
-        <input id="sch-code" ref={inputRef} type="password" autoComplete="off" value={code} onChange={(e) => setCode(e.target.value)} placeholder="access code" />
+        <input id="sch-code" ref={inputRef} type="password" autoComplete="off" value={code} onChange={(e) => setCode(e.target.value)} />
         <button type="submit" className="rm-btn" disabled={!code.trim() || state === "checking"}>{state === "checking" ? "opening…" : "open"}</button>
       </div>
     </form>

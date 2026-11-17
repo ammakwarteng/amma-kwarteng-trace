@@ -3,9 +3,9 @@
 export const owner = {
   name: "Amma Kwarteng",
   brand: "Amma Kwarteng",
-  headline: "an open trace",
+  headline: "an evolving archive",
   subline: "of my projects, technical exploration, skills, and professional journey.",
-  tagline: "An open trace of my projects, technical exploration, skills, and professional journey.",
+  tagline: "An evolving archive of my projects, technical exploration, skills, and professional journey.",
   focus: "Cybersecurity · IT · Design",
   timeZone: "America/Toronto",
 };

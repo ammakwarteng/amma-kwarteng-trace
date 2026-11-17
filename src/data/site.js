@@ -48,6 +48,8 @@ export const communities = [
     about: "A community supporting people in tech, from students to early career." },
   { name: "Women's Society of Cyberjutsu", short: "WSC", role: "Member", url: "https://www.womenscyberjutsu.org/",
     about: "A nonprofit helping women advance in cybersecurity through hands-on training, mentoring and community." },
+  { name: "ISC2 Toronto Chapter", role: "Member", url: "https://www.isc2chapter-toronto.ca/",
+    about: "The Toronto chapter of ISC2, the global association of cybersecurity professionals behind the CISSP." },
 ];
 
 // Volunteer roles, shown in the volunteer section (hidden until it's switched on in navItems).

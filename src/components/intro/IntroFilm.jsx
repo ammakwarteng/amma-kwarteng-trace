@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import POSES from "./poses.json";
@@ -350,7 +351,10 @@ export default function IntroFilm({ onDone }) {
           ))}
         </div>
         <span className="intro__word" ref={word} aria-hidden="true">trace</span>
-        <div className="intro__fade" ref={fade} aria-hidden="true" />
+        {/* the skip's black cover sits on the page itself (fixed, above everything), not inside the
+            sticky stage: on a long jump some browsers paint a frame before the sticky stage catches up,
+            which showed the page underneath for an instant */}
+        {createPortal(<div className="intro__fade" ref={fade} aria-hidden="true" />, document.body)}
         {skipVisible && <button type="button" className="intro__skip mono" onClick={skip}>skip intro</button>}
       </div>
     </section>

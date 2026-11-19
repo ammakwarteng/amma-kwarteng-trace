@@ -13,6 +13,9 @@ export const roadmap = [
     now: true,
     goal: "Get hands-on IT support experience in the next 3 to 6 months while learning how accounts and access work day to day.",
     items: ["ITIL 4 Foundation", "CompTIA Security+", "Active Directory", "password resets and account requests", "PowerShell basics"],
+    courses: [
+      { name: "Practical Help Desk", provider: "TCM Security", status: "in progress", done: [] },
+    ],
   },
   {
     phase: "IAM Analyst",

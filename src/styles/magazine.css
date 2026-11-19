@@ -58,8 +58,7 @@
 .project__lead { margin: 4px 0 0; display: grid; gap: 10px; }
 .project__lead button { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; }
 .project__lead button:focus-visible { outline: 2px solid var(--white); outline-offset: 4px; }
-.project__lead img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; filter: grayscale(1) contrast(1.04); transition: filter 0.4s ease; }
-.project__lead button:hover img { filter: grayscale(0.6) contrast(1.04); }
+.project__lead img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
 .project__lead figcaption { font-family: var(--font-hero); font-style: italic; font-size: 16px; line-height: 1.35; color: var(--white-dim); }
 .project__lead figcaption .mono { margin-right: 10px; font-family: var(--font-mono); font-style: normal; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-faint); }
 .project__summary { font-size: clamp(17px, 1.3vw, 19px); color: var(--white-dim); }

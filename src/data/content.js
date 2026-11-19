@@ -21,7 +21,8 @@ export const roadmap = [
     // courses for this stage, shown on its roadmap page only (status: "in progress" | "complete")
     courses: [
       { name: "IAM Essentials", provider: "All Things Identity", status: "complete",
-        done: ["Identity basics & user lifecycle management", "Authentication and MFA", "Authorization models (RBAC, ABAC, PBAC, MAC, DAC)", "Federation and single sign-on (SAML, OIDC, SCIM)", "IAM and compliance (NIST 800-63)"] },
+        done: ["Identity basics & user lifecycle management", "Authentication and MFA", "Authorization models (RBAC, ABAC, PBAC, MAC, DAC)", "Federation and single sign-on (SAML, OIDC, SCIM)", "IAM and compliance (NIST 800-63)"],
+        certificate: "2026-11-19" },
     ],
     items: [
       "authentication and MFA",
@@ -56,7 +57,7 @@ export const certifications = [
   { name: "ISO/IEC 27001:2022 Lead Auditor", code: "ISO 27001", issuer: "Mastermind Assurance Academy", status: "earned" },
   { name: "ITIL 4 Foundation", code: "ITIL 4", issuer: "PeopleCert", status: "studying" },
   { name: "CompTIA Security+", code: "Sec+", issuer: "CompTIA", status: "next" },
-  { name: "Microsoft SC-900", code: "SC-900", issuer: "Microsoft", status: "planned" },
+  { name: "Microsoft SC-900", code: "SC-900", issuer: "Microsoft", status: "next" },
   { name: "Microsoft SC-300: Identity and Access Administrator", code: "SC-300", issuer: "Microsoft", status: "next" },
   { name: "Okta Certified Professional", code: "Okta Pro", issuer: "Okta", status: "planned" },
   { name: "CyberArk Certified Trustee", code: "Trustee", issuer: "CyberArk", status: "planned" },

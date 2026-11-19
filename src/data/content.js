@@ -212,8 +212,8 @@ export const skills = [
   },
   {
     group: "Systems & Tools",
-    proof: "home labs",
-    items: ["Windows Server 2022", "PowerShell", "DNS", "VMware Workstation", "Microsoft 365", "Ubuntu Linux", "Linux command line", "Docker"],
+    proof: "home labs and coursework",
+    items: ["Windows Server 2022", "PowerShell", "DNS", "VMware Workstation", "Microsoft 365", "Ubuntu Linux", "Linux command line", "Docker", "Microsoft Azure (virtual networks and VMs)", "Remote Desktop (RDP)"],
   },
   {
     group: "Governance",

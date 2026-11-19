@@ -20,8 +20,8 @@ export const roadmap = [
     goal: "Manage identities and access full time, following my Master IAM roadmap.",
     // courses for this stage, shown on its roadmap page only (status: "in progress" | "complete")
     courses: [
-      { name: "IAM Essentials", provider: "All Things Identity", status: "in progress",
-        done: ["Identity basics & user lifecycle management", "Authentication and MFA", "Authorization models (RBAC, ABAC, PBAC, MAC, DAC)", "Federation and single sign-on (SAML, OIDC, SCIM)"] },
+      { name: "IAM Essentials", provider: "All Things Identity", status: "complete",
+        done: ["Identity basics & user lifecycle management", "Authentication and MFA", "Authorization models (RBAC, ABAC, PBAC, MAC, DAC)", "Federation and single sign-on (SAML, OIDC, SCIM)", "IAM and compliance (NIST 800-63)"] },
     ],
     items: [
       "authentication and MFA",

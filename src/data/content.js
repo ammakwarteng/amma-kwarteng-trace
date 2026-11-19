@@ -21,7 +21,7 @@ export const roadmap = [
     // courses for this stage, shown on its roadmap page only (status: "in progress" | "complete")
     courses: [
       { name: "IAM Essentials", provider: "All Things Identity", status: "in progress",
-        done: ["Identity basics & user lifecycle management", "Authentication and MFA", "Authorization models (RBAC, ABAC, PBAC, MAC, DAC)"] },
+        done: ["Identity basics & user lifecycle management", "Authentication and MFA", "Authorization models (RBAC, ABAC, PBAC, MAC, DAC)", "Federation and single sign-on (SAML, OIDC, SCIM)"] },
     ],
     items: [
       "authentication and MFA",

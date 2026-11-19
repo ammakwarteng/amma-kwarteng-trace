@@ -83,6 +83,42 @@ export const school = [
 
 export const projects = [
   {
+    name: "Okta MFA & Sign-On Policy Lab",
+    type: "lab",
+    year: "2026",
+    status: "complete",
+    summary:
+      "Multi-factor authentication in Okta, end to end: Okta Verify with push, TOTP and number challenge, an enrollment policy that makes every user set it up, and a sign-on policy that requires two factors, tested as a real user.",
+    points: [
+      "Set up an Okta org and worked in the Admin Console",
+      "Onboarded a test user, John Doe, with a password set by the admin and activated right away",
+      "Configured the Okta Verify authenticator: TOTP codes, push notifications and Okta FastPass",
+      "Turned on number challenge for all push notifications, so a user has to match a number on screen instead of just tapping Approve (a defence against MFA fatigue and push bombing)",
+      "Edited the default enrollment policy for everyone: Okta Verify and password required, with no grace period, and passkeys optional",
+      "Reviewed the Okta Dashboard sign-on policy: access needs a password plus a second factor, with user interaction required and re-authentication every 12 hours",
+      "Tested as the user: Okta required John to set up Okta Verify at his first sign-in, then enrolled the app on a phone by scanning the QR code",
+      "Signed in again with a push: the browser showed a number, the phone asked which number it was and showed the app, device and time of the attempt, and matching it signed John in",
+      "Kept secrets out of the evidence: no QR codes in the screenshots, and the admin email and sign-in location blurred",
+    ],
+    next: "Shows the everyday MFA work of an IAM analyst in one of the most widely used identity providers: choosing authenticators, writing the policies that enforce them and checking the user experience.",
+    gallery: [
+      { src: "projects/okta-lab/okta-01.webp", caption: "Number challenge: the browser shows 19 and waits for the phone" },
+      { src: "projects/okta-lab/okta-02.webp", caption: "Okta Verify asks which number is on the screen, and shows the app, device and time of the sign-in" },
+      { src: "projects/okta-lab/okta-03.webp", caption: "Signed in to the Okta Dashboard as John Doe after password plus push" },
+      { src: "projects/okta-lab/okta-04.webp", caption: "The Okta Admin Console before setup: no users, groups or apps" },
+      { src: "projects/okta-lab/okta-05.webp", caption: "Onboarding John Doe with an admin-set password" },
+      { src: "projects/okta-lab/okta-06.webp", caption: "John Doe active in the directory" },
+      { src: "projects/okta-lab/okta-07.webp", caption: "Okta Verify verification options: TOTP, push notification and FastPass" },
+      { src: "projects/okta-lab/okta-08.webp", caption: "Number challenge required for all push challenges" },
+      { src: "projects/okta-lab/okta-09.webp", caption: "Enrollment policy for everyone: Okta Verify required, no grace period" },
+      { src: "projects/okta-lab/okta-10.webp", caption: "Password required too, then Update policy" },
+      { src: "projects/okta-lab/okta-11.webp", caption: "Sign-on policy: a password plus a second factor, re-authentication every 12 hours" },
+      { src: "projects/okta-lab/okta-12.webp", caption: "First sign-in: Okta requires John to set up Okta Verify" },
+      { src: "projects/okta-lab/okta-13.webp", caption: "Every sign-in after that asks for a second factor" },
+    ],
+    tags: ["Okta", "MFA", "Okta Verify", "push", "number challenge", "TOTP", "enrollment policy", "authentication policy", "IAM"],
+  },
+  {
     name: "Keycloak SSO & MFA Lab",
     type: "lab",
     year: "2026",
@@ -166,8 +202,8 @@ export const projects = [
 export const skills = [
   {
     group: "Identity & Access",
-    proof: "Active Directory Home Lab · Keycloak SSO & MFA Lab",
-    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy", "Keycloak", "MFA (TOTP)", "SSO", "OpenID Connect (OIDC)", "identity provider realms"],
+    proof: "Active Directory Home Lab · Keycloak SSO & MFA Lab · Okta MFA & Sign-On Policy Lab",
+    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy", "Keycloak", "MFA (TOTP)", "SSO", "OpenID Connect (OIDC)", "identity provider realms", "Okta", "Okta Verify (push and number challenge)", "MFA enrollment and sign-on policies"],
   },
   {
     group: "Support",

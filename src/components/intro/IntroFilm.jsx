@@ -187,7 +187,7 @@ export default function IntroFilm({ onDone }) {
           const p = self.progress * 100;
           // scene 1: standing, then reaching as the umbrella arrives; she holds it from then on and looks up
           show(q(".s1 .who"), p < 5 ? ART.stand : p < 12.5 ? "a1b-look" : ART.reach);   // she keeps holding the big umbrella until it fills the screen
-          show(q(".umbrella > *"), p < 7 ? ART.umbClosed : p < 12.5 ? ART.umbHalf : ART.umbOpen);
+          show(q(".umbrella > *"), p < 13.3 ? ART.umbClosed : p < 14.3 ? ART.umbHalf : ART.umbOpen);   // closed as it falls; it opens only once it is in her hand
           q(".umbrella").forEach((el) => { el.style.opacity = 1; });
           // scene 3: one walk frame at a time, stepped by the scroll
           show(q(".s3 .fig"), WALK[Math.floor(Math.max(0, p - 32) * 1.25) % WALK.length]);

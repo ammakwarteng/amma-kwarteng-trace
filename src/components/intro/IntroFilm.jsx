@@ -290,15 +290,6 @@ export default function IntroFilm({ onDone }) {
                   label={{ [ART.stand]: "standing, empty-handed", [ART.reach]: "reaching up" }[n]} />
               ))}
             </g>
-            {/* the handle's shaft and hook drawn again over her hand, so her fingers wrap behind it (a grip) */}
-            <defs>
-              <clipPath id="umb-grip"><rect x={HAND.x - 30} y={HAND.y - 70} width={36} height={78} /></clipPath>
-            </defs>
-            <g className="umbrella umbrella--grip" clipPath="url(#umb-grip)">
-              {[ART.umbClosed, ART.umbHalf, ART.umbOpen].filter(has).map((n) => (
-                <image key={n} data-pose={n} href={src(n + "-grip")} x={HAND.x - POSES[n].cx * POSES[n].w * UK} y={HAND.y - POSES[n].h * UK} width={POSES[n].w * UK} height={POSES[n].h * UK} />
-              ))}
-            </g>
           </g>
 
           {/* 2 the ribs that become pathways */}

@@ -100,12 +100,12 @@ export const projects = [
     ],
     next: "Shows how AI assistants become an access-control problem: the same least-privilege and input-validation thinking IAM uses, applied to agents.",
     gallery: [
+      { src: "projects/ai-ctf/ctf-06.webp", caption: "Small, harmless-looking notes that pass the filter one at a time (The Loremaster, hard)" },
       { src: "projects/ai-ctf/ctf-01.webp", caption: "All three challenges solved: 3 of 3 raffle entries (flag hidden)" },
       { src: "projects/ai-ctf/ctf-02.webp", caption: "Whispering Gate: the sentinel guarding its passphrase" },
       { src: "projects/ai-ctf/ctf-03.webp", caption: "The Poisoned Notice Board: a public board the town crier reads aloud" },
       { src: "projects/ai-ctf/ctf-04.webp", caption: "The Loremaster: an assistant with long-term memory" },
       { src: "projects/ai-ctf/ctf-05.webp", caption: "The input filter blocking a direct request" },
-      { src: "projects/ai-ctf/ctf-06.webp", caption: "Small, harmless-looking notes that pass the filter one at a time" },
       { src: "projects/ai-ctf/ctf-07.webp", caption: "The output filter redacting the secret: the next layer to get past" },
       { src: "projects/ai-ctf/ctf-08.webp", caption: "First flag captured (flag hidden)" },
     ],

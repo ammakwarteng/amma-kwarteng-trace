@@ -86,6 +86,32 @@ export const school = [
 
 export const projects = [
   {
+    name: "AI Security CTF: Prompt Injection",
+    type: "CTF",
+    year: "2026",
+    status: "complete",
+    summary:
+      "Solved all three challenges, solo, in the TCM Security x Kryptsec Black Friday CTF: three AI assistants, each guarding a secret, each broken a different way.",
+    points: [
+      "Whispering Gate (easy): a gate sentinel AI refused to give out its passphrase, but its instructions contained it; role-playing as the sentinel taking over the shift got it to read its whole briefing aloud, passphrase included (direct prompt injection and system prompt leakage)",
+      "The Poisoned Notice Board (medium): pinned a notice dressed up as an official council order; when the town crier AI read the board, it followed the notice instead of just reading it out, and revealed the confidential decree (indirect prompt injection)",
+      "The Loremaster (hard): an archive AI with long-term memory, an input filter on messages and an output filter that blanked out the secret; split the instruction into small, harmless-looking notes so each one passed the filter, then had the secret written in a format the output filter did not recognise (memory poisoning)",
+      "Lesson for identity and access: every assistant could see a secret it did not need. Keep secrets out of what an AI can read, give it least privilege, and treat stored memory and outside content as untrusted input",
+    ],
+    next: "Shows how AI assistants become an access-control problem: the same least-privilege and input-validation thinking IAM uses, applied to agents.",
+    gallery: [
+      { src: "projects/ai-ctf/ctf-01.webp", caption: "All three challenges solved: 3 of 3 raffle entries (flag hidden)" },
+      { src: "projects/ai-ctf/ctf-02.webp", caption: "Whispering Gate: the sentinel guarding its passphrase" },
+      { src: "projects/ai-ctf/ctf-03.webp", caption: "The Poisoned Notice Board: a public board the town crier reads aloud" },
+      { src: "projects/ai-ctf/ctf-04.webp", caption: "The Loremaster: an assistant with long-term memory" },
+      { src: "projects/ai-ctf/ctf-05.webp", caption: "The input filter blocking a direct request" },
+      { src: "projects/ai-ctf/ctf-06.webp", caption: "Small, harmless-looking notes that pass the filter one at a time" },
+      { src: "projects/ai-ctf/ctf-07.webp", caption: "The output filter redacting the secret: the next layer to get past" },
+      { src: "projects/ai-ctf/ctf-08.webp", caption: "First flag captured (flag hidden)" },
+    ],
+    tags: ["AI security", "prompt injection", "indirect prompt injection", "memory poisoning", "CTF", "TCM Security", "least privilege"],
+  },
+  {
     name: "Okta MFA & Sign-On Policy Lab",
     type: "lab",
     year: "2026",

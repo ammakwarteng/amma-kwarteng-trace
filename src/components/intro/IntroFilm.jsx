@@ -151,7 +151,9 @@ export default function IntroFilm({ onDone }) {
       tl.set(q(".s1__who"), { opacity: 1 }, 0)
         .fromTo(q(".umbrella"), { y: -900 }, { y: 0, duration: 12, ease: "sine.out" }, 1)   // a long, visible fall (1 to 13), so one swipe on a phone doesn't skip it; she reaches for it as it arrives (12.5)
       // 2 entering the umbrella: she looks up; it grows to fill the screen
-        .to(q(".s1"), { scale: 7, transformOrigin: "800px 300px", duration: 9, ease: "power2.in" }, 17)
+        .set(q(".s1"), { svgOrigin: "848 132" }, 0)   // the top of the open umbrella, where its ribs meet
+        .to(q(".s1"), { x: -48, y: 318, duration: 6, ease: "sine.inOut" }, 15)   // it glides to the centre of the screen, where the pathways begin (800, 450)
+        .to(q(".s1"), { scale: 7, duration: 9, ease: "power2.in" }, 17)
         .to(q(".s1"), { opacity: 0, duration: 3 }, 23.5)
         .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 22)
         .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 22);

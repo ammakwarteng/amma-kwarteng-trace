@@ -185,3 +185,6 @@
   :root .projects { gap: 22px; }
   :root .projects > .project + .project { padding-left: 22px; }
 }
+
+/* the line under TRACE: even line lengths, no single word left on the last line */
+:root .dhero__lede { text-wrap: balance; }

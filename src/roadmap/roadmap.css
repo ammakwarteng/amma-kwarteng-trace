@@ -97,12 +97,19 @@
 .rm-pager a.is-next { text-align: right; }
 .rm-pager a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
 
-/* owner lock bar */
+/* owner lock bar: sits in its own space above the title, so it never covers it. While editing it
+   sticks to the bottom of the screen, keeping "save & lock" in reach without covering the title. */
 .rm-lock {
-  position: sticky; top: 10px; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;
-  margin: 0 0 40px; padding: 12px 14px; border: 1px solid var(--line); background: rgba(10, 10, 10, 0.92); backdrop-filter: blur(6px);
+  position: relative; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;
+  margin: 0 0 40px; padding: 12px 14px; border: 1px solid var(--line); background: var(--black, #0a0a0a);
 }
-.rm-lock.is-open { border-color: var(--white); }
+.rm-lock.is-open {
+  position: fixed; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); margin: 0;
+  left: max(var(--gutter), calc((100vw - 980px) / 2 + var(--gutter))); right: max(var(--gutter), calc((100vw - 980px) / 2 + var(--gutter)));
+  border-color: var(--white);
+}
+/* room at the end of the page, so the pinned bar never hides the last milestone */
+.rm:has(.rm-lock.is-open) { padding-bottom: calc(200px + env(safe-area-inset-bottom, 0px)); }
 .rm-lock__state { margin: 0; display: inline-flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
 .rm-lock__dot { width: 8px; height: 8px; background: var(--white); }
 .rm-lock.is-open .rm-lock__dot { background: none; border: 1px solid var(--white); }

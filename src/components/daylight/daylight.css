@@ -188,3 +188,9 @@
 
 /* the line under TRACE: even line lengths, no single word left on the last line */
 :root .dhero__lede { text-wrap: balance; }
+
+/* One size for every card title and one for every card description (roadmap steps, projects,
+   skill groups, communities), so the sections read as one system. Project titles stay larger. */
+:root { --card-title: clamp(22px, 1.8vw, 26px); --card-text: clamp(16px, 1.2vw, 17px); }
+:root :is(.road__phase, .skills__name, .community__name) { font-size: var(--card-title); }
+:root :is(.road__goal, .project__summary, .community__about) { font-size: var(--card-text); line-height: 1.5; }

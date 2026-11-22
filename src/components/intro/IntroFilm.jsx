@@ -41,7 +41,7 @@ const PANO_W = 3200, PANO_H = 1373, PANO_SCALE = 1100 / PANO_H, HORIZON = 0.716;
 const STORY = [
   { from: 1, to: 7.5, text: "i didn't start out knowing where i belonged." },
   { from: 8.5, to: 16, text: "then i found cybersecurity." },
-  { from: 18, to: 29.5, text: ["it isn't one thing. it's an umbrella,", "with a whole world underneath."] },
+  { from: 22.5, to: 29.5, text: ["it isn't one thing. it's an umbrella,", "with a whole world underneath."] },
   { from: 32, to: 37, text: "so i explored it." },
   { from: 37.5, to: 43.5, text: "how networks connect. how the cloud is built." },
   { from: 44, to: 50.5, text: "what evidence leaves behind. how risk is governed." },
@@ -167,10 +167,10 @@ export default function IntroFilm({ onDone }) {
       // 2 entering the umbrella: she looks up; it grows to fill the screen
       // once it is open she brings her arm down: the umbrella lowers over her head, in her hand at chest height
         .to(q(".umbrella"), { x: HOLD.x - HAND.x, y: HOLD.y - HAND.y, duration: 1.6, ease: "sine.inOut" }, 15)
-        .to(q(".s1"), { scale: 7, svgOrigin: ZOOM, duration: 9, ease: "power2.in" }, 17)   // zooms into the umbrella: it grows in place, she leaves the bottom of the screen
-        .to(q(".s1"), { opacity: 0, duration: 3 }, 23.5)
-        .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 22)
-        .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 22);
+        .to(q(".s1"), { scale: 7, svgOrigin: ZOOM, duration: 5, ease: "power2.in" }, 16.8)   // zooms into the umbrella: it grows in place, she leaves the bottom of the screen
+        .to(q(".s1"), { opacity: 0, duration: 1.2 }, 20.6)   // the woman and the umbrella are fully gone (21.8) before the line umbrella and the words come in
+        .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 22.2)
+        .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 22.2);
       // its ribs bend into flowing pathways that lead down to the horizon
       q(".rib").forEach((el, i) => tl.to(el, { attr: { d: PATHWAY(i) }, duration: 7, ease: "power1.inOut" }, 25));
       tl.to(q(".ribs"), { opacity: 0, duration: 3 }, 31)

@@ -11,18 +11,23 @@ export const roadmap = [
     phase: "Cybersecurity Auditor",
     when: "now",
     now: true,
+    dates: false,   // Amma's choice: no completion dates or history shown on this stage
     goal: "Bring my ISO/IEC 27001 audit experience with access controls and evidence into identity work, while building the hands-on technical skills an IAM Analyst needs.",
     items: [
-      "ISO/IEC 27001:2022 Lead Auditor",
-      "ISO/IEC 27001 controls (Annex A)",
       "audit planning and scoping",
+      "information security controls",
       "evidence collection and review",
       "control testing",
       "access control reviews",
+      "change management reviews",
       "risk assessment",
+      "gap analysis",
+      "stakeholder interviews",
       "nonconformities and audit findings",
+      "corrective action follow-up",
       "audit reporting",
       "policy and procedure review",
+      "compliance frameworks",
     ],
   },
   {
@@ -67,6 +72,7 @@ export const roadmap = [
 // Only move a certification to "earned" once the exam is passed.
 export const certifications = [
   { name: "ISO/IEC 27001:2022 Lead Auditor", code: "ISO 27001", issuer: "Mastermind Assurance Academy", status: "earned" },
+  { name: "Splunk Cyber Defense", code: "Splunk", issuer: "Splunk", status: "earned" },
   { name: "ITIL 4 Foundation", code: "ITIL 4", issuer: "PeopleCert", status: "studying" },
   { name: "CompTIA Security+", code: "Sec+", issuer: "CompTIA", status: "next" },
   { name: "Microsoft SC-900", code: "SC-900", issuer: "Microsoft", status: "next" },

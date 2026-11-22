@@ -17,14 +17,14 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
 export const slugOf = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 // The four stages in order, with the words already on the site (when, goal).
-export const STAGES = roadmap.map((r, i) => ({ slug: slugOf(r.phase), title: r.phase, when: r.now ? "you are here" : r.when, now: !!r.now, goal: r.goal, position: i + 1, items: r.items, courses: r.courses || [] }));
+export const STAGES = roadmap.map((r, i) => ({ slug: slugOf(r.phase), title: r.phase, when: r.now ? "you are here" : r.when, now: !!r.now, dates: r.dates !== false, goal: r.goal, position: i + 1, items: r.items, courses: r.courses || [] }));
 export const stageBySlug = (slug) => STAGES.find((s) => s.slug === slug);
 
 // Portfolio projects a milestone can point to.
 export const PROJECTS = projects.map((p) => ({ slug: slugOf(p.name), name: p.name }));
 export const projectName = (slug) => PROJECTS.find((p) => p.slug === slug)?.name || slug;
 
-const CERT = /Lead Auditor|ITIL|Security\+|SC-\d|Okta Certified|CyberArk|CISSP/;
+const CERT = /ITIL|Security\+|SC-\d|Okta Certified|CyberArk|CISSP/;
 
 // Read everything (4 stages, a few dozen milestones). If the database can't be reached, fall back
 // to the plan already written on the site, read-only and without progress.

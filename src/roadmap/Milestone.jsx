@@ -9,7 +9,7 @@ const today = () => new Date().toLocaleDateString("en-CA");   // YYYY-MM-DD, loc
   it also holds the status switch, the completion date, project links and (for certifications)
   the explicit "I passed this exam" confirmation the database requires.
 */
-export default function Milestone({ m, n, editing, edit, remove, projects }) {
+export default function Milestone({ m, n, editing, edit, remove, projects, dates = true }) {
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const isCert = m.kind === "certification";
@@ -26,6 +26,7 @@ export default function Milestone({ m, n, editing, edit, remove, projects }) {
   };
 
   const label =
+    !dates ? m.status :
     m.status === "completed" ? `completed · ${fmtDate(m.completed_on) || "today"}` :
     m.status === "learning" ? `learning${m.started_on ? ` · since ${fmtDate(m.started_on)}` : ""}` : "planned";
 
@@ -43,8 +44,8 @@ export default function Milestone({ m, n, editing, edit, remove, projects }) {
           {!editing && (
             <dl className="ms__facts mono">
               {isCert && m.status === "completed" && m.earned_confirmed && <div><dt>certification</dt><dd>earned</dd></div>}
-              {m.started_on && <div><dt>started</dt><dd>{fmtDate(m.started_on)}</dd></div>}
-              {m.completed_on && <div><dt>completed</dt><dd>{fmtDate(m.completed_on)}</dd></div>}
+              {dates && m.started_on && <div><dt>started</dt><dd>{fmtDate(m.started_on)}</dd></div>}
+              {dates && m.completed_on && <div><dt>completed</dt><dd>{fmtDate(m.completed_on)}</dd></div>}
               <div><dt>projects</dt><dd>{m.projects?.length ? m.projects.map((p) => <a key={p} href="/#projects">{projectName(p)}</a>) : "none linked yet"}</dd></div>
             </dl>
           )}

@@ -97,8 +97,8 @@ export default function StagePage({ slug }) {
 
       {data && (
         <>
-          <Group label="milestones" items={skills} editing={editing} edit={edit} remove={remove} add={(t) => add(t, "skill")} />
-          <Group label="certification goals" items={certs} editing={editing} edit={edit} remove={remove} add={(t) => add(t, "certification")} />
+          <Group label="milestones" items={skills} editing={editing} edit={edit} remove={remove} add={(t) => add(t, "skill")} dates={meta.dates} />
+          <Group label="certification goals" items={certs} editing={editing} edit={edit} remove={remove} add={(t) => add(t, "certification")} dates={meta.dates} />
 
           {meta.courses.length > 0 && (
             <section className="rm-sec" aria-labelledby="rm-courses">
@@ -123,7 +123,7 @@ export default function StagePage({ slug }) {
             </section>
           )}
 
-          <section className="rm-sec" aria-labelledby="rm-history">
+          {meta.dates && <section className="rm-sec" aria-labelledby="rm-history">
             <h2 className="rm-sec__label mono" id="rm-history">history</h2>
             {history.length ? (
               <ol className="rm-history">
@@ -138,7 +138,7 @@ export default function StagePage({ slug }) {
             ) : (
               <p className="rm-empty mono">nothing completed here yet. completed milestones are recorded here with their dates.</p>
             )}
-          </section>
+          </section>}
         </>
       )}
 
@@ -150,14 +150,14 @@ export default function StagePage({ slug }) {
   );
 }
 
-function Group({ label, items, editing, edit, remove, add }) {
+function Group({ label, items, editing, edit, remove, add, dates }) {
   const [title, setTitle] = useState("");
   if (!items.length && !editing) return null;
   return (
     <section className="rm-sec">
       <h2 className="rm-sec__label mono">{label}</h2>
       <ol className="rm-list">
-        {items.map((m, n) => <Milestone key={m.id || m.tmp} m={m} n={n + 1} editing={editing} edit={edit} remove={remove} projects={PROJECTS} />)}
+        {items.map((m, n) => <Milestone key={m.id || m.tmp} m={m} n={n + 1} editing={editing} edit={edit} remove={remove} projects={PROJECTS} dates={dates} />)}
       </ol>
       {editing && (
         <form className="rm-add" onSubmit={(e) => { e.preventDefault(); if (title.trim()) { add(title.trim()); setTitle(""); } }}>

@@ -135,7 +135,7 @@ export const projects = [
       { src: "projects/ai-ctf/ctf-07.webp", caption: "The output filter redacting the secret: the next layer to get past" },
       { src: "projects/ai-ctf/ctf-08.webp", caption: "First flag captured (flag hidden)" },
     ],
-    tags: ["AI security", "prompt injection", "indirect prompt injection", "memory poisoning", "CTF", "TCM Security", "least privilege"],
+    tags: ["AI security", "prompt injection", "memory poisoning", "CTF"],
   },
   {
     name: "Okta MFA & Sign-On Policy Lab",

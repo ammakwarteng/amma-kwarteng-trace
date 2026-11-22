@@ -8,10 +8,10 @@ export const about = [
 // Career roadmap. Set `now: true` on the phase Amma is in.
 export const roadmap = [
   {
-    phase: "Help Desk",
+    phase: "Cybersecurity Auditor",
     when: "now",
     now: true,
-    goal: "Get hands-on IT support experience in the next 3 to 6 months while learning how accounts and access work day to day.",
+    goal: "Bring my ISO/IEC 27001 audit experience with access controls and evidence into identity work, while building the hands-on technical skills an IAM Analyst needs.",
     items: ["ITIL 4 Foundation", "CompTIA Security+", "Active Directory", "password resets and account requests", "PowerShell basics"],
     courses: [
       { name: "Practical Help Desk", provider: "TCM Security", status: "in progress", done: [] },

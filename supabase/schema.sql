@@ -63,7 +63,7 @@ create index if not exists milestones_stage_idx on public.milestones (stage_slug
 -- Everything starts as planned, except ITIL 4, which the site already lists as being studied.
 -- Nothing is marked completed.
 insert into public.stages (slug, title, position) values
-  ('help-desk',     'help desk',     1),
+  ('cybersecurity-auditor', 'cybersecurity auditor', 1),
   ('iam-analyst',   'iam analyst',   2),
   ('iam-engineer',  'iam engineer',  3),
   ('iam-architect', 'iam architect', 4)
@@ -72,11 +72,11 @@ on conflict (slug) do nothing;
 insert into public.milestones (stage_slug, title, kind, status, position)
 select v.stage_slug, v.title, v.kind, v.status::public.milestone_status, v.position
 from (values
-  ('help-desk', 'ITIL 4 Foundation', 'certification', 'learning', 1),
-  ('help-desk', 'CompTIA Security+', 'certification', 'planned', 2),
-  ('help-desk', 'Active Directory', 'skill', 'planned', 3),
-  ('help-desk', 'password resets and account requests', 'skill', 'planned', 4),
-  ('help-desk', 'PowerShell basics', 'skill', 'planned', 5),
+  ('cybersecurity-auditor', 'ITIL 4 Foundation', 'certification', 'learning', 1),
+  ('cybersecurity-auditor', 'CompTIA Security+', 'certification', 'planned', 2),
+  ('cybersecurity-auditor', 'Active Directory', 'skill', 'planned', 3),
+  ('cybersecurity-auditor', 'password resets and account requests', 'skill', 'planned', 4),
+  ('cybersecurity-auditor', 'PowerShell basics', 'skill', 'planned', 5),
   ('iam-analyst', 'authentication and MFA', 'skill', 'planned', 1),
   ('iam-analyst', 'SSO and federation (SAML, OIDC)', 'skill', 'planned', 2),
   ('iam-analyst', 'RBAC and least privilege', 'skill', 'planned', 3),
@@ -177,3 +177,11 @@ drop policy if exists "owner removes milestones from an unlocked stage" on publi
 create policy "owner removes milestones from an unlocked stage" on public.milestones
   for delete to authenticated
   using (public.is_owner() and public.stage_unlocked(stage_slug));
+
+-- 4. Renaming the first stage from help desk to cybersecurity auditor (run once, in the SQL editor) ----
+-- begin;
+-- insert into public.stages (slug, title, position, locked) values ('cybersecurity-auditor', 'cybersecurity auditor', 1, true)
+--   on conflict (slug) do nothing;
+-- update public.milestones set stage_slug = 'cybersecurity-auditor' where stage_slug = 'help-desk';
+-- delete from public.stages where slug = 'help-desk';
+-- commit;

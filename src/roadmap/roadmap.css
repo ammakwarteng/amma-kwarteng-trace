@@ -19,7 +19,7 @@
 .rm-kicker { margin: 0; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white); }
 .rm-title {
   margin: 0; font-family: var(--font-display); font-weight: 400; text-transform: uppercase;
-  font-size: clamp(54px, 11vw, 150px); line-height: 0.88; letter-spacing: -0.06em;
+  font-size: clamp(32px, min(max(54px, 11vw), calc((100vw - 2 * var(--gutter) - 24px) / (var(--long, 8) * 0.56))), 150px); line-height: 0.88; letter-spacing: -0.06em;
   position: relative; justify-self: start; padding: 0.06em 0.1em 0.04em 0;
 }
 /* targeting marks on the title's corners */

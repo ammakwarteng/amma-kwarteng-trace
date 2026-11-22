@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 
 import { copyFileSync, mkdirSync } from "node:fs";
 
-const ROADMAP_PAGES = ["help-desk", "iam-analyst", "iam-engineer", "iam-architect"];
+const ROADMAP_PAGES = ["cybersecurity-auditor", "help-desk", "iam-analyst", "iam-engineer", "iam-architect"];   // help-desk: old links still open
 
 // base "/": the site is served from the root of ammakwarteng.com, and pages like
 // /roadmap/iam-analyst need absolute asset paths. GitHub Pages serves 404.html for any address

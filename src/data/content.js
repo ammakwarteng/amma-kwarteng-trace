@@ -145,7 +145,7 @@ export const projects = [
       { src: "projects/okta-lab/okta-12.webp", caption: "First sign-in: Okta requires John to set up Okta Verify" },
       { src: "projects/okta-lab/okta-13.webp", caption: "Every sign-in after that asks for a second factor" },
     ],
-    tags: ["Okta", "MFA", "Okta Verify", "push", "number challenge", "TOTP", "enrollment policy", "authentication policy", "IAM"],
+    tags: ["Okta", "Okta Verify", "MFA", "sign-on policies"],
   },
   {
     name: "Keycloak SSO & MFA Lab",
@@ -184,7 +184,7 @@ export const projects = [
       { src: "projects/keycloak-lab/sso-03.webp", caption: "An exact redirect URI and web origin for Grafana" },
       { src: "projects/keycloak-lab/sso-05.webp", caption: "Troubleshooting: authenticating Keycloak's admin CLI and checking the client secret without revealing it" },
     ],
-    tags: ["Keycloak", "SSO", "OIDC", "MFA", "TOTP", "Grafana", "Docker", "Ubuntu", "Linux", "VMware", "IAM", "troubleshooting"],
+    tags: ["Keycloak", "SSO", "OIDC", "MFA", "Docker"],
   },
   {
     name: "Active Directory Home Lab",
@@ -222,7 +222,7 @@ export const projects = [
       { src: "projects/ad-lab/14.webp", caption: "Offboarding: the leaver's account disabled" },
       { src: "projects/ad-lab/15.webp", caption: "Leaver verified: disabled, no group access, moved to _Disabled Users" },
     ],
-    tags: ["Active Directory", "Windows Server 2022", "Group Policy", "DNS", "VMware", "PowerShell", "IAM", "troubleshooting"],
+    tags: ["Active Directory", "Windows Server 2022", "Group Policy", "PowerShell"],
   },
 ];
 

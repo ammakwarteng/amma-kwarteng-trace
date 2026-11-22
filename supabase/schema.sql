@@ -60,8 +60,8 @@ create table if not exists public.milestones (
 create index if not exists milestones_stage_idx on public.milestones (stage_slug, position);
 
 -- 3. Starting data (taken from the roadmap already on the site) -----------------------------
--- Everything starts as planned, except ITIL 4, which the site already lists as being studied.
--- Nothing is marked completed.
+-- The cybersecurity auditor stage is what Amma already does, so it starts completed (her
+-- ISO/IEC 27001 Lead Auditor certification is earned, confirmed by her). Everything else starts planned.
 insert into public.stages (slug, title, position) values
   ('cybersecurity-auditor', 'cybersecurity auditor', 1),
   ('iam-analyst',   'iam analyst',   2),
@@ -69,14 +69,19 @@ insert into public.stages (slug, title, position) values
   ('iam-architect', 'iam architect', 4)
 on conflict (slug) do nothing;
 
-insert into public.milestones (stage_slug, title, kind, status, position)
-select v.stage_slug, v.title, v.kind, v.status::public.milestone_status, v.position
+insert into public.milestones (stage_slug, title, kind, status, position, earned_confirmed)
+select v.stage_slug, v.title, v.kind, v.status::public.milestone_status, v.position, v.kind = 'certification' and v.status = 'completed'
 from (values
-  ('cybersecurity-auditor', 'ITIL 4 Foundation', 'certification', 'learning', 1),
-  ('cybersecurity-auditor', 'CompTIA Security+', 'certification', 'planned', 2),
-  ('cybersecurity-auditor', 'Active Directory', 'skill', 'planned', 3),
-  ('cybersecurity-auditor', 'password resets and account requests', 'skill', 'planned', 4),
-  ('cybersecurity-auditor', 'PowerShell basics', 'skill', 'planned', 5),
+  ('cybersecurity-auditor', 'ISO/IEC 27001:2022 Lead Auditor', 'certification', 'completed', 1),
+  ('cybersecurity-auditor', 'ISO/IEC 27001 controls (Annex A)', 'skill', 'completed', 2),
+  ('cybersecurity-auditor', 'audit planning and scoping', 'skill', 'completed', 3),
+  ('cybersecurity-auditor', 'evidence collection and review', 'skill', 'completed', 4),
+  ('cybersecurity-auditor', 'control testing', 'skill', 'completed', 5),
+  ('cybersecurity-auditor', 'access control reviews', 'skill', 'completed', 6),
+  ('cybersecurity-auditor', 'risk assessment', 'skill', 'completed', 7),
+  ('cybersecurity-auditor', 'nonconformities and audit findings', 'skill', 'completed', 8),
+  ('cybersecurity-auditor', 'audit reporting', 'skill', 'completed', 9),
+  ('cybersecurity-auditor', 'policy and procedure review', 'skill', 'completed', 10),
   ('iam-analyst', 'authentication and MFA', 'skill', 'planned', 1),
   ('iam-analyst', 'SSO and federation (SAML, OIDC)', 'skill', 'planned', 2),
   ('iam-analyst', 'RBAC and least privilege', 'skill', 'planned', 3),
@@ -84,9 +89,10 @@ from (values
   ('iam-analyst', 'access requests and approvals', 'skill', 'planned', 5),
   ('iam-analyst', 'access reviews and audit evidence', 'skill', 'planned', 6),
   ('iam-analyst', 'Microsoft Entra ID', 'skill', 'planned', 7),
-  ('iam-analyst', 'Microsoft SC-900', 'certification', 'planned', 8),
-  ('iam-analyst', 'Microsoft SC-300', 'certification', 'planned', 9),
-  ('iam-analyst', 'Okta Certified Professional', 'certification', 'planned', 10),
+  ('iam-analyst', 'CompTIA Security+', 'certification', 'planned', 8),
+  ('iam-analyst', 'Microsoft SC-900', 'certification', 'planned', 9),
+  ('iam-analyst', 'Microsoft SC-300', 'certification', 'planned', 10),
+  ('iam-analyst', 'Okta Certified Professional', 'certification', 'planned', 11),
   ('iam-engineer', 'CyberArk Trustee', 'certification', 'planned', 1),
   ('iam-engineer', 'CyberArk Defender: PAM', 'certification', 'planned', 2),
   ('iam-engineer', 'CyberArk Sentry: PAM', 'certification', 'planned', 3),
@@ -178,10 +184,23 @@ create policy "owner removes milestones from an unlocked stage" on public.milest
   for delete to authenticated
   using (public.is_owner() and public.stage_unlocked(stage_slug));
 
--- 4. Renaming the first stage from help desk to cybersecurity auditor (run once, in the SQL editor) ----
+-- Moving the first stage from help desk to cybersecurity auditor (run once, in the SQL editor) ----
 -- begin;
 -- insert into public.stages (slug, title, position, locked) values ('cybersecurity-auditor', 'cybersecurity auditor', 1, true)
 --   on conflict (slug) do nothing;
--- update public.milestones set stage_slug = 'cybersecurity-auditor' where stage_slug = 'help-desk';
+-- delete from public.milestones where stage_slug = 'help-desk';
 -- delete from public.stages where slug = 'help-desk';
+-- update public.milestones set position = position + 1 where stage_slug = 'iam-analyst' and position >= 8;
+-- insert into public.milestones (stage_slug, title, kind, status, position, earned_confirmed) values
+--   ('iam-analyst', 'CompTIA Security+', 'certification', 'planned', 8, false),
+--   ('cybersecurity-auditor', 'ISO/IEC 27001:2022 Lead Auditor', 'certification', 'completed', 1, true),
+--   ('cybersecurity-auditor', 'ISO/IEC 27001 controls (Annex A)', 'skill', 'completed', 2, false),
+--   ('cybersecurity-auditor', 'audit planning and scoping', 'skill', 'completed', 3, false),
+--   ('cybersecurity-auditor', 'evidence collection and review', 'skill', 'completed', 4, false),
+--   ('cybersecurity-auditor', 'control testing', 'skill', 'completed', 5, false),
+--   ('cybersecurity-auditor', 'access control reviews', 'skill', 'completed', 6, false),
+--   ('cybersecurity-auditor', 'risk assessment', 'skill', 'completed', 7, false),
+--   ('cybersecurity-auditor', 'nonconformities and audit findings', 'skill', 'completed', 8, false),
+--   ('cybersecurity-auditor', 'audit reporting', 'skill', 'completed', 9, false),
+--   ('cybersecurity-auditor', 'policy and procedure review', 'skill', 'completed', 10, false);
 -- commit;

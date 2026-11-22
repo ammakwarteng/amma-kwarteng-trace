@@ -24,7 +24,7 @@ export const stageBySlug = (slug) => STAGES.find((s) => s.slug === slug);
 export const PROJECTS = projects.map((p) => ({ slug: slugOf(p.name), name: p.name }));
 export const projectName = (slug) => PROJECTS.find((p) => p.slug === slug)?.name || slug;
 
-const CERT = /ITIL|Security\+|SC-\d|Okta Certified|CyberArk|CISSP/;
+const CERT = /Lead Auditor|ITIL|Security\+|SC-\d|Okta Certified|CyberArk|CISSP/;
 
 // Read everything (4 stages, a few dozen milestones). If the database can't be reached, fall back
 // to the plan already written on the site, read-only and without progress.

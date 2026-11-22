@@ -70,7 +70,7 @@ export const roadmap = [
 // status: "studying" | "next" | "planned" | "earned"
 // Only move a certification to "earned" once the exam is passed.
 export const certifications = [
-  { name: "ISO/IEC 27001:2022 Lead Auditor", code: "ISO 27001", issuer: "Mastermind Assurance Academy", status: "earned" },
+  { name: "ISO/IEC 27001:2022 Lead Auditor", code: "ISO 27001", issuer: "Mastermind Assurance", status: "earned" },
   { name: "Splunk Cyber Defense", code: "Splunk", issuer: "Splunk", status: "earned" },
   { name: "ITIL 4 Foundation", code: "ITIL 4", issuer: "PeopleCert", status: "studying" },
   { name: "CompTIA Security+", code: "Sec+", issuer: "CompTIA", status: "next" },

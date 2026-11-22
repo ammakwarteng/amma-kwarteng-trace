@@ -89,6 +89,9 @@ from (values
   ('iam-engineer', 'vaulting', 'skill', 'planned', 5),
   ('iam-engineer', 'password rotation', 'skill', 'planned', 6),
   ('iam-engineer', 'session monitoring', 'skill', 'planned', 7),
+  ('iam-engineer', 'privileged access management (PAM)', 'skill', 'planned', 8),
+  ('iam-engineer', 'conditional access policies', 'skill', 'planned', 9),
+  ('iam-engineer', 'provisioning automation', 'skill', 'planned', 10),
   ('iam-architect', 'identity architecture and strategy', 'skill', 'planned', 1),
   ('iam-architect', 'zero trust', 'skill', 'planned', 2),
   ('iam-architect', 'identity governance (IGA)', 'skill', 'planned', 3),
@@ -182,4 +185,8 @@ create policy "owner removes milestones from an unlocked stage" on public.milest
 -- insert into public.milestones (stage_slug, title, kind, status, position)
 --   select 'iam-analyst', 'CompTIA Security+', 'certification', 'planned', 8
 --   where not exists (select 1 from public.milestones where stage_slug = 'iam-analyst' and title = 'CompTIA Security+');
+-- insert into public.milestones (stage_slug, title, kind, status, position)
+--   select 'iam-engineer', v.title, 'skill', 'planned', v.position
+--   from (values ('privileged access management (PAM)', 8), ('conditional access policies', 9), ('provisioning automation', 10)) as v (title, position)
+--   where not exists (select 1 from public.milestones m where m.stage_slug = 'iam-engineer' and m.title = v.title);
 -- commit;

@@ -277,8 +277,10 @@
 .project__name { margin: 0; font-size: clamp(24px, 2.4vw, 34px); font-weight: 400; letter-spacing: -0.05em; line-height: 1.05; color: var(--white); }
 .project__summary { margin: 0; font-size: 17px; line-height: 1.45; letter-spacing: -0.02em; color: var(--white); }
 .project__points { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 15px; line-height: 1.45; color: var(--white-dim); }
-.project__tags { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.project__tags li { padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 11px; letter-spacing: 0.04em; color: var(--white-dim); }
+/* the tools used, as one plain line separated by dots (same style as the skills) */
+.project__tags { list-style: none; margin: 4px 0 0; padding: 0; font-size: 12px; line-height: 1.9; letter-spacing: 0.04em; color: var(--white); }
+.project__tags li { display: inline-block; white-space: nowrap; }
+.project__tags li:not(:last-child)::after { content: "\00b7"; margin: 0 0.7em; }
 .project__links { margin: 0; display: flex; flex-wrap: wrap; gap: 18px; }
 .project__links a { color: var(--white); font-size: 15px; text-decoration: none; border-bottom: 1px solid var(--white-faint); }
 .project__links a:hover { border-bottom-color: var(--white); }

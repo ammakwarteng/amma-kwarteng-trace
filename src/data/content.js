@@ -5,30 +5,26 @@ export const about = [
   "My work is grounded in understanding security controls, risk, and accountability. I’m building on that foundation through hands-on exploration of identity lifecycles, access governance, and secure authentication.",
 ];
 
-// Career roadmap. Set `now: true` on the phase Amma is in; `page: false` leaves a phase off the
-// /roadmap pages (it still shows on the About roadmap).
+// Career roadmap. On the About roadmap every phase shows 8 items, the last 2 being
+// certifications (shown white); the full list of milestones lives on each phase's roadmap page.
+// Set `now: true` on the phase Amma is in; `page: false` leaves a phase off the /roadmap pages
+// (it still shows on the About roadmap).
 export const roadmap = [
   {
     phase: "Cybersecurity Auditor",
     when: "now",
     now: true,
     page: false,   // where Amma is now: shown on the About roadmap, no roadmap page of its own
-    goal: "Bring my ISO/IEC 27001 audit experience with access controls and evidence into identity work, while building the hands-on technical skills an IAM Analyst needs.",
+    goal: "Plan and carry out security audits: testing controls, checking who has access to what, and turning the evidence into clear findings that help teams fix what's wrong.",
     items: [
       "audit planning and scoping",
-      "information security controls",
-      "evidence collection and review",
       "control testing",
       "access control reviews",
-      "change management reviews",
+      "evidence collection and review",
       "risk assessment",
-      "gap analysis",
-      "stakeholder interviews",
-      "nonconformities and audit findings",
-      "corrective action follow-up",
       "audit reporting",
-      "policy and procedure review",
-      "compliance frameworks",
+      "ISO/IEC 27001:2022 Lead Auditor",
+      "Splunk Cyber Defense",
     ],
   },
   {
@@ -46,26 +42,41 @@ export const roadmap = [
       "SSO and federation (SAML, OIDC)",
       "RBAC and least privilege",
       "joiner, mover, leaver",
-      "access requests and approvals",
       "access reviews and audit evidence",
       "Microsoft Entra ID",
       "CompTIA Security+",
-      "Microsoft SC-900",
       "Microsoft SC-300",
-      "Okta Certified Professional",
     ],
   },
   {
     phase: "IAM Engineer",
     when: "then",
     goal: "Design and run identity and privileged access systems, including CyberArk PAM.",
-    items: ["CyberArk Trustee", "CyberArk Defender: PAM", "CyberArk Sentry: PAM", "Okta Certified Administrator", "vaulting", "password rotation", "session monitoring"],
+    items: [
+      "privileged access management (PAM)",
+      "vaulting",
+      "password rotation",
+      "session monitoring",
+      "conditional access policies",
+      "provisioning automation",
+      "CyberArk Defender: PAM",
+      "Okta Certified Administrator",
+    ],
   },
   {
     phase: "IAM Architect",
     when: "long term",
     goal: "Design how a whole organization handles identity and access, from strategy to the systems that run it.",
-    items: ["identity architecture and strategy", "zero trust", "identity governance (IGA)", "privileged access strategy", "cloud identity across platforms", "identity standards and policy", "CyberArk Guardian", "CISSP"],
+    items: [
+      "identity architecture and strategy",
+      "zero trust",
+      "identity governance (IGA)",
+      "privileged access strategy",
+      "cloud identity across platforms",
+      "identity standards and policy",
+      "CyberArk Guardian",
+      "CISSP",
+    ],
   },
 ];
 

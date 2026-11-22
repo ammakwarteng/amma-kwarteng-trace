@@ -85,7 +85,6 @@ export const roadmap = [
 export const certifications = [
   { name: "ISO/IEC 27001:2022 Lead Auditor", code: "ISO 27001", issuer: "Mastermind Assurance", status: "earned" },
   { name: "Splunk Cyber Defense", code: "Splunk", issuer: "Splunk", status: "earned" },
-  { name: "ITIL 4 Foundation", code: "ITIL 4", issuer: "PeopleCert", status: "studying" },
   { name: "CompTIA Security+", code: "Sec+", issuer: "CompTIA", status: "next" },
   { name: "Microsoft SC-900", code: "SC-900", issuer: "Microsoft", status: "next" },
   { name: "Microsoft SC-300: Identity and Access Administrator", code: "SC-300", issuer: "Microsoft", status: "next" },

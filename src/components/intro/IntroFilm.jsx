@@ -41,7 +41,7 @@ const PANO_W = 3200, PANO_H = 1373, PANO_SCALE = 1100 / PANO_H, HORIZON = 0.716;
 const STORY = [
   { from: 1, to: 7.5, text: "i didn't start out knowing where i belonged." },
   { from: 8.5, to: 16, text: "then i found cybersecurity." },
-  { from: 22.5, to: 29.5, text: ["it isn't one thing. it's an umbrella,", "with a whole world underneath."] },
+  { from: 18.3, to: 29.5, text: ["it isn't one thing. it's an umbrella,", "with a whole world underneath."] },
   { from: 32, to: 37, text: "so i explored it." },
   { from: 37.5, to: 43.5, text: "how networks connect. how the cloud is built." },
   { from: 44, to: 50.5, text: "what evidence leaves behind. how risk is governed." },
@@ -159,10 +159,10 @@ export default function IntroFilm({ onDone }) {
         .fromTo(q(".umbrella"), { y: -900 }, { y: 0, duration: 12, ease: "none" }, 1)   // a long, steady fall (1 to 13), so one swipe on a phone doesn't skip it; she raises her hand just before it lands (11.9)
       // 2 entering the umbrella: she looks up; it grows to fill the screen
       // once it is open she brings her arm down: the umbrella lowers over her head, in her hand at chest height
-        .to(q(".umbrella"), { x: HOLD.x - HAND.x, y: HOLD.y - HAND.y, duration: 1.6, ease: "sine.inOut" }, 15)
-        .to(q(".s1"), { opacity: 0, duration: 2 }, 19)   // she holds it until the scene ends; she and the umbrella fade out together (gone by 21), before the line umbrella and the words come in
-        .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 22.2)
-        .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 22.2);
+        .to(q(".umbrella"), { x: HOLD.x - HAND.x, y: HOLD.y - HAND.y, duration: 1.6, ease: "sine.inOut" }, 13.7)   // lowers as soon as it is fully open (no pause)
+        .to(q(".s1"), { opacity: 0, duration: 1.8 }, 15.3)   // straight on: she and the umbrella fade out together (gone by 17.7), before the line umbrella and the words come in
+        .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 17.9)
+        .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 17.9);
       // its ribs bend into flowing pathways that lead down to the horizon
       q(".rib").forEach((el, i) => tl.to(el, { attr: { d: PATHWAY(i) }, duration: 7, ease: "power1.inOut" }, 25));
       tl.to(q(".ribs"), { opacity: 0, duration: 3 }, 31)
@@ -194,8 +194,8 @@ export default function IntroFilm({ onDone }) {
         onUpdate: (self) => {
           const p = self.progress * 100;
           // scene 1: standing, then reaching as the umbrella arrives; she holds it from then on and looks up
-          show(q(".s1 .who"), p < 5 ? ART.stand : p < 11.9 ? "a1b-look" : p < 15.6 ? ART.reach : "a5-hold");   // she keeps holding the big umbrella until it fills the screen
-          show(q(".umbrella > *"), p < 13.3 ? ART.umbClosed : p < 14.3 ? ART.umbHalf : ART.umbOpen);   // closed as it falls; it opens only once it is in her hand
+          show(q(".s1 .who"), p < 5 ? ART.stand : p < 11.9 ? "a1b-look" : p < 14.5 ? ART.reach : "a5-hold");   // she keeps holding the big umbrella until it fills the screen
+          show(q(".umbrella > *"), p < 13.05 ? ART.umbClosed : p < 13.7 ? ART.umbHalf : ART.umbOpen);   // closed as it falls; it opens only once it is in her hand
           q(".umbrella").forEach((el) => { el.style.opacity = 1; });
           // scene 3: one walk frame at a time, stepped by the scroll
           show(q(".s3 .fig"), WALK[Math.floor(Math.max(0, p - 32) * 1.25) % WALK.length]);

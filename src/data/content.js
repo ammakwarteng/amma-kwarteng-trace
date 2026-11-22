@@ -24,7 +24,7 @@ export const roadmap = [
       "risk assessment",
       "audit reporting",
       "ISO/IEC 27001:2022 Lead Auditor",
-      "Splunk Cyber Defense",
+      "Splunk Cybersecurity Defense Analyst",
     ],
   },
   {
@@ -85,7 +85,7 @@ export const roadmap = [
 // what she has earned, and what she is working on next. Longer-term certs live on the roadmap pages.
 export const certifications = [
   { name: "ISO/IEC 27001:2022 Lead Auditor", code: "ISO 27001", issuer: "Mastermind Assurance", status: "earned" },
-  { name: "Splunk Cyber Defense", code: "Splunk", issuer: "Splunk", status: "earned" },
+  { name: "Splunk Certified Cybersecurity Defense Analyst", code: "Splunk", issuer: "Splunk", status: "earned" },
   { name: "Microsoft SC-900", code: "SC-900", issuer: "Microsoft", status: "next" },
   { name: "Microsoft SC-300: Identity and Access Administrator", code: "SC-300", issuer: "Microsoft", status: "next" },
 ];

@@ -88,6 +88,7 @@
   font-family: var(--font-mono);
   font-size: 11px;
   padding: 3px 8px;
+  max-width: 100%;   /* a long name wraps inside the step, never past the screen edge */
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
   color: var(--white-dim);

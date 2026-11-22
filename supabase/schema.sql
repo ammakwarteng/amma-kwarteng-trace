@@ -190,3 +190,27 @@ create policy "owner removes milestones from an unlocked stage" on public.milest
 --   from (values ('privileged access management (PAM)', 8), ('conditional access policies', 9), ('provisioning automation', 10)) as v (title, position)
 --   where not exists (select 1 from public.milestones m where m.stage_slug = 'iam-engineer' and m.title = v.title);
 -- commit;
+
+-- Additions from the All Things Identity IAM Roadmap 2026 guide (run once, in the SQL editor).
+-- Nothing is removed; existing milestones and their progress are untouched.
+-- begin;
+-- insert into public.milestones (stage_slug, title, kind, status, position)
+-- select v.stage_slug, v.title, v.kind, 'planned', v.position
+-- from (values
+--   ('iam-analyst', 'SailPoint Identity Security Cloud (IGA)', 'skill', 12),
+--   ('iam-analyst', 'PowerShell and Microsoft Graph', 'skill', 13),
+--   ('iam-analyst', 'REST APIs and Postman', 'skill', 14),
+--   ('iam-analyst', 'passkeys and passwordless', 'skill', 15),
+--   ('iam-engineer', 'Privileged Identity Management (PIM)', 'skill', 11),
+--   ('iam-engineer', 'non-human identities', 'skill', 12),
+--   ('iam-engineer', 'identity threat detection and response (ITDR)', 'skill', 13),
+--   ('iam-engineer', 'Python for IAM automation', 'skill', 14),
+--   ('iam-engineer', 'Ping Identity / ForgeRock', 'skill', 15),
+--   ('iam-engineer', 'CIDPRO', 'certification', 16),
+--   ('iam-architect', 'AI in identity governance', 'skill', 9),
+--   ('iam-architect', 'decentralized identity', 'skill', 10),
+--   ('iam-architect', 'compliance frameworks (SOX, PCI DSS, HIPAA, GDPR)', 'skill', 11),
+--   ('iam-architect', 'CIAM (IMI)', 'certification', 12)
+-- ) as v (stage_slug, title, kind, position)
+-- where not exists (select 1 from public.milestones m where m.stage_slug = v.stage_slug and m.title = v.title);
+-- commit;

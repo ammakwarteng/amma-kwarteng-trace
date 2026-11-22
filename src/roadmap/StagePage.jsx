@@ -114,7 +114,7 @@ export default function StagePage({ slug }) {
                     </div>
                     {c.done?.length > 0 && (
                       <div className="ms__detail"><div className="ms__inner">
-                        <dl className="ms__facts mono"><div><dt>completed</dt><dd>{c.done.join(" · ")}</dd></div>{c.certificate && <div><dt>certificate</dt><dd>certificate of completion · issued {fmtDate(c.certificate)}</dd></div>}</dl>
+                        <dl className="ms__facts mono"><div><dt>completed</dt><dd>{c.done.join(" · ")}</dd></div>{c.certificate && <div><dt>certificate</dt><dd>certificate of completion</dd></div>}</dl>
                       </div></div>
                     )}
                   </li>

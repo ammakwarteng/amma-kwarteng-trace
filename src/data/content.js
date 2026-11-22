@@ -11,7 +11,6 @@ export const roadmap = [
     phase: "Cybersecurity Auditor",
     when: "now",
     now: true,
-    dates: false,   // Amma's choice: no completion dates or history shown on this stage
     goal: "Bring my ISO/IEC 27001 audit experience with access controls and evidence into identity work, while building the hands-on technical skills an IAM Analyst needs.",
     items: [
       "audit planning and scoping",

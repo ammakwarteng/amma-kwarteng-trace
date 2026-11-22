@@ -87,7 +87,7 @@ export default function StagePage({ slug }) {
 
       <header className="rm-head">
         <p className="rm-kicker mono">roadmap · {String(i + 1).padStart(2, "0")} / {String(STAGES.length).padStart(2, "0")} · {meta.when}</p>
-        <h1 className="rm-title">{meta.title}</h1>
+        <h1 className="rm-title" style={{ "--long": Math.max(...meta.title.split(" ").map((w) => w.length)) }}>{meta.title}</h1>
         <p className="rm-goal">{meta.goal}</p>
         {data && <Progress items={list} overall={allMs} live={data.live} />}
       </header>

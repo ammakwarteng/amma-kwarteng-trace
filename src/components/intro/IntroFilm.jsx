@@ -68,13 +68,6 @@ const HOLD = (() => {
   const w = r.w * kOf("a5-hold"), h = r.h * kOf("a5-hold");
   return { x: 800 - r.cx * w + r.hand[0] * w, y: 640 - h + r.hand[1] * h };
 })();
-// the zoom into the umbrella: chosen so the crown of the lowered umbrella, where its ribs meet,
-// grows to fill the screen and ends on the point the pathways start from (800, 450) at scale 7
-const ZOOM = (() => {
-  const u = POSES[ART.umbOpen];
-  const tip = { x: HOLD.x, y: HOLD.y - (u ? u.h * UK : 240) + 14 };
-  return `${(7 * tip.x - 800) / 6} ${(7 * tip.y - 450) / 6}`;
-})();
 const HAND = (() => {
   const r = POSES["a2-reach"];
   if (!r) return { x: 850, y: 370 };
@@ -163,13 +156,11 @@ export default function IntroFilm({ onDone }) {
       // she is on screen from the first frame; the umbrella starts well above the top edge,
       // so a tall phone screen does not show its tip before the visitor scrolls
       tl.set(q(".s1__who"), { opacity: 1 }, 0)
-        .fromTo(q(".umbrella"), { y: -900 }, { y: 0, duration: 12, ease: "sine.out" }, 1)   // a long, visible fall (1 to 13), so one swipe on a phone doesn't skip it; she reaches for it as it arrives (12.5)
+        .fromTo(q(".umbrella"), { y: -900 }, { y: 0, duration: 12, ease: "none" }, 1)   // a long, steady fall (1 to 13), so one swipe on a phone doesn't skip it; she raises her hand just before it lands (11.9)
       // 2 entering the umbrella: she looks up; it grows to fill the screen
       // once it is open she brings her arm down: the umbrella lowers over her head, in her hand at chest height
         .to(q(".umbrella"), { x: HOLD.x - HAND.x, y: HOLD.y - HAND.y, duration: 1.6, ease: "sine.inOut" }, 15)
-        .to(q(".s1__who"), { opacity: 0, duration: 1.2 }, 16.8)   // she leaves the scene first
-        .to(q(".s1"), { scale: 7, svgOrigin: ZOOM, duration: 4, ease: "power2.in" }, 18)   // then the umbrella alone grows to fill the screen   // zooms into the umbrella: it grows in place, she leaves the bottom of the screen
-        .to(q(".s1"), { opacity: 0, duration: 1 }, 21)   // the woman and the umbrella are fully gone (21.8) before the line umbrella and the words come in
+        .to(q(".s1"), { opacity: 0, duration: 2 }, 19)   // she holds it until the scene ends; she and the umbrella fade out together (gone by 21), before the line umbrella and the words come in
         .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 22.2)
         .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 22.2);
       // its ribs bend into flowing pathways that lead down to the horizon
@@ -203,7 +194,7 @@ export default function IntroFilm({ onDone }) {
         onUpdate: (self) => {
           const p = self.progress * 100;
           // scene 1: standing, then reaching as the umbrella arrives; she holds it from then on and looks up
-          show(q(".s1 .who"), p < 5 ? ART.stand : p < 12.5 ? "a1b-look" : p < 15.6 ? ART.reach : "a5-hold");   // she keeps holding the big umbrella until it fills the screen
+          show(q(".s1 .who"), p < 5 ? ART.stand : p < 11.9 ? "a1b-look" : p < 15.6 ? ART.reach : "a5-hold");   // she keeps holding the big umbrella until it fills the screen
           show(q(".umbrella > *"), p < 13.3 ? ART.umbClosed : p < 14.3 ? ART.umbHalf : ART.umbOpen);   // closed as it falls; it opens only once it is in her hand
           q(".umbrella").forEach((el) => { el.style.opacity = 1; });
           // scene 3: one walk frame at a time, stepped by the scroll

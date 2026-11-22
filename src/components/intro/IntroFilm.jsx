@@ -167,8 +167,9 @@ export default function IntroFilm({ onDone }) {
       // 2 entering the umbrella: she looks up; it grows to fill the screen
       // once it is open she brings her arm down: the umbrella lowers over her head, in her hand at chest height
         .to(q(".umbrella"), { x: HOLD.x - HAND.x, y: HOLD.y - HAND.y, duration: 1.6, ease: "sine.inOut" }, 15)
-        .to(q(".s1"), { scale: 7, svgOrigin: ZOOM, duration: 5, ease: "power2.in" }, 16.8)   // zooms into the umbrella: it grows in place, she leaves the bottom of the screen
-        .to(q(".s1"), { opacity: 0, duration: 1.2 }, 20.6)   // the woman and the umbrella are fully gone (21.8) before the line umbrella and the words come in
+        .to(q(".s1__who"), { opacity: 0, duration: 1.2 }, 16.8)   // she leaves the scene first
+        .to(q(".s1"), { scale: 7, svgOrigin: ZOOM, duration: 4, ease: "power2.in" }, 18)   // then the umbrella alone grows to fill the screen   // zooms into the umbrella: it grows in place, she leaves the bottom of the screen
+        .to(q(".s1"), { opacity: 0, duration: 1 }, 21)   // the woman and the umbrella are fully gone (21.8) before the line umbrella and the words come in
         .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 22.2)
         .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 22.2);
       // its ribs bend into flowing pathways that lead down to the horizon

@@ -81,20 +81,13 @@ export const roadmap = [
 ];
 
 // status: "studying" | "next" | "planned" | "earned"
-// Only move a certification to "earned" once the exam is passed.
+// Only move a certification to "earned" once the exam is passed. Kept short on purpose (Amma):
+// what she has earned, and what she is working on next. Longer-term certs live on the roadmap pages.
 export const certifications = [
   { name: "ISO/IEC 27001:2022 Lead Auditor", code: "ISO 27001", issuer: "Mastermind Assurance", status: "earned" },
   { name: "Splunk Cyber Defense", code: "Splunk", issuer: "Splunk", status: "earned" },
-  { name: "CompTIA Security+", code: "Sec+", issuer: "CompTIA", status: "next" },
   { name: "Microsoft SC-900", code: "SC-900", issuer: "Microsoft", status: "next" },
   { name: "Microsoft SC-300: Identity and Access Administrator", code: "SC-300", issuer: "Microsoft", status: "next" },
-  { name: "Okta Certified Professional", code: "Okta Pro", issuer: "Okta", status: "planned" },
-  { name: "CyberArk Certified Trustee", code: "Trustee", issuer: "CyberArk", status: "planned" },
-  { name: "CyberArk Defender: PAM", code: "Defender", issuer: "CyberArk", status: "planned" },
-  { name: "CyberArk Sentry: PAM", code: "Sentry", issuer: "CyberArk", status: "planned" },
-  { name: "Okta Certified Administrator", code: "Okta Admin", issuer: "Okta", status: "planned" },
-  { name: "CyberArk Certified Guardian", code: "Guardian", issuer: "CyberArk", status: "planned" },
-  { name: "CISSP", code: "CISSP", issuer: "ISC2", status: "planned" },
 ];
 
 // Projects, newest first. Add a new object at the top of the list for each

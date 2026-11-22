@@ -60,8 +60,8 @@ create table if not exists public.milestones (
 create index if not exists milestones_stage_idx on public.milestones (stage_slug, position);
 
 -- 3. Starting data (taken from the roadmap already on the site) -----------------------------
--- The cybersecurity auditor stage is what Amma already does, so it starts completed (her
--- ISO/IEC 27001 Lead Auditor certification is earned, confirmed by her). Everything else starts planned.
+-- The cybersecurity auditor stage is what Amma already does, so its skills start completed.
+-- Everything else starts planned.
 insert into public.stages (slug, title, position) values
   ('cybersecurity-auditor', 'cybersecurity auditor', 1),
   ('iam-analyst',   'iam analyst',   2),
@@ -72,16 +72,20 @@ on conflict (slug) do nothing;
 insert into public.milestones (stage_slug, title, kind, status, position, earned_confirmed)
 select v.stage_slug, v.title, v.kind, v.status::public.milestone_status, v.position, v.kind = 'certification' and v.status = 'completed'
 from (values
-  ('cybersecurity-auditor', 'ISO/IEC 27001:2022 Lead Auditor', 'certification', 'completed', 1),
-  ('cybersecurity-auditor', 'ISO/IEC 27001 controls (Annex A)', 'skill', 'completed', 2),
-  ('cybersecurity-auditor', 'audit planning and scoping', 'skill', 'completed', 3),
-  ('cybersecurity-auditor', 'evidence collection and review', 'skill', 'completed', 4),
-  ('cybersecurity-auditor', 'control testing', 'skill', 'completed', 5),
-  ('cybersecurity-auditor', 'access control reviews', 'skill', 'completed', 6),
+  ('cybersecurity-auditor', 'audit planning and scoping', 'skill', 'completed', 1),
+  ('cybersecurity-auditor', 'information security controls', 'skill', 'completed', 2),
+  ('cybersecurity-auditor', 'evidence collection and review', 'skill', 'completed', 3),
+  ('cybersecurity-auditor', 'control testing', 'skill', 'completed', 4),
+  ('cybersecurity-auditor', 'access control reviews', 'skill', 'completed', 5),
+  ('cybersecurity-auditor', 'change management reviews', 'skill', 'completed', 6),
   ('cybersecurity-auditor', 'risk assessment', 'skill', 'completed', 7),
-  ('cybersecurity-auditor', 'nonconformities and audit findings', 'skill', 'completed', 8),
-  ('cybersecurity-auditor', 'audit reporting', 'skill', 'completed', 9),
-  ('cybersecurity-auditor', 'policy and procedure review', 'skill', 'completed', 10),
+  ('cybersecurity-auditor', 'gap analysis', 'skill', 'completed', 8),
+  ('cybersecurity-auditor', 'stakeholder interviews', 'skill', 'completed', 9),
+  ('cybersecurity-auditor', 'nonconformities and audit findings', 'skill', 'completed', 10),
+  ('cybersecurity-auditor', 'corrective action follow-up', 'skill', 'completed', 11),
+  ('cybersecurity-auditor', 'audit reporting', 'skill', 'completed', 12),
+  ('cybersecurity-auditor', 'policy and procedure review', 'skill', 'completed', 13),
+  ('cybersecurity-auditor', 'compliance frameworks', 'skill', 'completed', 14),
   ('iam-analyst', 'authentication and MFA', 'skill', 'planned', 1),
   ('iam-analyst', 'SSO and federation (SAML, OIDC)', 'skill', 'planned', 2),
   ('iam-analyst', 'RBAC and least privilege', 'skill', 'planned', 3),
@@ -184,23 +188,31 @@ create policy "owner removes milestones from an unlocked stage" on public.milest
   for delete to authenticated
   using (public.is_owner() and public.stage_unlocked(stage_slug));
 
--- Moving the first stage from help desk to cybersecurity auditor (run once, in the SQL editor) ----
+-- Moving the first stage from help desk to cybersecurity auditor (run once, in the SQL editor).
+-- The auditor skills are added without dates (the date trigger is paused for that insert).
 -- begin;
 -- insert into public.stages (slug, title, position, locked) values ('cybersecurity-auditor', 'cybersecurity auditor', 1, true)
 --   on conflict (slug) do nothing;
--- delete from public.milestones where stage_slug = 'help-desk';
+-- delete from public.milestones where stage_slug in ('help-desk', 'cybersecurity-auditor');
 -- delete from public.stages where slug = 'help-desk';
 -- update public.milestones set position = position + 1 where stage_slug = 'iam-analyst' and position >= 8;
--- insert into public.milestones (stage_slug, title, kind, status, position, earned_confirmed) values
---   ('iam-analyst', 'CompTIA Security+', 'certification', 'planned', 8, false),
---   ('cybersecurity-auditor', 'ISO/IEC 27001:2022 Lead Auditor', 'certification', 'completed', 1, true),
---   ('cybersecurity-auditor', 'ISO/IEC 27001 controls (Annex A)', 'skill', 'completed', 2, false),
---   ('cybersecurity-auditor', 'audit planning and scoping', 'skill', 'completed', 3, false),
---   ('cybersecurity-auditor', 'evidence collection and review', 'skill', 'completed', 4, false),
---   ('cybersecurity-auditor', 'control testing', 'skill', 'completed', 5, false),
---   ('cybersecurity-auditor', 'access control reviews', 'skill', 'completed', 6, false),
---   ('cybersecurity-auditor', 'risk assessment', 'skill', 'completed', 7, false),
---   ('cybersecurity-auditor', 'nonconformities and audit findings', 'skill', 'completed', 8, false),
---   ('cybersecurity-auditor', 'audit reporting', 'skill', 'completed', 9, false),
---   ('cybersecurity-auditor', 'policy and procedure review', 'skill', 'completed', 10, false);
+-- insert into public.milestones (stage_slug, title, kind, status, position) values
+--   ('iam-analyst', 'CompTIA Security+', 'certification', 'planned', 8);
+-- alter table public.milestones disable trigger milestone_dates;
+-- insert into public.milestones (stage_slug, title, kind, status, position) values
+--   ('cybersecurity-auditor', 'audit planning and scoping', 'skill', 'completed', 1),
+--   ('cybersecurity-auditor', 'information security controls', 'skill', 'completed', 2),
+--   ('cybersecurity-auditor', 'evidence collection and review', 'skill', 'completed', 3),
+--   ('cybersecurity-auditor', 'control testing', 'skill', 'completed', 4),
+--   ('cybersecurity-auditor', 'access control reviews', 'skill', 'completed', 5),
+--   ('cybersecurity-auditor', 'change management reviews', 'skill', 'completed', 6),
+--   ('cybersecurity-auditor', 'risk assessment', 'skill', 'completed', 7),
+--   ('cybersecurity-auditor', 'gap analysis', 'skill', 'completed', 8),
+--   ('cybersecurity-auditor', 'stakeholder interviews', 'skill', 'completed', 9),
+--   ('cybersecurity-auditor', 'nonconformities and audit findings', 'skill', 'completed', 10),
+--   ('cybersecurity-auditor', 'corrective action follow-up', 'skill', 'completed', 11),
+--   ('cybersecurity-auditor', 'audit reporting', 'skill', 'completed', 12),
+--   ('cybersecurity-auditor', 'policy and procedure review', 'skill', 'completed', 13),
+--   ('cybersecurity-auditor', 'compliance frameworks', 'skill', 'completed', 14);
+-- alter table public.milestones enable trigger milestone_dates;
 -- commit;

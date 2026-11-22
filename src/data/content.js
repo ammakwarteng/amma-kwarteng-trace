@@ -252,35 +252,11 @@ export const projects = [
   },
 ];
 
-// Skills, grouped. Only skills with proof (a project, lab, certification or
-// job). Things still being learned stay in the roadmap until they're done.
+// Skills: 4 groups, 5 skills each (Amma's choice, to keep it short). Only skills she has used
+// (a project, lab, certification or job); things still being learned stay in the roadmap.
 export const skills = [
-  {
-    group: "Identity & Access",
-    items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy"],
-  },
-  {
-    group: "Authentication & SSO",
-    items: ["Okta", "Keycloak", "MFA (TOTP)", "Okta Verify (push and number challenge)", "MFA enrollment and sign-on policies", "SSO", "OpenID Connect (OIDC)", "identity provider realms"],
-  },
-  {
-    group: "Support",
-    items: ["password resets", "account unlocks", "device and network troubleshooting", "VM network troubleshooting", "ticketing", "AV equipment setup"],
-  },
-  {
-    group: "Systems",
-    items: ["Windows Server 2022", "Ubuntu Linux", "Linux command line", "PowerShell", "DNS", "Microsoft 365"],
-  },
-  {
-    group: "Cloud & Virtualization",
-    items: ["Microsoft Azure (virtual networks and VMs)", "VMware Workstation", "Docker", "Remote Desktop (RDP)"],
-  },
-  {
-    group: "Governance",
-    items: ["ISO/IEC 27001", "access control", "auditing", "GRC fundamentals", "cybersecurity frameworks", "threat basics"],
-  },
-  {
-    group: "Web & Design",
-    items: ["HTML", "CSS", "React", "GSAP", "SVG", "custom domains", "DNS records", "HTTPS", "GitHub Pages", "UX/UI"],
-  },
+  { group: "Identity & Access", items: ["Active Directory", "Okta", "Keycloak", "MFA and SSO", "RBAC and least privilege"] },
+  { group: "Audit & Governance", items: ["ISO/IEC 27001", "control testing", "access reviews", "risk assessment", "audit reporting"] },
+  { group: "Systems & Cloud", items: ["Windows Server", "Linux", "PowerShell", "Microsoft Azure", "Docker"] },
+  { group: "Web & Design", items: ["HTML and CSS", "React", "GSAP", "DNS and HTTPS", "UX/UI"] },
 ];

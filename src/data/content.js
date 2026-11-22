@@ -30,7 +30,7 @@ export const roadmap = [
   {
     phase: "IAM Analyst",
     when: "next",
-    goal: "Manage identities and access full time, following my Master IAM roadmap.",
+    goal: "Manage identities and access full time, from the day someone joins to the day they leave.",
     // courses for this stage, shown on its roadmap page only (status: "in progress" | "complete")
     courses: [
       { name: "IAM Essentials", provider: "All Things Identity", status: "complete",

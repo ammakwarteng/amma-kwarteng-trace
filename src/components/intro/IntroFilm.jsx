@@ -39,7 +39,7 @@ const PANO_W = 3200, PANO_H = 1373, PANO_SCALE = 1100 / PANO_H, HORIZON = 0.716;
 // governance ~47, the doors 51-70), 4 the crossroads (70-86). Nothing during the reveal: TRACE stands alone.
 // "top" lines sit above the horizon, where the crossroads leaves room; the rest sit on the empty ground below it.
 const STORY = [
-  { from: 1, to: 7.5, text: "i didn't start out knowing where i belonged." },
+  { from: 1, to: 7.5, text: "i started out helping people get back in." },
   { from: 8.5, to: 16, text: "then i found cybersecurity." },
   { from: 18.3, to: 29.5, text: ["it isn't one thing. it's an umbrella,", "with a whole world underneath."] },
   { from: 32, to: 37, text: "so i explored it." },
@@ -164,9 +164,11 @@ export default function IntroFilm({ onDone }) {
       // once it is open she brings her arm down: the umbrella lowers over her head, in her hand at chest height
         .to(q(".umbrella"), { x: HOLD.x - HAND.x, y: HOLD.y - HAND.y, duration: 1.6, ease: "sine.inOut" }, 13.7)   // lowers as soon as it is fully open (no pause)
         .to(q(".umb-canopy"), { y: SHAFT_SPLIT.slide * UK, duration: 1.6, ease: "sine.inOut" }, 13.7)   // the shaft telescopes shorter, so the canopy ends just above her head
-        .to(q(".s1"), { opacity: 0, duration: 1.8 }, 15.3)   // straight on: she and the umbrella fade out together (gone by 17.7), before the line umbrella and the words come in
-        .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 17.9)
-        .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 17.9);
+        // a crossfade, no black between (Amma's choice): she and the umbrella fade out while the view from
+        // underneath it fades in at the same moment, so the film moves into the umbrella instead of cutting
+        .to(q(".s1"), { opacity: 0, duration: 1.8 }, 15.3)
+        .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 1.8 }, 15.3)
+        .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 15.3);
       // its ribs bend into flowing pathways that lead down to the horizon
       q(".rib").forEach((el, i) => tl.to(el, { attr: { d: PATHWAY(i) }, duration: 7, ease: "power1.inOut" }, 25));
       tl.to(q(".ribs"), { opacity: 0, duration: 3 }, 31)

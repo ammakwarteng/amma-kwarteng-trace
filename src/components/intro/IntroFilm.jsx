@@ -68,9 +68,9 @@ const HOLD = (() => {
   const w = r.w * kOf("a5-hold"), h = r.h * kOf("a5-hold");
   return { x: 800 - r.cx * w + r.hand[0] * w, y: 640 - h + r.hand[1] * h };
 })();
-// the open umbrella's shaft, in rows of its artwork (745 tall): the canopy part keeps rows 0-470 (canopy rim at 267,
-// hook starts at 686), the handle part keeps 465 down; the canopy slides 209 rows (68 canvas units) down over the handle
-const SHAFT_SPLIT = { canopyTo: 470, handleFrom: 465, slide: 209 };
+// the open umbrella's shaft, in rows of its artwork (745 tall): the canopy part keeps rows 0-462 (canopy rim at 267,
+// hook starts at 686), the handle part keeps 457 down; the canopy slides 220 rows (72 canvas units) down over the handle
+const SHAFT_SPLIT = { canopyTo: 462, handleFrom: 457, slide: 220 };
 const HAND = (() => {
   const r = POSES["a2-reach"];
   if (!r) return { x: 850, y: 370 };

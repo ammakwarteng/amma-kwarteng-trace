@@ -39,7 +39,9 @@ html.is-loading, html.is-loading body { overflow: hidden; }
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.3em;
-  color: var(--white-faint);
+  padding-left: 0.3em;          /* balances the spacing after the last letter, so the word sits centred */
+  text-transform: uppercase;    /* mono text is always uppercase */
+  color: var(--white);
   opacity: 0;
   animation: loader-word 0.5s ease 0.9s forwards;
 }

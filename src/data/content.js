@@ -6,10 +6,28 @@ export const about = [
 ];
 
 // Career roadmap. On the About roadmap every phase shows 8 items, the last 2 being
-// certifications (shown white); the full list of milestones lives on each phase's roadmap page.
+// certifications (shown white; IT Support has none); the full list of milestones lives on
+// each phase's roadmap page.
 // Set `now: true` on the phase Amma is in; `page: false` leaves a phase off the /roadmap pages
 // (it still shows on the About roadmap).
 export const roadmap = [
+  {
+    phase: "IT Support",
+    when: "where I started",
+    past: true,    // done: shown as a completed step on the About roadmap
+    page: false,
+    goal: "Helping people day to day: getting them back into their accounts and keeping their devices and networks working.",
+    items: [
+      "password resets",
+      "account unlocks",
+      "user account requests",
+      "device troubleshooting",
+      "network troubleshooting",
+      "ticketing",
+      "Microsoft 365 support",
+      "AV equipment setup",
+    ],
+  },
   {
     phase: "Cybersecurity Auditor",
     when: "now",
@@ -23,8 +41,8 @@ export const roadmap = [
       "evidence collection and review",
       "risk assessment",
       "audit reporting",
-      "ISO/IEC 27001:2022 Lead Auditor",
-      "Splunk Cybersecurity Defense Analyst",
+      "ISO 27001 Lead Auditor",
+      "Splunk Defense Analyst",
     ],
   },
   {

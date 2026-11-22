@@ -194,3 +194,6 @@
 :root { --card-title: clamp(22px, 1.8vw, 26px); --card-text: clamp(16px, 1.2vw, 17px); }
 :root :is(.road__phase, .skills__name, .community__name) { font-size: var(--card-title); }
 :root :is(.road__goal, .project__summary, .community__about) { font-size: var(--card-text); line-height: 1.5; }
+
+/* a step already done (IT Support, where Amma started): a filled white marker, no green */
+:root .road__step.is-past .road__dot { background: var(--white); border-color: var(--white); }

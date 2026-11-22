@@ -66,12 +66,12 @@ export function Roadmap() {
   return (
       <div className="road" aria-label="Career roadmap">
         <p className="road__label mono">roadmap · {verb} a step to open it</p>
-        <ol className="road__list">
+        <ol className="road__list" style={{ "--steps": roadmap.length }}>
           {roadmap.map((r, i) => {
             const isOpen = open.has(r.phase);
             const panelId = `road-panel-${i}`;
             return (
-              <li key={r.phase} className={`road__step ${r.now ? "is-now" : ""} ${r.now && here ? "is-here" : ""} ${isOpen ? "is-open" : ""}`}>
+              <li key={r.phase} className={`road__step ${r.past ? "is-past" : ""} ${r.now ? "is-now" : ""} ${r.now && here ? "is-here" : ""} ${isOpen ? "is-open" : ""}`}>
                 <span className="road__dot" aria-hidden="true" ref={r.now ? hereRef : undefined} />
                 <button
                   type="button"

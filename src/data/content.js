@@ -258,37 +258,30 @@ export const projects = [
 export const skills = [
   {
     group: "Identity & Access",
-    proof: "Active Directory Home Lab",
     items: ["Active Directory", "users and groups", "RBAC and least privilege", "joiner, mover, leaver", "password and lockout policy"],
   },
   {
     group: "Authentication & SSO",
-    proof: "Keycloak SSO & MFA Lab · Okta MFA & Sign-On Policy Lab",
     items: ["Okta", "Keycloak", "MFA (TOTP)", "Okta Verify (push and number challenge)", "MFA enrollment and sign-on policies", "SSO", "OpenID Connect (OIDC)", "identity provider realms"],
   },
   {
     group: "Support",
-    proof: "home lab and work history",
     items: ["password resets", "account unlocks", "device and network troubleshooting", "VM network troubleshooting", "ticketing", "AV equipment setup"],
   },
   {
     group: "Systems",
-    proof: "home labs",
     items: ["Windows Server 2022", "Ubuntu Linux", "Linux command line", "PowerShell", "DNS", "Microsoft 365"],
   },
   {
     group: "Cloud & Virtualization",
-    proof: "home labs and coursework",
     items: ["Microsoft Azure (virtual networks and VMs)", "VMware Workstation", "Docker", "Remote Desktop (RDP)"],
   },
   {
     group: "Governance",
-    proof: "ISO/IEC 27001:2022 Lead Auditor · GRC Analyst Master Class (in progress)",
     items: ["ISO/IEC 27001", "access control", "auditing", "GRC fundamentals", "cybersecurity frameworks", "threat basics"],
   },
   {
     group: "Web & Design",
-    proof: "TRACE, this portfolio",
     items: ["HTML", "CSS", "React", "GSAP", "SVG", "custom domains", "DNS records", "HTTPS", "GitHub Pages", "UX/UI"],
   },
 ];

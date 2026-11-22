@@ -68,6 +68,9 @@ const HOLD = (() => {
   const w = r.w * kOf("a5-hold"), h = r.h * kOf("a5-hold");
   return { x: 800 - r.cx * w + r.hand[0] * w, y: 640 - h + r.hand[1] * h };
 })();
+// the open umbrella's shaft, in rows of its artwork (745 tall): the canopy part keeps rows 0-470 (canopy rim at 267,
+// hook starts at 686), the handle part keeps 465 down; the canopy slides 209 rows (68 canvas units) down over the handle
+const SHAFT_SPLIT = { canopyTo: 470, handleFrom: 465, slide: 209 };
 const HAND = (() => {
   const r = POSES["a2-reach"];
   if (!r) return { x: 850, y: 370 };
@@ -160,6 +163,7 @@ export default function IntroFilm({ onDone }) {
       // 2 entering the umbrella: she looks up; it grows to fill the screen
       // once it is open she brings her arm down: the umbrella lowers over her head, in her hand at chest height
         .to(q(".umbrella"), { x: HOLD.x - HAND.x, y: HOLD.y - HAND.y, duration: 1.6, ease: "sine.inOut" }, 13.7)   // lowers as soon as it is fully open (no pause)
+        .to(q(".umb-canopy"), { y: SHAFT_SPLIT.slide * UK, duration: 1.6, ease: "sine.inOut" }, 13.7)   // the shaft telescopes shorter, so the canopy ends just above her head
         .to(q(".s1"), { opacity: 0, duration: 1.8 }, 15.3)   // straight on: she and the umbrella fade out together (gone by 17.7), before the line umbrella and the words come in
         .fromTo(q(".ribs"), { opacity: 0 }, { opacity: 1, duration: 2 }, 17.9)
         .to(q(".rib"), { strokeDashoffset: 0, duration: 3, stagger: 0.15 }, 17.9);
@@ -286,9 +290,25 @@ export default function IntroFilm({ onDone }) {
           {/* 1 the beginning */}
           <g className="s1">
             <g className="umbrella">
-              {[ART.umbClosed, ART.umbHalf, ART.umbOpen].map((n) => has(n)
+              {[ART.umbClosed, ART.umbHalf].map((n) => has(n)
                 ? <image key={n} data-pose={n} href={src(n)} x={HAND.x - POSES[n].cx * POSES[n].w * UK} y={HAND.y - POSES[n].h * UK} width={POSES[n].w * UK} height={POSES[n].h * UK} />
                 : <g key={n} data-pose={n}><Pending x={830} feetY={330} w={170} h={170} label={n.replace(/^u\d-/, "umbrella, ")} /></g>)}
+              {/* the open umbrella in two parts, so the shaft can telescope shorter as she lowers it:
+                  the canopy (with the top of the shaft) slides down over the handle (with the bottom of the shaft) */}
+              {has(ART.umbOpen) && (() => {
+                const n = ART.umbOpen, w = POSES[n].w * UK, h = POSES[n].h * UK, x = HAND.x - POSES[n].cx * w, y = HAND.y - h;
+                const img = <image href={src(n)} x={x} y={y} width={w} height={h} />;
+                return (
+                  <g data-pose={n}>
+                    <defs>
+                      <clipPath id="umb-handle"><rect x={x - 20} y={y + SHAFT_SPLIT.handleFrom * UK} width={w + 40} height={h} /></clipPath>
+                      <clipPath id="umb-canopy"><rect x={x - 20} y={y - 40} width={w + 40} height={SHAFT_SPLIT.canopyTo * UK + 40} /></clipPath>
+                    </defs>
+                    <g clipPath="url(#umb-handle)">{img}</g>
+                    <g className="umb-canopy"><g clipPath="url(#umb-canopy)">{img}</g></g>
+                  </g>
+                );
+              })()}
             </g>
             <g className="s1__who">
               {[ART.stand, "a1b-look", ART.reach, "a5-hold"].map((n, i) => (

@@ -39,8 +39,8 @@ const PANO_W = 3200, PANO_H = 1373, PANO_SCALE = 1100 / PANO_H, HORIZON = 0.716;
 // governance ~47, the doors 51-70), 4 the crossroads (70-86). Nothing during the reveal: TRACE stands alone.
 // "top" lines sit above the horizon, where the crossroads leaves room; the rest sit on the empty ground below it.
 const STORY = [
-  { from: 1, to: 7.5, text: "i started out helping people get back in." },
-  { from: 8.5, to: 16, text: "then i found cybersecurity." },
+  // she stands in silence first (Amma's choice): the first words come as the umbrella falls toward her
+  { from: 8.5, to: 16, text: "i found cybersecurity." },
   { from: 18.3, to: 29.5, text: ["it isn't one thing. it's an umbrella,", "with a whole world underneath."] },
   { from: 32, to: 37, text: "so i explored it." },
   { from: 37.5, to: 43.5, text: "how networks connect. how the cloud is built." },

@@ -135,7 +135,7 @@
    captions, notes and the footer: UPPERCASE. */
 :root .project__name { text-transform: none; }
 :root :is(.mono, .road__items li, .skills__items li, .project__tags li, .email__copy, .resume__btn, .rm-btn, .ms__seg button,
-  .rm-progress__count, .rm-progress__all, .rm-empty, .ms__facts dd, .site-footer, .site-footer *, .intro__line, .intro__skip,
+  .rm-progress__count, .rm-empty, .ms__facts dd, .site-footer, .site-footer *, .intro__line, .intro__skip,
   .marquee__hint, .project__next, .project__more, .project__gallery-hint) { text-transform: uppercase; }
 
 /* roadmap "you are here": the current stage's marker is empty like the others until the scroll

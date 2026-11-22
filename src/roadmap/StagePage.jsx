@@ -29,7 +29,6 @@ export default function StagePage({ slug }) {
   const skills = list.filter((m) => m.kind !== "certification");
   const certs = list.filter((m) => m.kind === "certification");
   const history = list.filter((m) => m.status === "completed" && m.completed_on).sort((a, b) => b.completed_on.localeCompare(a.completed_on));
-  const allMs = data ? data.milestones.filter((m) => stageBySlug(m.stage_slug)) : [];
   const unsaved = Object.keys(changes).length + added.length;
 
   const edit = (m, patch) => {
@@ -89,7 +88,7 @@ export default function StagePage({ slug }) {
         <p className="rm-kicker mono">roadmap · {String(i + 1).padStart(2, "0")} / {String(STAGES.length).padStart(2, "0")} · {meta.when}</p>
         <h1 className="rm-title" style={{ "--long": Math.max(...meta.title.split(" ").map((w) => w.length)) }}>{meta.title}</h1>
         <p className="rm-goal">{meta.goal}</p>
-        {data && <Progress items={list} overall={allMs} live={data.live} />}
+        {data && <Progress items={list} />}
       </header>
 
       {!data && <p className="rm-note mono">loading…</p>}

@@ -40,7 +40,6 @@
 .rm-progress__ticks i.is-completed::after { height: 100%; }
 .rm-progress__count { margin: 0; font-size: 12px; letter-spacing: 0.06em; color: var(--white); }
 .rm-progress__count b { font-weight: 500; color: var(--white); }
-.rm-progress__all { display: block; margin-top: 4px; color: var(--white); }
 
 /* sections */
 .rm-sec { margin-top: clamp(40px, 7vh, 72px); }

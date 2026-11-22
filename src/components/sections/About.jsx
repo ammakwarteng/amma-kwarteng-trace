@@ -30,7 +30,7 @@ export function AboutText({ from = 0, to }) {
 
 // the career roadmap, which continues the About section below the hero stage
 // Certifications in a roadmap step stand out from the topics beside them (a filled tag).
-const CERT = /ITIL|Security\+|SC-\d|Okta Certified|CyberArk|CISSP/;
+const CERT = /Lead Auditor|ITIL|Security\+|SC-\d|Okta Certified|CyberArk|CISSP/;
 
 export function Roadmap() {
   const { verb, fine } = usePointerVerb();

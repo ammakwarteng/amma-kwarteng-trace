@@ -12,9 +12,17 @@ export const roadmap = [
     when: "now",
     now: true,
     goal: "Bring my ISO/IEC 27001 audit experience with access controls and evidence into identity work, while building the hands-on technical skills an IAM Analyst needs.",
-    items: ["ITIL 4 Foundation", "CompTIA Security+", "Active Directory", "password resets and account requests", "PowerShell basics"],
-    courses: [
-      { name: "Practical Help Desk", provider: "TCM Security", status: "in progress", done: [] },
+    items: [
+      "ISO/IEC 27001:2022 Lead Auditor",
+      "ISO/IEC 27001 controls (Annex A)",
+      "audit planning and scoping",
+      "evidence collection and review",
+      "control testing",
+      "access control reviews",
+      "risk assessment",
+      "nonconformities and audit findings",
+      "audit reporting",
+      "policy and procedure review",
     ],
   },
   {
@@ -35,6 +43,7 @@ export const roadmap = [
       "access requests and approvals",
       "access reviews and audit evidence",
       "Microsoft Entra ID",
+      "CompTIA Security+",
       "Microsoft SC-900",
       "Microsoft SC-300",
       "Okta Certified Professional",

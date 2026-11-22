@@ -16,8 +16,8 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
 
 export const slugOf = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-// The four stages in order, with the words already on the site (when, goal).
-export const STAGES = roadmap.map((r, i) => ({ slug: slugOf(r.phase), title: r.phase, when: r.now ? "you are here" : r.when, now: !!r.now, dates: false /* Amma: no dates anywhere on the roadmap */, goal: r.goal, position: i + 1, items: r.items, courses: r.courses || [] }));
+// The stages that have a roadmap page, in order, with the words already on the site (when, goal).
+export const STAGES = roadmap.filter((r) => r.page !== false).map((r, i) => ({ slug: slugOf(r.phase), title: r.phase, when: r.now ? "you are here" : r.when, now: !!r.now, dates: false /* Amma: no dates anywhere on the roadmap */, goal: r.goal, position: i + 1, items: r.items, courses: r.courses || [] }));
 export const stageBySlug = (slug) => STAGES.find((s) => s.slug === slug);
 
 // Portfolio projects a milestone can point to.

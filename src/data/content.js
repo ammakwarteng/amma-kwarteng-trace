@@ -5,12 +5,14 @@ export const about = [
   "My work is grounded in understanding security controls, risk, and accountability. I’m building on that foundation through hands-on exploration of identity lifecycles, access governance, and secure authentication.",
 ];
 
-// Career roadmap. Set `now: true` on the phase Amma is in.
+// Career roadmap. Set `now: true` on the phase Amma is in; `page: false` leaves a phase off the
+// /roadmap pages (it still shows on the About roadmap).
 export const roadmap = [
   {
     phase: "Cybersecurity Auditor",
     when: "now",
     now: true,
+    page: false,   // where Amma is now: shown on the About roadmap, no roadmap page of its own
     goal: "Bring my ISO/IEC 27001 audit experience with access controls and evidence into identity work, while building the hands-on technical skills an IAM Analyst needs.",
     items: [
       "audit planning and scoping",

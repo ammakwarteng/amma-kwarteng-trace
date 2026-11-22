@@ -29,7 +29,7 @@ export default function StagePage({ slug }) {
   const skills = list.filter((m) => m.kind !== "certification");
   const certs = list.filter((m) => m.kind === "certification");
   const history = list.filter((m) => m.status === "completed" && m.completed_on).sort((a, b) => b.completed_on.localeCompare(a.completed_on));
-  const allMs = data ? data.milestones : [];
+  const allMs = data ? data.milestones.filter((m) => stageBySlug(m.stage_slug)) : [];
   const unsaved = Object.keys(changes).length + added.length;
 
   const edit = (m, patch) => {

@@ -7,8 +7,8 @@ import "./roadmap.css";
 // The career roadmap pages: /roadmap/<stage> for everyone, /owner for the owner's sign-in.
 export default function RoadmapApp({ path }) {
   const m = path.match(/^\/roadmap\/([a-z0-9-]+)\/?$/);
-  // the first stage used to be help desk; old links to it open the cybersecurity auditor stage
-  const asked = m && (m[1] === "help-desk" ? "cybersecurity-auditor" : m[1]);
+  // old links to the earlier first stages (help desk, cybersecurity auditor) open the first roadmap page
+  const asked = m && (["help-desk", "cybersecurity-auditor"].includes(m[1]) ? "iam-analyst" : m[1]);
   const slug = asked && stageBySlug(asked) ? asked : null;
   return (
     <>

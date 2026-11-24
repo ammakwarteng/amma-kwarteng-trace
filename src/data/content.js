@@ -33,7 +33,7 @@ export const roadmap = [
     when: "now",
     now: true,
     page: false,   // where Amma is now: shown on the About roadmap, no roadmap page of its own
-    goal: "Plan and carry out security audits: testing controls, checking who has access to what, and turning the evidence into clear findings that help teams fix what's wrong.",
+    goal: "Plan and conduct security audits against standards like ISO 27001: assessing control effectiveness, reviewing user access, and reporting evidence-based findings that drive remediation.",
     items: [
       "audit planning and scoping",
       "control testing",

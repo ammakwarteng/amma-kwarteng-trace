@@ -128,7 +128,7 @@ export const projects = [
     year: "2026",
     status: "complete",
     summary:
-      "Solved all three challenges, solo, in the TCM Security x Kryptsec Black Friday CTF: three AI assistants, each guarding a secret, each broken a different way.",
+      "Solved all three challenges, solo, in the TCM Security x Kryptsec CTF: three AI assistants, each guarding a secret, each broken a different way.",
     points: [
       "Whispering Gate (easy): a gate sentinel AI refused to give out its passphrase, but its instructions contained it; role-playing as the sentinel taking over the shift got it to read its whole briefing aloud, passphrase included (direct prompt injection and system prompt leakage)",
       "The Poisoned Notice Board (medium): pinned a notice dressed up as an official council order; when the town crier AI read the board, it followed the notice instead of just reading it out, and revealed the confidential decree (indirect prompt injection)",

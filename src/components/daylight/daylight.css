@@ -210,3 +210,12 @@
 :root .resume__form > .resume__btn:not(:disabled):hover, :root .resume__form > .resume__btn:focus-visible { border-bottom-color: var(--white); opacity: 1; }
 :root .resume__form > .resume__btn:disabled { opacity: 1; cursor: default; }
 :root .resume__form > .resume__btn::before { content: ""; position: absolute; inset: -12px -8px; }
+
+/* No pill buttons (Amma's choice: fewer circles). "Copy" and "read more" are text links like
+   "back to top": white typewriter text with a thin underline; a bigger invisible tap area keeps
+   them easy to hit on a phone. The roadmap bubbles stay round on purpose. */
+:root .email__copy, :root .project__more, :root .projects-wrap .project__more {
+  position: relative; padding: 3px 0; border: 0; border-bottom: 1px solid var(--white); border-radius: 0; background: none;
+}
+:root .email__copy:hover, :root .project__more:hover { background: none; border-bottom-color: var(--white); }
+:root .email__copy::before, :root .project__more::before { content: ""; position: absolute; inset: -12px -8px; }

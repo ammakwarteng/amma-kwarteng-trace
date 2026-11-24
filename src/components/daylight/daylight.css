@@ -198,17 +198,15 @@
 /* a step already done (IT Support, where Amma started): a filled white marker, no green */
 :root .road__step.is-past .road__dot { background: var(--white); border-color: var(--white); }
 
-/* Resume "unlock": styled like the Copy button (Amma's choice): a small pill with white text and a
-   quiet outline that turns white on hover, or once a code is typed. Never greyed out. */
+/* Resume "unlock": text only, like "back to top" and "open the full roadmap ->" (Amma's choice: fewer
+   circles on the site). White typewriter text with a thin underline and an arrow; a bigger invisible
+   tap area keeps it easy to hit on a phone. */
 :root .resume__form { align-items: center; }
 :root .resume__form > .resume__btn {
-  flex: none; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line);
-  background: none; color: var(--white); opacity: 1; font-size: 11px; letter-spacing: 0.1em;
-  transition: border-color 0.2s, background 0.2s;
+  position: relative; flex: none; margin-left: 8px; padding: 4px 0; border: 0; border-bottom: 1px solid var(--white-faint);
+  border-radius: 0; background: none; color: var(--white); opacity: 1; font-size: 12px; letter-spacing: 0.1em;
 }
-:root .resume__form > .resume__btn:not(:disabled) { border-color: var(--white); }
-:root .resume__form > .resume__btn:not(:disabled):hover { background: rgba(255, 255, 255, 0.08); opacity: 1; }
+:root .resume__form > .resume__btn::after { content: "\00a0\2192"; }
+:root .resume__form > .resume__btn:not(:disabled):hover, :root .resume__form > .resume__btn:focus-visible { border-bottom-color: var(--white); opacity: 1; }
 :root .resume__form > .resume__btn:disabled { opacity: 1; cursor: default; }
-/* a bigger invisible tap area around the small Unlock pill, so it's easy to hit on a phone (about 46px tall) */
-:root .resume__form > .resume__btn { position: relative; }
 :root .resume__form > .resume__btn::before { content: ""; position: absolute; inset: -12px -8px; }

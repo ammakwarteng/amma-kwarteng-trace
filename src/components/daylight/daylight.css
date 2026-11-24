@@ -197,13 +197,3 @@
 
 /* a step already done (IT Support, where Amma started): a filled white marker, no green */
 :root .road__step.is-past .road__dot { background: var(--white); border-color: var(--white); }
-
-/* Resume buttons: pills like every other button on the site. "Unlock" is outlined with white text,
-   as tall as the code box beside it, and fills white when pressed. Its outline stays white even with
-   no code typed yet (Amma's choice), so it never looks greyed out or broken. */
-:root .resume__btn { border-radius: 999px; }
-:root .resume__form { flex-wrap: nowrap; }
-:root .resume__form .resume__field { flex: 1 1 auto; }
-:root .resume__form > .resume__btn { flex: none; align-self: stretch; padding: 11px 24px; background: transparent; color: var(--white); border-color: var(--white); }
-:root .resume__form > .resume__btn:not(:disabled):hover, :root .resume__form > .resume__btn:not(:disabled):active { background: var(--white); color: var(--black); opacity: 1; }
-:root .resume__form > .resume__btn:disabled { opacity: 1; border-color: var(--white); color: var(--white); }

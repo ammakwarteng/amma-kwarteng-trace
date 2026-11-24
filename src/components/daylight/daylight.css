@@ -198,24 +198,23 @@
 /* a step already done (IT Support, where Amma started): a filled white marker, no green */
 :root .road__step.is-past .road__dot { background: var(--white); border-color: var(--white); }
 
-/* Resume "unlock": text only, like "back to top" and "open the full roadmap ->" (Amma's choice: fewer
-   circles on the site). White typewriter text with a thin underline and an arrow; a bigger invisible
-   tap area keeps it easy to hit on a phone. */
+/* Action buttons (Unlock, Copy, Read more): no rounded container and no underline; a short, thin
+   vertical line just left of the label (Amma's design). Font, size and letter spacing are the
+   buttons' own; the line is drawn outside the layout, so nothing moves. A bigger invisible tap area
+   keeps them easy to hit on a phone. */
 :root .resume__form { align-items: center; }
-:root .resume__form > .resume__btn {
-  position: relative; flex: none; margin-left: 8px; padding: 4px 0; border: 0; border-bottom: 1px solid var(--white-faint);
-  border-radius: 0; background: none; color: var(--white); opacity: 1; font-size: 12px; letter-spacing: 0.1em;
+:root .resume__form > .resume__btn { flex: none; margin-left: 8px; }
+:root .resume__form > .resume__btn, :root .email__copy, :root .project__more, :root .projects-wrap .project__more {
+  position: relative; padding: 0; border: 0; border-radius: 0; background: none; color: var(--white); opacity: 1;
 }
-:root .resume__form > .resume__btn::after { content: "\00a0\2192"; }
-:root .resume__form > .resume__btn:not(:disabled):hover, :root .resume__form > .resume__btn:focus-visible { border-bottom-color: var(--white); opacity: 1; }
-:root .resume__form > .resume__btn:disabled { opacity: 1; cursor: default; }
-:root .resume__form > .resume__btn::before { content: ""; position: absolute; inset: -12px -8px; }
-
-/* No pill buttons (Amma's choice: fewer circles). "Copy" and "read more" are text links like
-   "back to top": white typewriter text with a thin underline; a bigger invisible tap area keeps
-   them easy to hit on a phone. The roadmap bubbles stay round on purpose. */
-:root .email__copy, :root .project__more, :root .projects-wrap .project__more {
-  position: relative; padding: 3px 0; border: 0; border-bottom: 1px solid var(--white); border-radius: 0; background: none;
+:root .resume__form > .resume__btn:hover, :root .resume__form > .resume__btn:disabled,
+:root .email__copy:hover, :root .project__more:hover { background: none; opacity: 1; }
+:root .resume__form > .resume__btn:disabled { cursor: default; }
+:root .resume__form > .resume__btn::after, :root .email__copy::after, :root .project__more::after {
+  content: ""; position: absolute; left: -7px; top: 50%; width: 1px; height: 0.95em; background: var(--white); transform: translateY(-50%);
 }
-:root .email__copy:hover, :root .project__more:hover { background: none; border-bottom-color: var(--white); }
-:root .email__copy::before, :root .project__more::before { content: ""; position: absolute; inset: -12px -8px; }
+:root .resume__form > .resume__btn::before, :root .email__copy::before, :root .project__more::before {
+  content: ""; position: absolute; inset: -12px -8px;
+}
+/* the projects row clips anything past a card's edge, so "read more" sits 7px in, leaving room for its line */
+:root .project__more { margin-left: 7px; }

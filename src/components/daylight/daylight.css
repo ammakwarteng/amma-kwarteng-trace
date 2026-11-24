@@ -197,3 +197,15 @@
 
 /* a step already done (IT Support, where Amma started): a filled white marker, no green */
 :root .road__step.is-past .road__dot { background: var(--white); border-color: var(--white); }
+
+/* Resume "unlock": styled like the Copy button (Amma's choice): a small pill with white text and a
+   quiet outline that turns white on hover, or once a code is typed. Never greyed out. */
+:root .resume__form { align-items: center; }
+:root .resume__form > .resume__btn {
+  flex: none; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line);
+  background: none; color: var(--white); opacity: 1; font-size: 11px; letter-spacing: 0.1em;
+  transition: border-color 0.2s, background 0.2s;
+}
+:root .resume__form > .resume__btn:not(:disabled) { border-color: var(--white); }
+:root .resume__form > .resume__btn:not(:disabled):hover { background: rgba(255, 255, 255, 0.08); opacity: 1; }
+:root .resume__form > .resume__btn:disabled { opacity: 1; cursor: default; }

@@ -52,10 +52,18 @@ export const communities = [
     about: "The Toronto chapter of ISC2, the global association of cybersecurity professionals behind the CISSP." },
 ];
 
-// Volunteer roles, shown in the volunteer section (hidden until it's switched on in navItems).
+// Volunteer roles, shown in the volunteer section.
 // Add one only once you've actually done it. Example:
-//   { org: "CyberX", role: "Volunteer", when: "2027", url: "https://...", what: "helped run the student CTF" },
-export const volunteering = [];
+//   { org: "CyberX", role: "Volunteer", status: "", url: "https://...", what: "Helped run the student CTF." },
+export const volunteering = [
+  {
+    org: "Cyber-Seniors",
+    role: "Tech Mentor",
+    status: "in training",
+    url: "https://cyberseniors.org",
+    what: "A Canadian nonprofit connecting generations through technology. I help older adults one-on-one with their devices and accounts, and with staying safe from scams online.",
+  },
+];
 
 // Sections in the menu and on the page. Set ready: true once a section has
 // real content; sections that are not ready stay hidden everywhere.
@@ -66,7 +74,7 @@ export const navItems = [
   { id: "skills", label: "Skills", kicker: "the craft", ready: true },
   { id: "certifications", label: "Certifications", kicker: "the credentials", ready: true },
   { id: "community", label: "Community", kicker: "the community", ready: true },
-  { id: "volunteer", label: "Volunteer", kicker: "giving back", ready: false }, // switch to true once there's a role in volunteering below
+  { id: "volunteer", label: "Volunteer", kicker: "giving back", ready: true },
   { id: "resume", label: "Resume", kicker: "the record", ready: true },
   { id: "contact", label: "Contact", kicker: "get in touch", ready: true },
 ].filter((item) => item.ready);

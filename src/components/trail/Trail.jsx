@@ -68,7 +68,10 @@ export default function Trail({ sections, start = 1 }) {
           : null;
         return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top, prevBottom };
       });
-      const w = wrap.clientWidth, h = wrap.scrollHeight;
+      // the trail's own height, not scrollHeight: scrollHeight also counts this svg, so once the
+      // svg had grown (sections open) it kept the page tall after they closed, leaving a blank
+      // stretch below the footer
+      const w = wrap.clientWidth, h = wrap.offsetHeight;
       // the line starts just under "replay intro" in the hero (centred), so it fills the space
       // between the hero and the first section; without that link, at the top of the trail
       const replay = document.querySelector(".dhero__replay");

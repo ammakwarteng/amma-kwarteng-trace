@@ -45,7 +45,8 @@ const sections = navItems.map((item) => ({
     ) : null,
 }));
 
-// The intro film plays on the first visit in a browser session. It is skipped for visitors who prefer
+// The logo screen opens every page load. The intro film plays on the first visit in a browser
+// session, starting once the logo screen lifts. It is skipped for visitors who prefer
 // reduced motion and for links straight to a section (like #projects); "replay intro" brings it back.
 const SEEN = "trace-intro-seen";
 const seen = () => { try { return sessionStorage.getItem(SEEN) === "1"; } catch { return false; } };
@@ -64,7 +65,8 @@ export default function App() {
 
   return (
     <>
-      {!intro && <Loader />}
+      {/* the logo screen opens every page load; on a first visit the intro film waits underneath it */}
+      <Loader />
       <a className="skip-link" href="#about">Skip to content</a>
       <main>
         {intro && <IntroFilm onDone={done} />}

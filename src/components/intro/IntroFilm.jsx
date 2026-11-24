@@ -159,7 +159,7 @@ export default function IntroFilm({ onDone }) {
       // she is on screen from the first frame; the umbrella starts well above the top edge,
       // so a tall phone screen does not show its tip before the visitor scrolls
       tl.set(q(".s1__who"), { opacity: 1 }, 0)
-        .fromTo(q(".umbrella"), { y: -900 }, { y: 0, duration: 12, ease: "none" }, 1)   // a long, steady fall (1 to 13), so one swipe on a phone doesn't skip it; she raises her hand just before it lands (11.9)
+        .fromTo(q(".umbrella"), { y: -900, visibility: "visible" }, { y: 0, duration: 12, ease: "none" }, 1)   // a long, steady fall (1 to 13), so one swipe on a phone doesn't skip it; she raises her hand just before it lands (11.9)
       // 2 entering the umbrella: she looks up; it grows to fill the screen
       // once it is open she brings her arm down: the umbrella lowers over her head, in her hand at chest height
         .to(q(".umbrella"), { x: HOLD.x - HAND.x, y: HOLD.y - HAND.y, duration: 1.6, ease: "sine.inOut" }, 13.7)   // lowers as soon as it is fully open (no pause)
@@ -291,7 +291,7 @@ export default function IntroFilm({ onDone }) {
         <svg className="intro__canvas" ref={canvas} viewBox="0 0 1600 900" aria-hidden="true">
           {/* 1 the beginning */}
           <g className="s1">
-            <g className="umbrella">
+            <g className="umbrella" style={{ visibility: "hidden" }}>
               {[ART.umbClosed, ART.umbHalf].map((n) => has(n)
                 ? <image key={n} data-pose={n} href={src(n)} x={HAND.x - POSES[n].cx * POSES[n].w * UK} y={HAND.y - POSES[n].h * UK} width={POSES[n].w * UK} height={POSES[n].h * UK} />
                 : <g key={n} data-pose={n}><Pending x={830} feetY={330} w={170} h={170} label={n.replace(/^u\d-/, "umbrella, ")} /></g>)}

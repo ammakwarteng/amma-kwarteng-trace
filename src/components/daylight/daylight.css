@@ -209,3 +209,6 @@
 :root .resume__form > .resume__btn:not(:disabled) { border-color: var(--white); }
 :root .resume__form > .resume__btn:not(:disabled):hover { background: rgba(255, 255, 255, 0.08); opacity: 1; }
 :root .resume__form > .resume__btn:disabled { opacity: 1; cursor: default; }
+/* a bigger invisible tap area around the small Unlock pill, so it's easy to hit on a phone (about 46px tall) */
+:root .resume__form > .resume__btn { position: relative; }
+:root .resume__form > .resume__btn::before { content: ""; position: absolute; inset: -12px -8px; }

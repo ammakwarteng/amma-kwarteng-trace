@@ -1,5 +1,5 @@
 import Header from "./components/Header.jsx";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import IntroFilm from "./components/intro/IntroFilm.jsx";
 import Loader from "./components/loader/Loader.jsx";
 import HeroDaylight from "./components/daylight/HeroDaylight.jsx";
@@ -45,8 +45,8 @@ const sections = navItems.map((item) => ({
     ) : null,
 }));
 
-// The logo screen opens every page load. The intro film plays on the first visit in a browser
-// session, starting once the logo screen lifts. It is skipped for visitors who prefer
+// The intro film plays once, on the first visit in a browser session; every load after that (a
+// reload included, even mid-film) opens with the logo screen instead. The film is skipped for visitors who prefer
 // reduced motion and for links straight to a section (like #projects); "replay intro" brings it back.
 const SEEN = "trace-intro-seen";
 const seen = () => { try { return sessionStorage.getItem(SEEN) === "1"; } catch { return false; } };
@@ -56,17 +56,17 @@ export default function App() {
   const [intro, setIntro] = useState(() =>
     !seen() && !location.hash && !matchMedia("(prefers-reduced-motion: reduce)").matches);
   const done = useCallback(() => markSeen(true), []);
+  // remember the film as soon as it starts, so a reload shows the logo instead of the film again
+  useEffect(() => { if (intro) markSeen(true); }, [intro]);
   const replay = () => {
-    markSeen(false);
-    setIntro(true);
+    setIntro(true);   // replaying doesn't forget the film was seen: a reload still opens with the logo
     requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "instant" }));
   };
   const reduce = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   return (
     <>
-      {/* the logo screen opens every page load; on a first visit the intro film waits underneath it */}
-      <Loader />
+      {!intro && <Loader />}
       <a className="skip-link" href="#about">Skip to content</a>
       <main>
         {intro && <IntroFilm onDone={done} />}

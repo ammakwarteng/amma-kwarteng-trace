@@ -64,7 +64,7 @@ export default function Resume() {
   if (state === "granted") {
     return (
       <div className="resume is-granted">
-        <p className="resume__label idl"><i className="resume__dot is-open" aria-hidden="true" />employer access · <span className="st is-secure">access granted</span></p>
+        <p className="resume__label idl"><i className="resume__dot is-open" aria-hidden="true" />private access · <span className="st is-secure">access granted</span></p>
         <p className="resume__lead">Thanks for your interest. My resume is ready.</p>
         <div className="resume__actions">
           <a className="resume__btn" href={url} target="_blank" rel="noopener">view resume</a>
@@ -83,12 +83,12 @@ export default function Resume() {
   return (
     <div className="resume">
       <p className="resume__label idl">
-        <i className="resume__dot" aria-hidden="true" />employer access ·{" "}
+        <i className="resume__dot" aria-hidden="true" />private access ·{" "}
         <span key={state === "denied" ? `d${tries}` : "s"} className={`st ${state === "denied" ? "is-threat" : ""}`}>
           {{ checking: "verifying…", denied: "access denied", unavailable: "unavailable" }[state] || "restricted"}
         </span>
       </p>
-      <p className="resume__lead">My resume is encrypted. Employers can unlock it with the access code I share.</p>
+      <p className="resume__lead">My resume is encrypted. It unlocks with the access code I share.</p>
       <form className="resume__form" onSubmit={submit}>
         <label className="resume__field">
           <span className="visually-hidden">access code</span>{/* the label stays for screen readers only */}

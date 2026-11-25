@@ -226,3 +226,11 @@
 :root .road__more { margin-left: 7px; }
 /* Copy sits a little further from the email, so its line reads as part of the button, not a divider */
 :root .email__copy { margin-left: 6px; }
+
+/* Certification status squares, matching the rest of the site: filled = earned (done),
+   empty = a goal not done yet. Same size and line as the resume's access square. */
+:root .cert.is-earned .cert__status::before, :root .cert.is-next .cert__status::before, :root .cert.is-planned .cert__status::before {
+  content: ""; display: inline-block; box-sizing: border-box; width: 7px; height: 7px; margin-right: 7px;
+  border: 1.2px solid var(--white); background: none; vertical-align: middle; position: relative; top: -1px;
+}
+:root .cert.is-earned .cert__status::before { background: var(--white); }

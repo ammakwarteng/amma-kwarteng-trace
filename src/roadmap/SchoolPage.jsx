@@ -91,7 +91,7 @@ function LockForm({ onOpen }) {
   const msg = {
     locked: "This coursework is private for now. Enter the access code to open it.",
     checking: "Verifying…",
-    denied: "Access denied. That code didn't work, so please check it and try again.",
+    denied: "That code isn't valid.",
     unavailable: "The coursework couldn't be loaded right now. Please try again later.",
   }[state];
 

@@ -243,7 +243,7 @@ export const projects = [
     ],
     next: "Covers the full joiner, mover, leaver identity lifecycle on a working domain.",
     gallery: [
-      { src: "projects/ad-lab/01.webp", caption: "DC01 promoted to a domain controller for lab.ammakwarteng.com" },
+      { src: "projects/ad-lab/01.webp", caption: "DC01 promoted to a domain controller for lab.ammakwarteng.com (an isolated evaluation VM, so updates are off on purpose)" },
       { src: "projects/ad-lab/02.webp", caption: "Network fixed: replies from the gateway and the internet" },
       { src: "projects/ad-lab/03.webp", caption: "Departments as organizational units under _Company" },
       { src: "projects/ad-lab/04.webp", caption: "Onboarding a user who must change their password at first logon" },

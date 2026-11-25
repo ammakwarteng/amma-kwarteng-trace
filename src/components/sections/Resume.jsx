@@ -88,7 +88,7 @@ export default function Resume() {
           {{ checking: "verifying…", denied: "access denied", unavailable: "unavailable" }[state] || "restricted"}
         </span>
       </p>
-      <p className="resume__lead">My resume is encrypted. It unlocks with the access code I share.</p>
+      <p className="resume__lead">My resume is encrypted. It can be unlocked with the access code I share.</p>
       <form className="resume__form" onSubmit={submit}>
         <label className="resume__field">
           <span className="visually-hidden">access code</span>{/* the label stays for screen readers only */}

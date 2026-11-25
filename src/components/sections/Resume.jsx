@@ -76,7 +76,7 @@ export default function Resume() {
 
   const msg = {
     checking: "Verifying…",
-    denied: "That code isn't valid. Check it and try again, or request a code below.",
+    denied: "That code isn't valid. Need one? Request it below.",
     unavailable: "The resume couldn't be loaded right now. Please try again later.",
   }[state];
 

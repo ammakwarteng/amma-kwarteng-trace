@@ -162,6 +162,7 @@ export const projects = [
       "Turned on number challenge for all push notifications, so a user has to match a number on screen instead of just tapping Approve (a defence against MFA fatigue and push bombing)",
       "Edited the default enrollment policy for everyone: Okta Verify and password required, with no grace period, and passkeys optional",
       "Reviewed the Okta Dashboard sign-on policy: access needs a password plus a second factor, with user interaction required and re-authentication every 12 hours",
+      "Troubleshot setup: my phone couldn't install Okta Verify, so rather than fall back to plain TOTP codes (no push or number challenge), I enrolled the test user on a second device",
       "Tested as the user: Okta required John to set up Okta Verify at his first sign-in, then enrolled the app on a phone by scanning the QR code",
       "Signed in again with a push: the browser showed a number, the phone asked which number it was and showed the app, device and time of the attempt, and matching it signed John in",
       "Kept secrets out of the evidence: no QR codes in the screenshots, and the admin email and sign-in location blurred",

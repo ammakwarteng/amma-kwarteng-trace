@@ -212,5 +212,13 @@
 .sch-lock { display: grid; gap: 14px; max-width: 520px; margin-top: 8px; }
 .sch-lock__msg { margin: 0; font-size: 17px; line-height: 1.45; color: var(--white); }
 .sch-lock__msg.is-denied { color: var(--threat); }
+.sch-lock__status:empty { display: none; }
+/* "open": no pill, a short thin vertical line left of the label, like the actions on the main site */
+.sch-lock .rm-add { align-items: center; }
+.sch-lock .sch-unlock { position: relative; flex: none; margin-left: 8px; padding: 0; border: 0; border-radius: 0; background: none; color: var(--white); opacity: 1; }
+.sch-lock .sch-unlock:hover:not(:disabled) { background: none; }
+.sch-lock .sch-unlock:disabled { opacity: 1; cursor: default; }
+.sch-lock .sch-unlock::after { content: ""; position: absolute; left: -7px; top: 50%; top: 0.5lh; width: 1px; height: 0.95em; background: var(--white); transform: translateY(-50%); }
+.sch-lock .sch-unlock::before { content: ""; position: absolute; inset: -12px -8px; }
 /* a downloadable document inside a coursework file */
 .sch-dl-row { margin: 0; padding: 0 16px 16px; }

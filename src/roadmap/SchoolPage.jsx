@@ -88,8 +88,10 @@ function LockForm({ onOpen }) {
     }
   }
 
+  // the invitation stays above the box; what happened (checking, wrong code) shows below it
+  const intro = "This coursework is private for now. Enter the access code to open it.";
   const msg = {
-    locked: "This coursework is private for now. Enter the access code to open it.",
+    locked: "",
     checking: "Verifying…",
     denied: "That code isn't valid.",
     unavailable: "The coursework couldn't be loaded right now. Please try again later.",
@@ -97,12 +99,13 @@ function LockForm({ onOpen }) {
 
   return (
     <form className="sch-lock" onSubmit={submit}>
-      <p className={`sch-lock__msg ${state === "denied" ? "is-denied" : ""}`} role={state === "locked" ? undefined : "status"}>{msg}</p>
+      <p className="sch-lock__msg">{intro}</p>
       <div className="rm-add">
         <label className="visually-hidden" htmlFor="sch-code">Access code</label>
         <input id="sch-code" ref={inputRef} type="password" autoComplete="off" value={code} onChange={(e) => setCode(e.target.value)} />
-        <button type="submit" className="rm-btn" disabled={!code.trim() || state === "checking"}>{state === "checking" ? "opening…" : "open"}</button>
+        <button type="submit" className="rm-btn sch-unlock" disabled={!code.trim() || state === "checking"}>{state === "checking" ? "opening…" : "open"}</button>
       </div>
+      <p className={`sch-lock__msg sch-lock__status ${state === "denied" ? "is-denied" : ""}`} role="status" aria-live="polite">{msg}</p>
     </form>
   );
 }

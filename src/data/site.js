@@ -59,7 +59,6 @@ export const volunteering = [
   {
     org: "Cyber-Seniors",
     role: "Tech Mentor",
-    status: "in training",
     url: "https://cyberseniors.org",
     what: "A Canadian nonprofit connecting generations through technology. I help older adults one-on-one with their devices and accounts, and with staying safe from scams online.",
   },

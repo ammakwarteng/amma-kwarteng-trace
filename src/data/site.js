@@ -72,7 +72,7 @@ export const navItems = [
   { id: "projects", label: "Projects", kicker: "the work", ready: true },
   { id: "skills", label: "Skills", kicker: "the craft", ready: true },
   { id: "certifications", label: "Certifications", kicker: "the credentials", ready: true },
-  { id: "community", label: "Community", kicker: "the community", ready: true },
+  { id: "community", label: "Community", kicker: "the network", ready: true },
   { id: "volunteer", label: "Volunteer", kicker: "giving back", ready: true },
   { id: "resume", label: "Resume", kicker: "the record", ready: true },
   { id: "contact", label: "Contact", kicker: "get in touch", ready: true },

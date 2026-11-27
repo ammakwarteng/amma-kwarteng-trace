@@ -229,3 +229,8 @@
 /* "verify" on an earned certification card: the issuer's badge page, below the name */
 :root .cert { grid-template-rows: auto 1fr auto auto; }
 :root .cert__verify { justify-self: start; margin-left: 7px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; }
+
+/* Certification cards: black like the page with a thin white outline, no grey fill (Amma's choice).
+   Earned cards keep their corner brackets. */
+:root .certs-wrap .cert { background: var(--black); border: 1px solid var(--line); border-radius: 0; }
+:root .certs-wrap .cert:hover { background: var(--black); border-color: var(--white); }

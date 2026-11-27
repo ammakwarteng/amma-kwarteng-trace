@@ -99,6 +99,7 @@ export default function Certifications() {
       </div>
       <p className="cert__code">{c.code}</p>
       <p className="cert__name">{c.name}</p>
+      {c.verify && <a className="cert__verify mono" href={c.verify} target="_blank" rel="noopener noreferrer" tabIndex={-1}>verify</a>}
     </article>
   );
 
@@ -114,7 +115,7 @@ export default function Certifications() {
 
       <ul className="visually-hidden">
         {shown.map((c) => (
-          <li key={c.name}>{c.name}, {c.issuer}: {LABEL[c.status]}</li>
+          <li key={c.name}>{c.name}, {c.issuer}: {LABEL[c.status]}{c.verify && <> (<a href={c.verify} target="_blank" rel="noopener noreferrer">verify on Credly</a>)</>}</li>
         ))}
       </ul>
     </div>

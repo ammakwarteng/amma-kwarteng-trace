@@ -205,19 +205,19 @@
 :root .resume__form { align-items: center; }
 :root .resume__form > .resume__btn { flex: none; margin-left: 8px; }
 :root .resume__form > .resume__btn, :root .email__copy, :root .project__more, :root .projects-wrap .project__more,
-:root .road__more, :root .site-footer__top, :root .dhero__replay {
+:root .road__more, :root .site-footer__top, :root .dhero__replay, :root .cert__verify {
   position: relative; padding: 0; border: 0; border-radius: 0; background: none; color: var(--white); opacity: 1;
 }
 :root .resume__form > .resume__btn:hover, :root .resume__form > .resume__btn:disabled,
 :root .email__copy:hover, :root .project__more:hover, :root .road__more:hover, :root .site-footer__top:hover, :root .dhero__replay:hover { background: none; opacity: 1; }
 :root .resume__form > .resume__btn:disabled { cursor: default; }
 :root .resume__form > .resume__btn::after, :root .email__copy::after, :root .project__more::after,
-:root .road__more::after, :root .site-footer__top::after, :root .dhero__replay::after {
+:root .road__more::after, :root .site-footer__top::after, :root .dhero__replay::after, :root .cert__verify::after {
   content: ""; position: absolute; left: -7px; top: 50%; top: 0.5lh; width: 1px; height: 0.95em; background: var(--white); transform: translateY(-50%);
 }
 /* (0.5lh: the line sits beside the first line of text, even when a label wraps onto two lines) */
 :root .resume__form > .resume__btn::before, :root .email__copy::before, :root .project__more::before,
-:root .road__more::before, :root .site-footer__top::before, :root .dhero__replay::before {
+:root .road__more::before, :root .site-footer__top::before, :root .dhero__replay::before, :root .cert__verify::before {
   content: ""; position: absolute; inset: -12px -8px;
 }
 /* the projects row clips anything past a card's edge, so "read more" sits 7px in, leaving room for its line */
@@ -226,3 +226,6 @@
 :root .road__more { margin-left: 7px; }
 /* Copy sits a little further from the email, so its line reads as part of the button, not a divider */
 :root .email__copy { margin-left: 6px; }
+/* "verify" on an earned certification card: the issuer's badge page, below the name */
+:root .cert { grid-template-rows: auto 1fr auto auto; }
+:root .cert__verify { justify-self: start; margin-left: 7px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; }

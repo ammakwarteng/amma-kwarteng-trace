@@ -101,8 +101,9 @@ export const roadmap = [
 // status: "studying" | "next" | "planned" | "earned"
 // Only move a certification to "earned" once the exam is passed. Kept short on purpose (Amma):
 // what she has earned, and what she is working on next. Longer-term certs live on the roadmap pages.
+// verify: the issuer's public badge link (e.g. Credly), shown as "verify" on the card.
 export const certifications = [
-  { name: "ISO/IEC 27001:2022 Lead Auditor", code: "ISO 27001", issuer: "Mastermind Assurance", status: "earned" },
+  { name: "ISO/IEC 27001:2022 Lead Auditor", code: "ISO 27001", issuer: "Mastermind Assurance", status: "earned", verify: "https://www.credly.com/go/RDRlxTp8Ti5Ct4RHFsSOIg" },
   { name: "Splunk Certified Cybersecurity Defense Analyst", code: "Splunk", issuer: "Splunk", status: "earned" },
   { name: "Microsoft SC-900", code: "SC-900", issuer: "Microsoft", status: "next" },
   { name: "Microsoft SC-300: Identity and Access Administrator", code: "SC-300", issuer: "Microsoft", status: "next" },

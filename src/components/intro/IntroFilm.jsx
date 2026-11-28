@@ -36,7 +36,7 @@ const has = (n) => Boolean(POSES[n]);
 const PANO_W = 3200, PANO_H = 1373, PANO_SCALE = 1100 / PANO_H, HORIZON = 0.716;
 // Amma's storyline: one line at a time, faded in and out with the scroll (p = scroll progress 0-100).
 // Timed to the film: scene 1 (0-17), 2 (17-30), 3 the worlds (32-70; network ~38, cloud ~42, forensics ~45,
-// governance ~47, the doors 51-70), 4 the crossroads (70-86). Nothing during the reveal: TRACE stands alone.
+// governance ~47, the doors 51-70), 4 the crossroads (70-86), then one line as she turns (86.5-92.5); TRACE itself stands alone.
 // "top" lines sit above the horizon, where the crossroads leaves room; the rest sit on the empty ground below it.
 const STORY = [
   // she stands in silence first (Amma's choice): the first words come as the umbrella falls toward her
@@ -48,6 +48,8 @@ const STORY = [
   { from: 52, to: 67, text: "and who gets through which door." },
   { from: 71, to: 76.5, text: "every path was worth knowing.", top: true },
   { from: 77.5, to: 85.5, text: ["but one kept pulling me back:", "identity and access."], top: true },
+  // as she turns to the visitor, the line that names the site; it is gone before TRACE appears (94)
+  { from: 86.5, to: 92.5, text: "so i trace who gets in, and why.", low: true },
 ];
 const FADE = 1.2;
 
@@ -375,7 +377,7 @@ export default function IntroFilm({ onDone }) {
 
         <div className="intro__story" aria-hidden="true">
           {STORY.map((l, i) => (
-            <p key={i} className={`intro__line ${l.top ? "is-top" : ""}`} style={{ opacity: 0 }}>
+            <p key={i} className={`intro__line ${l.top ? "is-top" : ""} ${l.low ? "is-low" : ""}`} style={{ opacity: 0 }}>
               {[].concat(l.text).map((t, k) => <span key={k}>{t}</span>)}
             </p>
           ))}

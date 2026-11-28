@@ -30,7 +30,7 @@
 /* a thick dark band behind each line, so drawn lines in the film never run through the words */
 .intro__line span { justify-self: center; padding: 6px 12px; background: rgba(10, 10, 10, 0.94); box-shadow: 0 0 0 8px rgba(10, 10, 10, 0.94); }
 .intro__line.is-top { bottom: auto; top: 18svh; }
-@media (max-width: 760px) { .intro__line { bottom: 19svh; } .intro__line.is-top { top: 22svh; } }
+@media (max-width: 760px) { .intro__line { bottom: 19svh; } .intro__line.is-top { top: 22svh; } .intro__line.is-low { bottom: 9svh; } }   /* is-low: under her feet when she faces the visitor */
 .intro__skip {
   position: absolute; right: max(18px, env(safe-area-inset-right, 0px)); bottom: max(18px, env(safe-area-inset-bottom, 0px));
   pointer-events: auto; padding: 6px 2px; border: 0; border-bottom: 1px solid var(--white-faint); background: none;
